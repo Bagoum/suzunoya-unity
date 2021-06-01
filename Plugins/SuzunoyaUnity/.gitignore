@@ -1,0 +1,15 @@
+.vs
+.idea
+Library/*
+UserSettings/*
+Logs
+Temp
+obj
+bin
+Builds
+
+*.unityproj
+*.tmp
+*.user
+*.userprefs
+*.pdb
