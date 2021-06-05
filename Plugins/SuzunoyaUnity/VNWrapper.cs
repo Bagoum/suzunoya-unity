@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BagoumLib.Cancellation;
+using BagoumLib.DataStructures;
 using Suzunoya.ControlFlow;
 using Suzunoya.Data;
 using Suzunoya.Display;
@@ -12,8 +13,8 @@ using UnityEngine;
 
 namespace SuzunoyaUnity {
 public class VNWrapper : MonoBehaviour, IInterrogatorReceiver {
-    private IVNState? vn;
-    private readonly List<IDisposable> vnTokens = new List<IDisposable>();
+    private readonly DMCompactingArray<IVNState> vns = new DMCompactingArray<IVNState>();
+    private readonly Dictionary<IVNState, List<IDisposable>> vnTokens = new Dictionary<IVNState, List<IDisposable>>();
 
     public GameObject renderGroupMimic = null!;
     public GameObject[] entityMimics = null!;
@@ -26,40 +27,42 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver {
         }
     }
 
-    public IVNState TrackVN(IVNState newVn) {
-        if (vn != null)
-            throw new Exception("VN already exists");
-        vn = newVn;
-        vnTokens.Add(vn.RenderGroupCreated.Subscribe(NewRenderGroup));
-        vnTokens.Add(vn.EntityCreated.Subscribe(NewEntity));
-        vnTokens.Add(vn.InterrogatorCreated.Subscribe(this));
+    public IVNState TrackVN(IVNState vn) {
+        var tokens = vnTokens[vn] = new List<IDisposable>();
+        tokens.Add(vns.Add(vn));
+        tokens.Add(vn.RenderGroupCreated.Subscribe(NewRenderGroup));
+        tokens.Add(vn.EntityCreated.Subscribe(NewEntity));
+        tokens.Add(vn.InterrogatorCreated.Subscribe(this));
         //TODO AwaitingConfirm
-        vnTokens.Add(vn.Logs.Subscribe(Log.Unity));
-        vnTokens.Add(vn.VNStateActive.Subscribe(b => {
+        tokens.Add(vn.Logs.Subscribe(Log.Unity));
+        tokens.Add(vn.VNStateActive.Subscribe(b => {
             if (!b)
-                ClearVN();
+                ClearVN(vn);
         }));
         return vn;
     }
 
-    public void ClearVN() {
-        foreach (var token in vnTokens)
+    public void ClearVN(IVNState vn) {
+        foreach (var token in vnTokens[vn])
             token.Dispose();
-        vnTokens.Clear();
-        if (vn != null) {
-            vn.DeleteAll();
-            vn = null;
-        }
-        
+        vnTokens.Remove(vn);
+        vn.DeleteAll();
     }
     
 
     public void DoUpdate(float dT, bool isConfirm, bool isSkip) {
-        if (isConfirm)
-            vn?.Confirm();
-        else if (isSkip)
-            vn?.RequestSkipOperation();
-        vn?.Update(dT);
+        for (int ii = 0; ii < vns.Count; ++ii) {
+            if (vns.ExistsAt(ii)) {
+                var vn = vns[ii];
+                if (isConfirm)
+                    vn.Confirm();
+                else if (isSkip)
+                    vn.RequestSkipOperation();
+                if (vn.VNStateActive.Value)
+                    vn.Update(dT);
+            }
+        }
+        vns.Compact();
     }
 
     private void NewRenderGroup(RenderGroup rg) {
@@ -90,7 +93,11 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver {
     }
 
     private void OnDisable() {
-        ClearVN();
+        for (int ii = 0; ii < vns.Count; ++ii) {
+            if (vns.ExistsAt(ii))
+                ClearVN(vns[ii]);
+        }
+        vns.Empty();
     }
 }
 }

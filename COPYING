@@ -1,6 +1,12 @@
 Copyright (c) 2021 Bagoum <reneedebatz@gmail.com>
 
-This project's source code is licensed under MIT.
+Suzunoya is a visual novel engine built in C#, designed to be portable between game engines. 
+It is free (as in free speech) software.
+This repository contains Suzunoya plugin code for Unity. 
+The Suzunoya repository is on Github here: https://github.com/Bagoum/suzunoya
+This plugin repository is on Github here: https://github.com/Bagoum/suzunoya-unity
+
+All source code in this project is distributed under the MIT license.
 
 Files under Plugins/RubyTextMeshPro are from https://github.com/jp-netsis/RubyTextMeshPro , licensed under MIT. 
 

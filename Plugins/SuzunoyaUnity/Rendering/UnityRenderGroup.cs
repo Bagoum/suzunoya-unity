@@ -30,7 +30,6 @@ public class UnityRenderGroup : RenderGroup {
     /// and renders them into a RenderTexture.
     /// </summary>
     private ArbitraryCapturer capturer = null!;
-    private float baseOrthoSize;
     /// <summary>
     /// Applies effects and transitions to the captured RenderTexture to render it to screen.
     /// </summary>
@@ -51,30 +50,13 @@ public class UnityRenderGroup : RenderGroup {
 
     public void Bind(RenderGroupMimic mimic) {
         capturer = mimic.capturer;
-        baseOrthoSize = capturer.Camera.orthographicSize;
         displayer = mimic.sr;
         mat = displayer.material;
         mat.EnableKeyword(RenderGroupTransition.NO_TRANSITION_KW);
         displayer.GetPropertyBlock(pb = new MaterialPropertyBlock());
         UpdatePB();
         SetLayer(FindNextLayer());
-
-        Location.Value = capturer.Camera.transform.localPosition._();
-
-        //mimic listens to EntityActive
-        Listen(Location, _ => SetCameraLocation());
-        Listen(EulerAnglesD, v3 => capturer.Camera.transform.localEulerAngles = v3._());
-        //Not listening to scale in v0.1
-        Listen(Priority, i => displayer.sortingOrder = i);
-        Listen(Visible, b => displayer.enabled = b);
-        Listen(Zoom, z => capturer.Camera.orthographicSize = baseOrthoSize / z);
-        //Don't need ZoomTarget
-        Listen(ZoomTransformOffset, _ => SetCameraLocation());
-        //Don't need RendererAdded
     }
-
-    private void SetCameraLocation() =>
-        capturer.Camera.transform.localPosition = (Location.Value + ZoomTransformOffset)._();
 
     public void UpdatePB() {
         pb.SetTexture(PropConsts.RGTex, Captured);

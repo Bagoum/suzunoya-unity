@@ -20,6 +20,8 @@ public class SZYUCharacter : Character {
     public void Bind(CharacterMimic mimic_) {
         mimic = mimic_;
     }
+
+    public void SetEmote(string emote) => Emote.Value = emote;
 }
 
 }

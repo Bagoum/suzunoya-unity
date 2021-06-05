@@ -163,7 +163,7 @@ public class ADVDialogueBoxMimic : BaseMimic {
                 re.ev();
             } else
                 return;
-            SetText(obj.lookahead);
+            lastLookahead = obj.lookahead;
         });
         //dialogue finished effect?
 
