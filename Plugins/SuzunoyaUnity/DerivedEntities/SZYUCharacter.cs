@@ -1,4 +1,8 @@
-﻿using Suzunoya.Dialogue;
+﻿using System.Threading.Tasks;
+using BagoumLib.Culture;
+using Suzunoya;
+using Suzunoya.ControlFlow;
+using Suzunoya.Dialogue;
 using Suzunoya.Entities;
 using SuzunoyaUnity.Mimics;
 using SuzunoyaUnity.Rendering;
@@ -10,10 +14,10 @@ namespace SuzunoyaUnity.Derived {
 public class SZYUCharacter : Character {
     public virtual Color TextColor => Color.white;
     public virtual Color UIColor => new Color(0.85f, 0.1f, 0.24f);
-    public Sprite? ADVSpeakerIcon => mimic.ADVSpeakerIcon;
+    public virtual Sprite? ADVSpeakerIcon => mimic.ADVSpeakerIcon;
 
-    public override SpeechSettings SpeechCfg => new SpeechSettings(40, SpeechSettings.DefaultOpsPerChar, 8,
-        SpeechSettings.DefaultRollEventAllowed, null);
+    public override SpeechSettings SpeechCfg => new SpeechSettings(40, SpeechSettings.DefaultOpsPerChar, 3,
+        SpeechSettings.DefaultRollEventAllowed, Container.SkipGuard(RollEvent));
 
     private CharacterMimic mimic = null!;
 
@@ -21,7 +25,15 @@ public class SZYUCharacter : Character {
         mimic = mimic_;
     }
 
-    public void SetEmote(string emote) => Emote.Value = emote;
+    public LazyAwaitable SetEmote(string emote) => new LazyAction(() => Emote.Value = emote);
+
+    public VNConfirmTask EmoteSayC(string emote, LString content, SpeakFlags flags = SpeakFlags.Default) =>
+        new VNOperation(Container, null, _ => {
+            Emote.Value = emote;
+            return Task.CompletedTask;
+        }).Then(Say(content, null, flags)).C;
+
+    public virtual void RollEvent() { }
 }
 
 }

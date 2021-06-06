@@ -236,7 +236,6 @@ GameObject:
   - component: {fileID: 8191303369154373171}
   - component: {fileID: 8191303369154373169}
   - component: {fileID: 8191303369154373168}
-  - component: {fileID: 8191303369154373166}
   - component: {fileID: 8191303369154373167}
   m_Layer: 0
   m_Name: Panel
@@ -305,18 +304,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8191303369154373166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8191303369154373170}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06431159acbbeb34ba18955cb2316dbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &8191303369154373167
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -575,7 +562,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 1131179243
+  m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!225 &8191303369611832256

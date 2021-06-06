@@ -1,4 +1,5 @@
 ﻿using System;
+using Suzunoya.Entities;
 using SuzunoyaUnity.Rendering;
 using UnityEngine;
 
@@ -9,7 +10,11 @@ public class RenderGroupMimic : Tokenized {
     private UnityRenderGroup rg = null!;
     private float baseOrthoSize;
 
+    public void _Initialize(IEntity entity) {
+        throw new NotImplementedException();
+    }
     public void Initialize(UnityRenderGroup urg) {
+        gameObject.layer = LayerMask.NameToLayer(UnityRenderGroup.OutRenderLayer);
         baseOrthoSize = capturer.Camera.orthographicSize;
         
         rg = urg;
@@ -32,12 +37,13 @@ public class RenderGroupMimic : Tokenized {
             }
         });
     }
-
     private void Update() {
         rg.UpdatePB();
     }
     
     private void SetCameraLocation() =>
         capturer.Camera.transform.localPosition = (rg.Location.Value + rg.ZoomTransformOffset)._();
+
+
 }
 }

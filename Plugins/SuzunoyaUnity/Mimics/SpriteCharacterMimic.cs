@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BagoumLib.DataStructures;
 using Suzunoya.Entities;
+using SuzunoyaUnity.Components;
 using SuzunoyaUnity.Derived;
 using SuzunoyaUnity.Rendering;
 using UnityEngine;
@@ -9,25 +10,37 @@ using UnityEngine.UI;
 using Transform = UnityEngine.Transform;
 
 namespace SuzunoyaUnity.Mimics {
-public abstract class CharacterMimic : BaseMimic {
+public abstract class CharacterMimic : RenderedMimic {
     public Sprite? ADVSpeakerIcon;
-}
-public class SpriteCharacterMimic : CharacterMimic {
-    [Serializable]
-    public struct EmoteVariant {
-        public string emote;
-        public Sprite sprite;
+    public Character Char { get; private set; } = null!;
+    private CharacterSpeakingDisturbance speakDisturb = null!;
+
+    
+    public override void _Initialize(IEntity entity) => Initialize((entity as SZYUCharacter)!);
+    private void Initialize(SZYUCharacter c) {
+        Char = c;
+        c.Bind(this);
+        speakDisturb = new CharacterSpeakingDisturbance(this);
+        
+        base.Initialize(Char);
+
+        Listen(Char.Emote, SetEmote);
     }
 
-    private Character chr = null!;
-    public Transform tr { get; private set; } = null!;
+    protected override void DoUpdate(float dT) {
+        speakDisturb.DoUpdate(dT);
+    }
+
+    protected abstract void SetEmote(string? emote);
+}
+public class SpriteCharacterMimic : CharacterMimic {
     public SpriteRenderer sr = null!;
     public EmoteVariant[] emotes = null!;
 
-    private Dictionary<string, Sprite> emoteMap = new Dictionary<string, Sprite>();
+    private readonly Dictionary<string, Sprite> emoteMap = new Dictionary<string, Sprite>();
 
-    private void Awake() {
-        tr = transform;
+    protected override void Awake() {
+        base.Awake();
         for(int ii = 0; ii < emotes.Length; ++ii) {
             emotes[ii].emote = emotes[ii].emote.ToLower();
             emoteMap[emotes[ii].emote] = emotes[ii].sprite;
@@ -45,36 +58,16 @@ public class SpriteCharacterMimic : CharacterMimic {
         return emotes[0].sprite;
     }
 
-    private void SetEmote(string? key) {
-        sr.sprite = GetEmote(key);
+    protected override void SetEmote(string? emote) {
+        sr.sprite = GetEmote(emote);
     }
 
-    
-    public override void _Initialize(IEntity entity) => Initialize((entity as SZYUCharacter)!);
-    public void Initialize(SZYUCharacter c) {
-        chr = c;
-        //Note this is a pretty trivial bind
-        c.Bind(this);
-        
-        Listen(chr.Emote, SetEmote);
-        
-        Listen(chr.Location, v3 => tr.localPosition = v3._());
-        Listen(chr.EulerAnglesD, v3 => tr.localEulerAngles = v3._());
-        Listen(chr.Scale, v3 => tr.localScale = v3._());
+    protected override void SetSortingLayer(int layer) => sr.sortingLayerID = layer;
 
-        Listen(chr.RenderGroup, rg => {
-            if (rg is UnityRenderGroup urg)
-                gameObject.SetLayerRecursively(urg.LayerId);
-        });
-        Listen(chr.RenderLayer, l => sr.sortingLayerID = l);
-        Listen(chr.SortingID, id => sr.sortingOrder = id);
-        Listen(chr.Visible, b => sr.enabled = b);
-        Listen(chr.Tint, t => sr.color = t._());
-        Listen(chr.EntityActive, b => {
-            if (!b) {
-                Destroy(gameObject);
-            }
-        });
-    }
+    protected override void SetSortingID(int id) => sr.sortingOrder = id;
+
+    protected override void SetVisible(bool visible) => sr.enabled = visible;
+
+    protected override void SetTint(Color c) => sr.color = c;
 }
 }

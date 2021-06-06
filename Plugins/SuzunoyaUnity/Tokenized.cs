@@ -6,6 +6,8 @@ namespace SuzunoyaUnity {
 public class Tokenized : MonoBehaviour {
     protected readonly List<IDisposable> tokens = new List<IDisposable>();
     protected bool Enabled { get; private set; } = false;
+
+    public void AddToken(IDisposable token) => tokens.Add(token);
     
     /// <summary>
     /// Safe to call twice.
@@ -26,7 +28,7 @@ public class Tokenized : MonoBehaviour {
     
     protected virtual void BindListeners() { }
     
-    protected void Listen<T>(IObservable<T> obs, Action<T> listener) =>
+    public void Listen<T>(IObservable<T> obs, Action<T> listener) =>
         tokens.Add(obs.Subscribe(listener));
 
 

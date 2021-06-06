@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Suzunoya.ControlFlow;
+using UnityEngine;
 using Vector3 = System.Numerics.Vector3;
 
 namespace SuzunoyaUnity {
@@ -31,5 +33,7 @@ public static class Helpers {
         (byte) (f * 256f);
 
     public static Vector3 WithY(this Vector3 v3, float y) => new Vector3(v3.X, y, v3.Z);
+
+    public static LazyAwaitable Lazy(Action a) => new LazyAction(a);
 }
 }

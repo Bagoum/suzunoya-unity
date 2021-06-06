@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BagoumLib;
 using BagoumLib.Cancellation;
 using Suzunoya.ControlFlow;
 using UnityEngine;
@@ -17,7 +18,7 @@ public abstract class BaseScript : Tokenized {
     }
 
     public async Task RunScript() {
-        Log.Unity($"Started script {this}");
+        Logging.Log($"Started script {this}");
         var cT = new Cancellable();
         var vn = new UnityVNState(cT);
         scriptTokens.Add((vn, cT));
@@ -26,12 +27,12 @@ public abstract class BaseScript : Tokenized {
             await _RunScript(vn);
         } catch (Exception e) {
             if (e is OperationCanceledException && cT.Cancelled) {
-                Log.Unity("VN object has been cancelled");
+                Logging.Log("VN object has been cancelled");
             } else {
-                Log.UnityException(e);
+                Logging.Log(LogMessage.Error(e));
             }
         }
-        Log.Unity($"Done with running script {this}. Final state: {cT.ToCompletion()}");
+        Logging.Log($"Done with running script {this}. Final state: {cT.ToCompletion()}");
         cT.Cancel();
         vn.DeleteAll();
     }

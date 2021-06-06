@@ -21,8 +21,8 @@ namespace SuzunoyaUnity.Rendering {
 public class UnityRenderGroup : RenderGroup {
     private const int maxRenderGroups = 3;
     private string RenderGroupLayer(int i) => $"RenderGroup{i}";
-    private const string OutRenderLayer = "RenderGroups";
-    public const string NullRenderLayer = "RenderGroupNull";
+    public const string OutRenderLayer = "UI";
+    //public const string NullRenderLayer = "RenderGroupNull";
     private static readonly DMCompactingArray<UnityRenderGroup> allRGs = new DMCompactingArray<UnityRenderGroup>();
 
     /// <summary>

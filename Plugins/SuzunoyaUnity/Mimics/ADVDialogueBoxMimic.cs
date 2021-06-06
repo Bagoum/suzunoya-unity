@@ -15,7 +15,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ADVDialogueBoxMimic : BaseMimic {
+public class ADVDialogueBoxMimic : RenderedMimic {
     private class LoadingChar {
         public readonly char? c;
         public readonly string? s;
@@ -45,19 +45,15 @@ public class ADVDialogueBoxMimic : BaseMimic {
     public Image speakerIcon = null!;
     public Image[] recolorables = null!;
 
-    private readonly PushLerper<Color> uiColor = new PushLerper<Color>(0.5f, Color.Lerp);
-    private readonly PushLerper<Color> textColor = new PushLerper<Color>(0.5f, Color.Lerp);
+    private readonly PushLerper<Color> uiColor = new PushLerper<Color>(0.3f, Color.Lerp);
+    private readonly PushLerper<Color> textColor = new PushLerper<Color>(0.3f, Color.Lerp);
 
     public float charLoadTime = 0.3f;
     private ADVDialogueBox bound = null!;
     private readonly StringBuilder accText = new StringBuilder();
     private readonly DMCompactingArray<LoadingChar> loadingChars = new DMCompactingArray<LoadingChar>();
     private readonly List<SpeechTag> openTags = new List<SpeechTag>();
-
-    private void Awake() {
-        Listen(uiColor.OnChange, SetUIColor);
-        Listen(textColor.OnChange, SetTextColor);
-    }
+    
 
     public override void _Initialize(IEntity entity) => Initialize((entity as ADVDialogueBox)!);
 
@@ -104,16 +100,11 @@ public class ADVDialogueBoxMimic : BaseMimic {
         mainText.UnditedText = accText.ToString() + rem.ToString();
     }
 
-    private IEnumerator UpdateLoadingChars() {
-        while (true) {
-            var dt = bound.Container.dT;
-            uiColor.Update(dt);
-            textColor.Update(dt);
-            for (int ii = 0; ii < loadingChars.Count; ++ii)
-                loadingChars[ii].t += dt;
-            yield return null;
-        }
-        // ReSharper disable once IteratorNeverReturns
+    protected override void DoUpdate(float dT) {
+        uiColor.Update(dT);
+        textColor.Update(dT);
+        for (int ii = 0; ii < loadingChars.Count; ++ii)
+            loadingChars[ii].t += dT;
     }
 
     private void Update() {
@@ -123,25 +114,23 @@ public class ADVDialogueBoxMimic : BaseMimic {
 
     public void Initialize(ADVDialogueBox db) {
         bound = db;
-        db.Run(UpdateLoadingChars(), new CoroutineOptions(true));
-        
         //As ADVDialogueBox is a trivial wrapper around DialogueBox, no bind is required.
+        base.Initialize(db);
         
-        //Not listening to transforms for now
-
         Listen(db.Speaker, obj => {
+            bool anon = obj.flags.HasFlag(SpeakFlags.Anonymous);
             if (obj.speaker != null) {
                 speakerContainer.SetActive(true);
-                speaker.text = obj.speaker.Name;
+                speaker.text = anon ? "???" : obj.speaker.Name;
                 if (obj.speaker is SZYUCharacter sc) {
                     // ReSharper disable once AssignmentInConditionalExpression
-                    if (speakerIcon.enabled = sc.ADVSpeakerIcon != null)
+                    if (speakerIcon.enabled = (sc.ADVSpeakerIcon != null && !anon))
                         speakerIcon.sprite = sc.ADVSpeakerIcon!;
                     uiColor.Push(sc.UIColor);
                     textColor.Push(sc.TextColor);
                 }
             }
-            if (obj.speaker == null) { //|| obj.flags.HasFlag(SpeakFlags.Anonymous)
+            if (obj.speaker == null) {
                 speakerIcon.enabled = false;
                 speakerContainer.SetActive(false);
                 SetTextColor(Color.white);
@@ -167,34 +156,31 @@ public class ADVDialogueBoxMimic : BaseMimic {
         });
         //dialogue finished effect?
 
-        db.RenderLayer.Value = SortingLayer.NameToID("UI");
-        Listen(db.RenderGroup, rg => {
-            if (rg is UnityRenderGroup urg)
-                gameObject.SetLayerRecursively(urg.LayerId);
-        });
-        Listen(db.RenderLayer, l => canvas.sortingLayerID = l);
-        Listen(db.SortingID, id => canvas.sortingOrder = id);
-        db.Visible.Value = true;
-        db.Tint.Value = new FColor(1, 1, 1, 0);
-        Listen(db.Visible, b => canvas.enabled = b);
-        Listen(db.Tint, t => cGroup.alpha = t.a);
-        Listen(db.EntityActive, b => {
-            if (!b) {
-                Destroy(gameObject);
-            }
-        });
+        Listen(uiColor.OnChange, SetUIColor);
+        Listen(textColor.OnChange, SetTextColor);
     }
+
+
+    protected override void SetSortingLayer(int layer) => canvas.sortingLayerID = layer;
+
+    protected override void SetSortingID(int id) => canvas.sortingOrder = id;
+
+    protected override void SetVisible(bool visible) => canvas.enabled = visible;
+
+    protected override void SetTint(Color c) => cGroup.alpha = c.a;
 
 
     private static string? TagToOpen(SpeechTag t) => t switch {
         SpeechTag.Color c => $"<color={c.color}>",
         SpeechTag.Furigana r => $"<ruby={r.furigana}>",
+        SpeechTag.Unknown u => u.content == null ? $"<{u.name}>" : $"<{u.name}={u.content}>",
         _ => null
     };
 
     private static string? TagToClose(SpeechTag t) => t switch {
-        SpeechTag.Color c => $"</color>",
-        SpeechTag.Furigana r => $"</ruby>",
+        SpeechTag.Color c => "</color>",
+        SpeechTag.Furigana r => "</ruby>",
+        SpeechTag.Unknown u => $"</{u.name}>",
         _ => null
     };
 }

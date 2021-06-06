@@ -3,25 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace SuzunoyaUnity.Rendering {
-public class ArbitraryCapturer : MonoBehaviour {
+public class ArbitraryCapturer : Tokenized {
     public Camera Camera { get; private set; } = null!;
     public RenderTexture Captured { get; private set; } = null!;
 
     private void Awake() {
         Camera = GetComponent<Camera>();
-        Camera.targetTexture = Captured = Helpers.DefaultTempRT();
+        Camera.targetTexture = Captured = RenderHelpers.DefaultTempRT();
     }
 
-    public void Draw(Transform tr, Mesh m, Material mat, MaterialPropertyBlock pb, int layer) =>
-        UnityEngine.Graphics.DrawMesh(m, tr.localToWorldMatrix, mat, layer, Camera, 0, pb);
-
+    protected override void BindListeners() {
+        Listen(RenderHelpers.PreferredResolution, _ => RecreateTexture());
+    }
+    
     private void OnDestroy() {
         Captured.Release();
     }
 
     public void RecreateTexture() {
         Captured.Release();
-        Camera.targetTexture = Captured = Helpers.DefaultTempRT();
+        Camera.targetTexture = Captured = RenderHelpers.DefaultTempRT();
     }
 
     public void Kill() {
