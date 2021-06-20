@@ -3,6 +3,7 @@ Shader "SZYU/RenderGroupDisplay" {
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 		[PerRendererData] _RGTex("Render Group Texture", 2D) = "white" {}
 		[PerRendererData] _RGTex2("Render Group Second Texture", 2D) = "white" {}
+		[PerRendererData] _MaskTex("Mask Texture", 2D) = "white" {}
 		_T("Transition Ratio", Float) = 1
 	}
 	
@@ -47,17 +48,26 @@ Shader "SZYU/RenderGroupDisplay" {
         
             sampler2D _RGTex;
             sampler2D _RGTex2;
+            sampler2D _MaskTex;
 			float _T;
 
 			float4 frag(fragment f) : SV_Target {
+				float4 c1 = tex2D(_RGTex, f.uv);
+				float mask = tex2D(_MaskTex, f.uv).a;
 			#ifdef MIX_NONE
-				return tex2D(_RGTex, f.uv);
+				return c1 * mask;
 			#endif
 				float fill = 1;
 			#ifdef MIX_FADE
 				fill = smoothstep(0, 1, _T);
 			#endif
-				return tex2D(_RGTex, f.uv) * (1 - fill) + tex2D(_RGTex2, f.uv) * fill;
+				float4 c2 = tex2D(_RGTex2, f.uv);
+				//Transparent textures may have nonzero RGBs
+				if (c2.a < 0.001)
+					c2 = float4(0,0,0,0);
+				float4 c = c1 * (1 - fill) + c2 * fill;
+				//return float4(c.r, 0, 0, 1);
+				return c * mask;
 			}
 			ENDCG
 		}

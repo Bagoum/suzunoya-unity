@@ -15,15 +15,49 @@ using Suzunoya.Display;
 using SuzunoyaUnity.Mimics;
 using SuzunoyaUnity.Rendering;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SuzunoyaUnity.Rendering {
+public class UnityRenderGroupMask {
+    public readonly Texture2D mask;
+    public readonly bool destroyOnDone;
+    private bool destroyed;
 
+    public UnityRenderGroupMask(Func<float, float, float> filter, int w = 160, int h = 90, bool destroyOnDone = true) {
+        mask = Utils.CreateMask(w, h, filter);
+        this.destroyOnDone = destroyOnDone;
+    }
+
+    public UnityRenderGroupMask(Texture2D mask, bool destroyOnDone) {
+        this.mask = mask;
+        this.destroyOnDone = destroyOnDone;
+    }
+
+    public void Done() {
+        if (destroyOnDone && !destroyed) {
+            Object.Destroy(mask);
+            Logging.Log("Destroyed render group mask due to out-of-scope");
+        }
+        destroyed = true;
+    }
+}
 public class UnityRenderGroup : RenderGroup {
-    private const int maxRenderGroups = 3;
+    private const int maxRenderGroups = 5;
     private string RenderGroupLayer(int i) => $"RenderGroup{i}";
     public const string OutRenderLayer = "UI";
+    public static int OutRenderLayerID => LayerMask.NameToLayer(OutRenderLayer);
     //public const string NullRenderLayer = "RenderGroupNull";
     private static readonly DMCompactingArray<UnityRenderGroup> allRGs = new DMCompactingArray<UnityRenderGroup>();
+    public RenderGroupMimic Mimic { get; private set; } = null!;
+    public int LayerId { get; private set; }
+
+    public UnityRenderGroupMask Mask { get; private set; } = new UnityRenderGroupMask(null!, false);
+
+    public void SetMask(UnityRenderGroupMask? mask) {
+        Mask.Done();
+        Mask = mask ?? new UnityRenderGroupMask(Mimic.defaultMaskTex, false);
+        pb.SetTexture(PropConsts.MaskTex, Mask.mask);
+    }
 
     /// <summary>
     /// Captures all objects in a render group (sharing the same camera layer)
@@ -36,24 +70,26 @@ public class UnityRenderGroup : RenderGroup {
     private SpriteRenderer displayer = null!;
     private MaterialPropertyBlock pb = null!;
     private Material mat = null!;
+    private int layer;
+    private int layerMask;
     public Camera Camera => capturer.Camera;
     public RenderTexture Captured => capturer.Captured;
 
-    private int layer;
-    public int LayerId { get; private set; }
-    private int layerMask;
+    
 
     public UnityRenderGroup(IVNState container, string key = "$default", int priority = 0, 
         bool visible = false) : base(container, key, priority, visible) {
         AddToken(allRGs.Add(this));
     }
 
-    public void Bind(RenderGroupMimic mimic) {
-        capturer = mimic.capturer;
-        displayer = mimic.sr;
+    public void Bind(RenderGroupMimic mimic_) {
+        Mimic = mimic_;
+        capturer = Mimic.capturer;
+        displayer = Mimic.sr;
         mat = displayer.material;
         mat.EnableKeyword(RenderGroupTransition.NO_TRANSITION_KW);
         displayer.GetPropertyBlock(pb = new MaterialPropertyBlock());
+        SetMask(null);
         UpdatePB();
         SetLayer(FindNextLayer());
     }
@@ -84,33 +120,39 @@ public class UnityRenderGroup : RenderGroup {
         capturer.Camera.cullingMask = layerMask;
     }
 
-    public VNOperation DoTransition(RenderGroupTransition transition) => 
-        this.MakeVNOp(ct => {
-            ct = this.BindLifetime(ct);
+    public VNOperation DoTransition(RenderGroupTransition transition, bool reverse = false) => 
+        this.MakeVNOp(_ct => {
+            var ct = this.BindLifetime(_ct);
             var done = WaitingUtils.GetCompletionAwaiter(out var t);
         if (transition is RenderGroupTransition.TwoGroup tg) {
-            Run(BasicTwoWayTransition(tg, ct, done));
+            Run(BasicTwoWayTransition(tg, reverse, ct, done));
         } else
             throw new Exception($"Cannot handle transition {transition}<{transition.GetType()}>");
         return t;
     }, false); //Don't allow user skip on render transition
 
-    private IEnumerator BasicTwoWayTransition(RenderGroupTransition.TwoGroup tg, ICancellee ct, Action<Completion> done) {
+    private IEnumerator BasicTwoWayTransition(RenderGroupTransition.TwoGroup tg, bool reverse, ICancellee ct, Action<Completion> done) {
         mat.DisableKeyword(RenderGroupTransition.NO_TRANSITION_KW);
         mat.EnableKeyword(tg.KW);
+        Visible.Value = true;
         for (float t = 0; t < tg.time; t += Container.dT) {
             if (ct.Cancelled)
                 break;
-            pb.SetTexture(PropConsts.RGTex2, tg.target.Captured);
-            pb.SetFloat(PropConsts.T, t / tg.time);
+            pb.SetTexture(PropConsts.RGTex2, tg.target == null ? Mimic.transparentTex : (Texture)tg.target.Captured);
+            pb.SetFloat(PropConsts.T, reverse ? (1 - t / tg.time) : t / tg.time);
             yield return null;
         }
         mat.DisableKeyword(tg.KW);
         mat.EnableKeyword(RenderGroupTransition.NO_TRANSITION_KW);
-        Visible.Value = false;
-        tg.target.Visible.Value = true;
+        Visible.Value = reverse;
+        if (tg.target != null)
+            tg.target.Visible.Value = !reverse;
         done(ct.ToCompletion());
     }
-    
+
+    public override void Delete() {
+        Mask.Done();
+        base.Delete();
+    }
 }
 }

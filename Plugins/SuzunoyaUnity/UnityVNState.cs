@@ -11,6 +11,6 @@ public class UnityVNState : VNState {
     public UnityVNState(ICancellee extCToken, string? scriptId = null, InstanceData? save = null) : 
         base(extCToken, scriptId, save) { }
     
-    public override RenderGroup MakeDefaultRenderGroup() => new UnityRenderGroup(this, visible: true, priority: 10);
+    protected override RenderGroup MakeDefaultRenderGroup() => new UnityRenderGroup(this, visible: true);
 }
 }

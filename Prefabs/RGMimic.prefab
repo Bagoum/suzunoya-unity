@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8249874310338430652}
   - component: {fileID: 8249874310338430653}
   - component: {fileID: 8249874310338430655}
-  m_Layer: 31
+  m_Layer: 0
   m_Name: RGMimic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,6 +98,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   capturer: {fileID: 7711862521622875203}
   sr: {fileID: 8249874310338430653}
+  transparentTex: {fileID: 2800000, guid: c9d34d74811f1fa44a8859d383945baa, type: 3}
+  defaultMaskTex: {fileID: 2800000, guid: d12639885f66bc0409fd0dd22e006cac, type: 3}
 --- !u!1001 &8249874309728505383
 PrefabInstance:
   m_ObjectHideFlags: 0

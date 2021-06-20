@@ -39,6 +39,8 @@ public class SpriteCharacterMimic : CharacterMimic {
 
     private readonly Dictionary<string, Sprite> emoteMap = new Dictionary<string, Sprite>();
 
+    public override string SortingLayerFromPrefab => sr.sortingLayerName;
+
     protected override void Awake() {
         base.Awake();
         for(int ii = 0; ii < emotes.Length; ++ii) {

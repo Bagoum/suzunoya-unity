@@ -8,7 +8,7 @@ This plugin repository is on Github here: https://github.com/Bagoum/suzunoya-uni
 
 All source code in this project is distributed under the MIT license.
 
-Files under Plugins/RubyTextMeshPro are from https://github.com/jp-netsis/RubyTextMeshPro , licensed under MIT. 
+Files under Plugins/RubyTextMeshPro and Editor/RubyTMP are from https://github.com/jp-netsis/RubyTextMeshPro , licensed under MIT. 
 
 DLLs under Plugins/DLLs are licensed as follows:
 BagoumLib/Suzunoya: MIT (https://github.com/Bagoum/suzunoya)

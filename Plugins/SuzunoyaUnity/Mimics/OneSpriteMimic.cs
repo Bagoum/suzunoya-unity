@@ -4,6 +4,7 @@ namespace SuzunoyaUnity.Mimics {
 public class OneSpriteMimic : RenderedMimic {
     public SpriteRenderer sr = null!;
     private Color baseColor;
+    public override string SortingLayerFromPrefab => sr.sortingLayerName;
 
     protected override void Awake() {
         base.Awake();

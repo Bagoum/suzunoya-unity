@@ -27,8 +27,8 @@ public class CharacterSpeakingDisturbance {
                 sortingOffset.Value = 0;
             }
         });
-        mimic.AddToken(mimic.Char.Location.AddDisturbance(heightOffset.OnChange));
-        mimic.AddToken(mimic.Char.Tint.AddDisturbance(tintMul.OnChange));
+        mimic.AddToken(mimic.Char.Location.AddDisturbance(heightOffset));
+        mimic.AddToken(mimic.Char.Tint.AddDisturbance(tintMul));
         mimic.AddToken(mimic.Char.SortingID.AddDisturbance(sortingOffset));
     }
 

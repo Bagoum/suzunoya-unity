@@ -15,6 +15,8 @@ public class PiecewiseCharacterMimic : CharacterMimic {
     public PiecewiseRender defaultPiece = null!;
     private readonly Dictionary<string, PiecewiseRender> pieceMap = new Dictionary<string, PiecewiseRender>();
 
+    public override string SortingLayerFromPrefab => defaultPiece.SortingLayerFromPrefab;
+
     protected override void Awake() {
         base.Awake();
         for (int ii = 0; ii < pieces.Length; ++ii)

@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BagoumLib;
 using BagoumLib.Cancellation;
 using BagoumLib.DataStructures;
+using BagoumLib.Events;
 using Suzunoya.ControlFlow;
 using Suzunoya.Data;
 using Suzunoya.Display;
 using Suzunoya.Entities;
+using SuzunoyaUnity.Derived;
 using SuzunoyaUnity.Mimics;
 using SuzunoyaUnity.Rendering;
 using UnityEngine;
@@ -19,18 +22,55 @@ namespace SuzunoyaUnity {
 /// When this object is disabled, all managed VNStates should receive a DeleteAll.
 /// </summary>
 public interface IVNWrapper {
-    void TrackVN(IVNState vn);
+    ExecutingVN TrackVN(IVNState vn);
 }
-public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
-    private readonly struct ExecutingVN {
-        public readonly IVNState vn;
-        public readonly List<IDisposable> tokens;
-        
-        public ExecutingVN(IVNState vn) {
-            this.vn = vn;
-            this.tokens = new List<IDisposable>();
+
+public class DialogueLogEntry {
+    public readonly Sprite? speakerSprite;
+    public readonly string speakerName;
+    public readonly VNLocation? location;
+    //This may be updated by AlsoSay
+    public string readableSpeech;
+    public Color textColor = Color.white;
+    public Color uiColor = new Color(0.6f, 0.6f, 0.6f);
+
+    public DialogueLogEntry(DialogueOp op) {
+        var anon = op.Flags.HasFlag(SpeakFlags.Anonymous);
+        this.location = op.Location;
+        this.speakerName = !anon ? (op.Speaker?.Name ?? "") : "???";
+        this.readableSpeech = op.Line.Readable;
+        speakerSprite = null;
+        if (op.Speaker is SZYUCharacter ch) {
+            if (!anon)
+                speakerSprite = ch.ADVSpeakerIcon;
+            textColor = ch.TextColor;
+            uiColor = ch.UIColor;
         }
     }
+
+    public void Extend(DialogueOp nxt) {
+        readableSpeech += nxt.Line.Readable;
+    }
+}
+public class ExecutingVN {
+    public readonly IVNState vn;
+    public readonly List<IDisposable> tokens;
+    public readonly AccEvent<DialogueLogEntry> backlog = new AccEvent<DialogueLogEntry>();
+    public Action<VNLocation>? doBacklog = null;
+        
+    public ExecutingVN(IVNState vn) {
+        this.vn = vn;
+        this.tokens = new List<IDisposable>();
+    }
+
+    public void Log(DialogueOp op) {
+        if (op.Flags.HasFlag(SpeakFlags.DontClearText) && backlog.Published.Count > 0)
+            backlog.Published[backlog.Published.Count - 1].Extend(op);
+        else
+            backlog.OnNext(new DialogueLogEntry(op));
+    }
+}
+public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
 
     public GameObject renderGroupMimic = null!;
     public GameObject[] entityMimics = null!;
@@ -47,18 +87,20 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
         }
     }
 
-    public void TrackVN(IVNState vn) {
+    public virtual ExecutingVN TrackVN(IVNState vn) {
         var evn = new ExecutingVN(vn);
         evn.tokens.Add(vns.Add(evn));
         evn.tokens.Add(vn.RenderGroupCreated.Subscribe(NewRenderGroup));
         evn.tokens.Add(vn.EntityCreated.Subscribe(NewEntity));
         evn.tokens.Add(vn.InterrogatorCreated.Subscribe(this));
+        evn.tokens.Add(vn.DialogueLog.Subscribe(evn.Log));
         //TODO AwaitingConfirm
         evn.tokens.Add(vn.Logs.Subscribe(Logging.Log));
         evn.tokens.Add(vn.VNStateActive.Subscribe(b => {
             if (!b)
                 ClearVN(evn);
         }));
+        return evn;
     }
 
     private static void ClearVN(ExecutingVN vn) {
@@ -73,7 +115,7 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
             if (vns.ExistsAt(ii)) {
                 var vn = vns[ii].vn;
                 if (isConfirm)
-                    vn.Confirm();
+                    vn.UserConfirm();
                 else if (isSkip)
                     vn.RequestSkipOperation();
                 if (vn.VNStateActive.Value)
@@ -101,7 +143,8 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
     }
 
     private void NoHandling(IEntity ent) {
-        Logging.Log(LogMessage.Error(new Exception("Couldn't handle entity {ent} of type {ent.GetType()}")));
+        if (ent.MimicRequested)
+            Logging.Log(LogMessage.Error(new Exception($"Couldn't handle entity {ent} of type {ent.GetType()}")));
     }
 
     public void OnNext<T>(IInterrogator<T> data) {

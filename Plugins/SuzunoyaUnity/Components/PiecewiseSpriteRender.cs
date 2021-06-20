@@ -5,6 +5,7 @@ using UnityEngine;
 namespace SuzunoyaUnity.Components {
 public abstract class PiecewiseRender : MonoBehaviour {
     public string ident = "";
+    public abstract string SortingLayerFromPrefab { get; }
     public abstract void SetEmote(string? key);
     public abstract void SetSortingLayer(int layer);
     public abstract void SetSortingID(int id);
@@ -18,6 +19,7 @@ public class PiecewiseSpriteRender : PiecewiseRender {
     
     public EmoteVariant[] emotes = null!;
     private readonly Dictionary<string, Sprite> emoteMap = new Dictionary<string, Sprite>();
+    public override string SortingLayerFromPrefab => sr.sortingLayerName;
     
     private void Awake() {
         transform.localPosition = offsetPx * (1 / sr.sprite.pixelsPerUnit);
@@ -37,6 +39,7 @@ public class PiecewiseSpriteRender : PiecewiseRender {
         }
         return emotes[0].sprite;
     }
+
 
     public override void SetEmote(string? emote) {
         sr.sprite = GetEmote(emote);
