@@ -48,14 +48,14 @@ public class UnityRenderGroup : RenderGroup {
     public static int OutRenderLayerID => LayerMask.NameToLayer(OutRenderLayer);
     //public const string NullRenderLayer = "RenderGroupNull";
     private static readonly DMCompactingArray<UnityRenderGroup> allRGs = new DMCompactingArray<UnityRenderGroup>();
-    public RenderGroupMimic Mimic { get; private set; } = null!;
+    private RenderGroupMimic mimic = null!;
     public int LayerId { get; private set; }
 
     public UnityRenderGroupMask Mask { get; private set; } = new UnityRenderGroupMask(null!, false);
 
     public void SetMask(UnityRenderGroupMask? mask) {
         Mask.Done();
-        Mask = mask ?? new UnityRenderGroupMask(Mimic.defaultMaskTex, false);
+        Mask = mask ?? new UnityRenderGroupMask(mimic.defaultMaskTex, false);
         pb.SetTexture(PropConsts.MaskTex, Mask.mask);
     }
 
@@ -83,9 +83,9 @@ public class UnityRenderGroup : RenderGroup {
     }
 
     public void Bind(RenderGroupMimic mimic_) {
-        Mimic = mimic_;
-        capturer = Mimic.capturer;
-        displayer = Mimic.sr;
+        mimic = mimic_;
+        capturer = mimic.capturer;
+        displayer = mimic.sr;
         mat = displayer.material;
         mat.EnableKeyword(RenderGroupTransition.NO_TRANSITION_KW);
         displayer.GetPropertyBlock(pb = new MaterialPropertyBlock());
@@ -138,7 +138,7 @@ public class UnityRenderGroup : RenderGroup {
         for (float t = 0; t < tg.time; t += Container.dT) {
             if (ct.Cancelled)
                 break;
-            pb.SetTexture(PropConsts.RGTex2, tg.target == null ? Mimic.transparentTex : (Texture)tg.target.Captured);
+            pb.SetTexture(PropConsts.RGTex2, tg.target == null ? mimic.transparentTex : (Texture)tg.target.Captured);
             pb.SetFloat(PropConsts.T, reverse ? (1 - t / tg.time) : t / tg.time);
             yield return null;
         }

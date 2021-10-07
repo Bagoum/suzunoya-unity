@@ -15,7 +15,7 @@ public abstract class RenderedMimic : BaseMimic {
         tr = transform;
     }
     
-    public override void _Initialize(IEntity entity) => Initialize((entity as Rendered)!);
+    public override void _Initialize(IEntity ent) => Initialize((ent as Rendered)!);
     public void Initialize(Rendered rd) {
         Listen(rd.OnUpdate, DoUpdate);
         Listen(rd.EntityActive, b => {

@@ -4,6 +4,7 @@ using BagoumLib.DataStructures;
 using Suzunoya.Entities;
 using SuzunoyaUnity.Components;
 using SuzunoyaUnity.Derived;
+using SuzunoyaUnity.Events;
 using SuzunoyaUnity.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,19 +13,17 @@ using Transform = UnityEngine.Transform;
 namespace SuzunoyaUnity.Mimics {
 public abstract class CharacterMimic : RenderedMimic {
     public Sprite? ADVSpeakerIcon;
-    public Character Char { get; private set; } = null!;
+    private Character entity = null!;
     private CharacterSpeakingDisturbance speakDisturb = null!;
 
     
-    public override void _Initialize(IEntity entity) => Initialize((entity as SZYUCharacter)!);
+    public override void _Initialize(IEntity ent) => Initialize((ent as SZYUCharacter)!);
     private void Initialize(SZYUCharacter c) {
-        Char = c;
+        base.Initialize(entity = c);
         c.Bind(this);
-        speakDisturb = new CharacterSpeakingDisturbance(this);
+        speakDisturb = new CharacterSpeakingDisturbance(this, c);
         
-        base.Initialize(Char);
-
-        Listen(Char.Emote, SetEmote);
+        Listen(entity.Emote, SetEmote);
     }
 
     protected override void DoUpdate(float dT) {

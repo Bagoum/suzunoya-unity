@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reactive;
+using System.Threading.Tasks;
 using BagoumLib.Culture;
 using Suzunoya;
 using Suzunoya.ControlFlow;
@@ -25,7 +26,7 @@ public class SZYUCharacter : Character {
         mimic = mimic_;
     }
 
-    public LazyAwaitable SetEmote(string emote) => new LazyAction(() => Emote.Value = emote);
+    public LazyAction SetEmote(string emote) => new LazyAction(() => Emote.Value = emote);
 
     public VNOperation EmoteSay(string emote, LString content, SpeakFlags flags = SpeakFlags.Default) =>
         new VNOperation(Container, null, _ => {

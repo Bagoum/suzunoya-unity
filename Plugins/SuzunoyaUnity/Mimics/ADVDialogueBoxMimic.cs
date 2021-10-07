@@ -78,7 +78,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
 
 
     public override string SortingLayerFromPrefab => canvas.sortingLayerName;
-    public override void _Initialize(IEntity entity) => Initialize((entity as ADVDialogueBox)!);
+    public override void _Initialize(IEntity ent) => Initialize((ent as ADVDialogueBox)!);
 
     private void SetUIColor(Color c) {
         for (int ii = 0; ii < recolorables.Length; ++ii)
@@ -245,10 +245,10 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
     public virtual void Pause() => bound.Container.PauseGameplay();
 
     public virtual void Skip() {
-        if (bound.Container.UserSkipMode == Autoskip.None)
-            bound.Container.SetAutoskip(Autoskip.All);
+        if (bound.Container.SkippingMode == null)
+            bound.Container.SetSkipMode(SkipMode.AUTOPLAY);
         else
-            bound.Container.SetAutoskip(Autoskip.None);
+            bound.Container.SetSkipMode(null);
     }
 
     public virtual void OpenLog() => bound.Container.OpenLog();

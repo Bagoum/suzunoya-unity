@@ -18,7 +18,7 @@ using Transform = UnityEngine.Transform;
 
 namespace SuzunoyaUnity {
 /// <summary>
-/// Service that manages VNStates and listens to top-level VNState events.
+/// Service that manages VNStates and listens to top-level VNState events to map them into the Unity world.
 /// When this object is disabled, all managed VNStates should receive a DeleteAll.
 /// </summary>
 public interface IVNWrapper {

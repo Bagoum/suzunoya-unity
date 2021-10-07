@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive;
 using BagoumLib.Mathematics;
 using Suzunoya.ControlFlow;
 using UnityEngine;
@@ -35,7 +36,7 @@ public static class Helpers {
 
     public static Vector3 WithY(this Vector3 v3, float y) => new Vector3(v3.X, y, v3.Z);
 
-    public static LazyAwaitable Lazy(Action a) => new LazyAction(a);
+    public static LazyAction Lazy(Action a) => new LazyAction(a);
 
     public static Func<float, Vector3> JumpY(float mag) => t => new Vector3(0, mag * OffEasers.ESine010(t), 0);
     public static Func<float, Vector3> JumpX(float mag) => t => new Vector3(mag * OffEasers.ESine010(t), 0, 0);

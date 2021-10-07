@@ -8,8 +8,8 @@ using UnityEngine;
 
 namespace SuzunoyaUnity {
 public class UnityVNState : VNState {
-    public UnityVNState(ICancellee extCToken, string? scriptId = null, InstanceData? save = null) : 
-        base(extCToken, scriptId, save) { }
+    public UnityVNState(ICancellee extCToken, InstanceData? save = null) : 
+        base(extCToken, save) { }
     
     protected override RenderGroup MakeDefaultRenderGroup() => new UnityRenderGroup(this, visible: true);
 }
