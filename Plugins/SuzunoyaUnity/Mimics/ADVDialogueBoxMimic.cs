@@ -37,7 +37,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
         public float t;
         public LoadingChar(CharOrString cs, float t = 0) {
             this.cs = cs;
-            this.t = 0;
+            this.t = t;
         }
 
         public string Rendered(float maxTime) {
@@ -64,8 +64,9 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
     public DialogueBoxButton[] buttons = null!;
 
     private readonly PushLerper<Color> uiColor = new PushLerper<Color>(.25f, Color.Lerp);
-    private readonly PushLerper<Color> nextOkColor = new PushLerper<Color>(.1f, Color.Lerp);
-    private readonly PushLerper<Color> textColor = new PushLerper<Color>(0.4f, Color.Lerp);
+    private readonly PushLerper<Color> nextOkColor = new PushLerper<Color>(0.8f, Color.Lerp);
+    private readonly PushLerper<Color> textColor = new PushLerper<Color>(0.3f, (a, b, t) => 
+        Color.Lerp(a, b, Easers.EOutSine(t)));
     private const float nextOkLerpTime = 0.5f;
     private readonly PushLerperF<float> nextOkAlpha = new PushLerperF<float>(nextOkLerpTime, Mathf.Lerp);
     private readonly DisturbedAnd raycastable = new DisturbedAnd(true);
@@ -123,14 +124,18 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
             }
         }
         loadingChars.Compact();
-        rem.Append("<color=#00000000>");
+        rem.Append("<alpha=#00>");
         //rem.Append(lastLookahead = lookahead ?? lastLookahead);
         /*foreach (var t in openTags) {
             if (TagToClose(t).Try(out var s))
                 rem.Append(s);
         }*/
-        foreach (var after in remainingText) {
-            AddCS(rem, after.Item2);
+        foreach (var (frag, text) in remainingText) {
+            if (frag is SpeechFragment.TagOpen {tag: SpeechTag.Color _} ||
+                frag is SpeechFragment.TagClose {opener: {tag: SpeechTag.Color _}}) {
+                //Ignore color tags
+            } else
+                AddCS(rem, text);
         }
         mainText.UnditedText = accText.ToString() + rem.ToString();
     }
@@ -216,7 +221,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
                     throw new Exception("Mismatched dialogue");
                 loadingChars.Add(new LoadingChar(remainingText.Dequeue().text, obj.frag switch {
                     SpeechFragment.Char _ => 0f,
-                    _ => 9999f
+                    _ => 99999f
                 }));
             } else if (obj.frag is SpeechFragment.RollEvent re) {
                 re.ev();
@@ -274,8 +279,8 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
     };
 
     private static string? TagToClose(SpeechTag t) => t switch {
-        SpeechTag.Color c => "</color>",
-        SpeechTag.Furigana r => "</ruby>",
+        SpeechTag.Color _ => "</color>",
+        SpeechTag.Furigana _ => "</ruby>",
         SpeechTag.Unknown u => $"</{u.name}>",
         _ => null
     };
@@ -285,5 +290,5 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
         base.OnDisable();
     }
 
-    public void OnPointerClick(PointerEventData eventData) => bound.Container.UserConfirm();
+    public void OnPointerClick(PointerEventData eventData) => ((IUnityVNState)bound.Container).ClickConfirm();
 }

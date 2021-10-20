@@ -530,7 +530,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -4.8, y: 0.65}
-  m_SizeDelta: {x: 9.6, y: 1.7}
+  m_SizeDelta: {x: 9.6, y: 1.8}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &8191303369446971395
 CanvasRenderer:
@@ -562,8 +562,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "This is an example text box. It supports b\xE0s\xEEc L\xE1t\xEFn alph\xF8b\xE9t
     characters (depending on the font). Via fallback fonts in TMP, \u65E5\u672C\u8A9E\u3082\u4F7F\u3048\u307E\u3059\u3002
-    <nobr>is also supported<space=-1.420533><voffset=0.9em><size=60%>ruby text</size></voffset><space=0.7261333></nobr>
-    <nobr>or in English<space=-1.203067><voffset=0.9em><size=60%>\u65E5\u672C\u8A9E\u3067\u3082</size></voffset><space=0.4022667></nobr>.
+    <nobr>is also supported<space=-1.265278><voffset=0.9em><size=60%>ruby text</size></voffset><space=0.6444443></nobr>
+    <nobr>or in English<space=-1.106944><voffset=0.9em><size=60%>\u65E5\u672C\u8A9E\u3067\u3082</size></voffset><space=0.3236111></nobr>.
     Text-wrap is supported, but ruby blocks will not be wrapped. The font size will
     auto-shrink slightly to accomodate overrun."
   m_isRightToLeft: 0
@@ -592,19 +592,19 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.28
+  m_fontSize: 0.25
   m_fontSizeBase: 0.3
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0.24
-  m_fontSizeMax: 0.3
+  m_fontSizeMax: 0.36
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 15
+  m_lineSpacing: 25
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -798,8 +798,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.1, y: 0.8499999}
-  m_SizeDelta: {x: 10, y: 0.4}
+  m_AnchoredPosition: {x: 0.3, y: 0.88}
+  m_SizeDelta: {x: 10, y: 0.5}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &8191303369852038553
 CanvasRenderer:

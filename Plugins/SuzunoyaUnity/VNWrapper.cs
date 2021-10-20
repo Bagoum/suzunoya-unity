@@ -23,6 +23,7 @@ namespace SuzunoyaUnity {
 /// </summary>
 public interface IVNWrapper {
     ExecutingVN TrackVN(IVNState vn);
+    IEnumerable<ExecutingVN> TrackedVNs { get; }
 }
 
 public class DialogueLogEntry {
@@ -78,6 +79,7 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
     
     private readonly Dictionary<Type, GameObject> mimicTypeMap = new Dictionary<Type, GameObject>();
     private readonly DMCompactingArray<ExecutingVN> vns = new DMCompactingArray<ExecutingVN>();
+    public IEnumerable<ExecutingVN> TrackedVNs => vns;
 
     protected virtual void Awake() {
         tr = transform;
@@ -110,7 +112,7 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
     }
     
 
-    public void DoUpdate(float dT, bool isConfirm, bool isSkip) {
+    public void DoUpdate(float dT, bool isConfirm, bool isSkip, bool isFullSkip) {
         for (int ii = 0; ii < vns.Count; ++ii) {
             if (vns.ExistsAt(ii)) {
                 var vn = vns[ii].vn;
@@ -118,6 +120,8 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
                     vn.UserConfirm();
                 else if (isSkip)
                     vn.RequestSkipOperation();
+                else if (isFullSkip)
+                    vn.TryFullSkip();
                 if (vn.VNStateActive.Value)
                     vn.Update(dT);
             }
@@ -159,6 +163,13 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
                 ClearVN(vns[ii]);
         }
         vns.Empty();
+    }
+
+    [ContextMenu("Print location")]
+    public void PrintLocation() {
+        foreach (var evn in vns) {
+            Logging.Log($"VN {evn.vn} is at location {VNLocation.Make(evn.vn)}");
+        }
     }
 }
 }

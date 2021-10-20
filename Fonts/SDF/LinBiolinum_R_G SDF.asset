@@ -167,7 +167,8 @@ MonoBehaviour:
   materialHashCode: 1107525816
   m_Version: 1.1.0
   m_SourceFontFileGUID: a10920f256006494a820e4ac8d9123c6
-  m_SourceFontFile_EditorRef: {fileID: 12800000, guid: a10920f256006494a820e4ac8d9123c6, type: 3}
+  m_SourceFontFile_EditorRef: {fileID: 12800000, guid: a10920f256006494a820e4ac8d9123c6,
+    type: 3}
   m_SourceFontFile: {fileID: 0}
   m_AtlasPopulationMode: 0
   m_FaceInfo:
@@ -175,13 +176,13 @@ MonoBehaviour:
     m_FamilyName: Linux Biolinum G
     m_StyleName: Regular
     m_PointSize: 72
-    m_Scale: 1.1
-    m_LineHeight: 82.08984
-    m_AscentLine: 64.37109
+    m_Scale: 1
+    m_LineHeight: 69.08984
+    m_AscentLine: 56.37109
     m_CapLine: 48
     m_MeanLine: 32
     m_Baseline: 0
-    m_DescentLine: -17.71875
+    m_DescentLine: -12.71875
     m_SuperscriptOffset: 64.37109
     m_SuperscriptSize: 0.5
     m_SubscriptOffset: -17.71875
@@ -5552,9 +5553,9 @@ MonoBehaviour:
     packingMode: 0
     atlasWidth: 1024
     atlasHeight: 1024
-    characterSetSelectionMode: 7
-    characterSequence: " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\_\xA1\xA2\xA3\xA4\xA5\xA6\xA7\xA8\xA9\xAA\xAB\xAC\xAD\xAE\xAF\xB0\xB1\xB2\xB3\xB4\xB5\xB6\xB7\xB8\xB9\xBA\xBB\xBC\xBD\xBE\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF7\xF8\xF9\xFA\xFB\xFC\xFD\xFE\xFF\u2013\u2014\u2015\u2018\u2019\u201A\u201C\u201D\u201E\u2020\u2021\u2022\u2026\u2030\u2039\u203A\u2044\u20AC\u2122"
-    referencedFontAssetGUID: 81b89331e3802f846babe030f451d7eb
+    characterSetSelectionMode: 6
+    characterSequence: 20-7E,A0-FF,2013-2015,2018-201A,201C-201E,2020-2022,2026,2030,2039-203A,2044,20AC,2122
+    referencedFontAssetGUID: 81a6a3e3e85946940ae6540cfa63a13d
     referencedTextAssetGUID: 
     fontStyle: 0
     fontStyleModifier: 0
