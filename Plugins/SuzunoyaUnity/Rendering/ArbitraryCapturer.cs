@@ -9,20 +9,20 @@ public class ArbitraryCapturer : Tokenized {
 
     private void Awake() {
         Camera = GetComponent<Camera>();
-        Camera.targetTexture = Captured = RenderHelpers.DefaultTempRT();
     }
 
     protected override void BindListeners() {
-        Listen(RenderHelpers.PreferredResolution, _ => RecreateTexture());
+        Listen(RenderHelpers.PreferredResolution, RecreateTexture);
     }
     
     private void OnDestroy() {
         Captured.Release();
     }
 
-    public void RecreateTexture() {
-        Captured.Release();
-        Camera.targetTexture = Captured = RenderHelpers.DefaultTempRT();
+    public void RecreateTexture((int w, int h) res) {
+        if (Captured != null)
+            Captured.Release();
+        Camera.targetTexture = Captured = RenderHelpers.DefaultTempRT(res);
     }
 
     public void Kill() {
