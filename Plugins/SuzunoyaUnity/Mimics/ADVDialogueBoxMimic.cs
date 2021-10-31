@@ -69,7 +69,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
         Color.Lerp(a, b, Easers.EOutSine(t)));
     private const float nextOkLerpTime = 0.5f;
     private readonly PushLerperF<float> nextOkAlpha = new PushLerperF<float>(nextOkLerpTime, Mathf.Lerp);
-    private readonly DisturbedAnd raycastable = new DisturbedAnd(true);
+    private readonly DisturbedAnd raycastable = new DisturbedAnd();
 
     public float charLoadTime = 0.3f;
     private ADVDialogueBox bound = null!;
