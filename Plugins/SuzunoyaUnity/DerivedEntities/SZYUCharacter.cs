@@ -17,7 +17,7 @@ public class SZYUCharacter : Character {
     public virtual Color UIColor => new Color(0.6f, 0.6f, 0.6f);
     public virtual Sprite? ADVSpeakerIcon => mimic == null ? null : mimic.ADVSpeakerIcon;
 
-    public override SpeechSettings SpeechCfg => new SpeechSettings(90, SpeechSettings.DefaultOpsPerChar, 8,
+    public override SpeechSettings SpeechCfg => new(90, SpeechSettings.DefaultOpsPerChar, 8,
         SpeechSettings.DefaultRollEventAllowed, Container.SkipGuard(RollEvent));
 
     private CharacterMimic? mimic;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BagoumLib;
 using SuzunoyaUnity;
 using UnityEngine;
 
@@ -28,21 +29,10 @@ public class PiecewiseSpriteRender : PiecewiseRender {
             emoteMap[emotes[ii].emote] = emotes[ii].sprite;
         }
     }
-    
-    private Sprite GetEmote(string? key) {
-        key = (key ?? emotes[0].emote).ToLower();
-        if (emoteMap.TryGetValue(key, out var em))
-            return em;
-        foreach (var emote in emotes) {
-            if (emote.emote.StartsWith(key))
-                return emote.sprite;
-        }
-        return emotes[0].sprite;
-    }
 
 
     public override void SetEmote(string? emote) {
-        sr.sprite = GetEmote(emote);
+        sr.sprite = Helpers.FindSprite(emote, emotes, emoteMap).Try(out var s) ? s : sr.sprite;
     }
 
     public override void SetSortingLayer(int layer) => sr.sortingLayerID = layer;

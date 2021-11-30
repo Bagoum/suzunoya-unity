@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace SuzunoyaUnity.Mimics {
 
-public class PiecewiseCharacterMimic : CharacterMimic {
+public class PiecewiseCharacterMimic : SpriteIconCharacterMimic {
     public PiecewiseRender[] pieces = null!;
     /// <summary>
     /// This should also appear in the array.
@@ -26,10 +26,12 @@ public class PiecewiseCharacterMimic : CharacterMimic {
     protected override void SetEmote(string? emote) {
         if (string.IsNullOrEmpty(emote)) {
             //Send default emote to all pieces
+            base.SetEmote(emote);
             for (int ii = 0; ii < pieces.Length; ++ii)
                 pieces[ii].SetEmote(null);
         } else if (emote!.IndexOf(':') > -1) {
             //Address a specific piece
+            //Don't update the speaker emote in this case
             var ind = emote.IndexOf(':');
             var target = emote.Substring(0, ind);
             emote = emote.Substring(ind + 1);
@@ -38,6 +40,7 @@ public class PiecewiseCharacterMimic : CharacterMimic {
             piece.SetEmote(emote);
         } else {
             //Address the default piece
+            base.SetEmote(emote);
             defaultPiece.SetEmote(emote);
         }
     }

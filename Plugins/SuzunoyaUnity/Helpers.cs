@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive;
 using BagoumLib.Mathematics;
 using Suzunoya.ControlFlow;
@@ -13,6 +14,17 @@ public static class Helpers {
         foreach (Transform ch in o.transform) {
             SetLayerRecursively(ch.gameObject, layer);
         }
+    }
+
+    public static Sprite? FindSprite(string? key, EmoteVariant[] emotes, Dictionary<string, Sprite>? map = null) {
+        key = (key ?? emotes[0].emote).ToLower();
+        if (map != null && map.TryGetValue(key, out var em))
+            return em;
+        foreach (var emote in emotes) {
+            if (emote.emote.StartsWith(key))
+                return emote.sprite;
+        }
+        return null;
     }
 
     public static Vector3 V3(float x, float y, float z = 0) => new Vector3(x, y, z);

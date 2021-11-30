@@ -21,8 +21,6 @@ public enum ButtonState {
     All = Hover | Active | Disabled
 }
 public class DialogueBoxButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler {
-    public DisturbedProduct<Color> recolor = null!;
-    public Image[] recoloredSprites = null!;
     public Image[] sprites = null!;
     public TextMeshProUGUI text = null!;
     
@@ -30,28 +28,19 @@ public class DialogueBoxButton : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private ButtonState _state = ButtonState.Normal;
     private ButtonState State {
         get => _state;
-        set {
-            var r = StateToColor(_state = value);
-            color.Push(new Color(r, r, r, 1));
-        }
+        set => color.Push(new Color(1, 1, 1, StateToColor(_state = value)));
     }
 
     private readonly PushLerper<Color> color = 
-        new PushLerper<Color>(0.12f, (a, b, t) => Color.Lerp(a, b, Easers.EIOSine(t)));
+        new(0.12f, (a, b, t) => Color.Lerp(a, b, Easers.EIOSine(t)));
 
     private void Awake() {
-        recolor = new DisturbedProduct<Color>(Color.white);
         color.Subscribe(c => {
             for (int ii = 0; ii < sprites.Length; ++ii)
                 sprites[ii].color = c;
             text.color = c;
         });
         State = State;
-        recolor.AddDisturbance(color);
-        recolor.Subscribe(c => {
-            for (int ii = 0; ii < recoloredSprites.Length; ++ii)
-                recoloredSprites[ii].color = c;
-        });
     }
     public void DoUpdate(float dT) {
         color.Update(dT);

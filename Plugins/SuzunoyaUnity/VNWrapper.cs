@@ -24,6 +24,7 @@ namespace SuzunoyaUnity {
 public interface IVNWrapper {
     ExecutingVN TrackVN(IVNState vn);
     IEnumerable<ExecutingVN> TrackedVNs { get; }
+    public void UpdateAllVNSaves();
 }
 
 public class DialogueLogEntry {
@@ -56,7 +57,7 @@ public class DialogueLogEntry {
 public class ExecutingVN {
     public readonly IVNState vn;
     public readonly List<IDisposable> tokens;
-    public readonly AccEvent<DialogueLogEntry> backlog = new AccEvent<DialogueLogEntry>();
+    public readonly AccEvent<DialogueLogEntry> backlog = new();
     public Action<VNLocation>? doBacklog = null;
         
     public ExecutingVN(IVNState vn) {
@@ -66,7 +67,7 @@ public class ExecutingVN {
 
     public void Log(DialogueOp op) {
         if (op.Flags.HasFlag(SpeakFlags.DontClearText) && backlog.Published.Count > 0)
-            backlog.Published[backlog.Published.Count - 1].Extend(op);
+            backlog.Published[^1].Extend(op);
         else
             backlog.OnNext(new DialogueLogEntry(op));
     }
@@ -112,15 +113,16 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
     }
     
 
-    public void DoUpdate(float dT, bool isConfirm, bool isSkip, bool isFullSkip) {
+    public void DoUpdate(float dT, bool isConfirm, bool isFullSkip) {
         for (int ii = 0; ii < vns.Count; ++ii) {
             if (vns.ExistsAt(ii)) {
                 var vn = vns[ii].vn;
-                if (isConfirm)
-                    vn.UserConfirm();
-                else if (isSkip)
-                    vn.RequestSkipOperation();
-                else if (isFullSkip)
+                if (isConfirm) {
+                    if (vn.AwaitingConfirm.Value != null)
+                        vn.UserConfirm();
+                    else
+                        vn.RequestSkipOperation();
+                } else if (isFullSkip)
                     vn.TryFullSkip();
                 if (vn.VNStateActive.Value)
                     vn.Update(dT);
@@ -139,7 +141,7 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
     }
     
     private void NewEntity(IEntity ent) {
-        Logging.Log($"New entity {ent}");
+        Logging.Log($"New VN entity {ent}");
         if (mimicTypeMap.TryGetValue(ent.GetType(), out var mimic))
             Instantiate(mimic, tr, false).GetComponent<BaseMimic>()._Initialize(ent);
         else
@@ -155,6 +157,11 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
         if (data is ChoiceInterrogator<T> choices) {
             Debug.Log(string.Join(", ", choices.Choices.Select(x => $"{x.value}: {x.description}")));
         }
+    }
+    
+    public void UpdateAllVNSaves() {
+        foreach (var ev in vns)
+            ev.vn.UpdateSavedata();
     }
 
     private void OnDisable() {

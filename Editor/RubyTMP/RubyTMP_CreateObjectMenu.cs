@@ -45,7 +45,7 @@ namespace TMPro.EditorUtilities
         /// <summary>
         /// Create a TextMeshPro object that works with the CanvasRenderer
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="menuCommand"></param>
         [MenuItem("GameObject/UI/Text - RubyTextMeshPro", false, 2001)]
         static void CreateTextMeshProGuiObjectPerform(MenuCommand menuCommand)
         {
@@ -117,7 +117,7 @@ namespace TMPro.EditorUtilities
             Vector3 position = Vector3.zero;
             Vector2 localPlanePosition;
 
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRTransform, new Vector2(camera.pixelWidth / 2, camera.pixelHeight / 2), camera, out localPlanePosition))
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRTransform, new Vector2(camera.pixelWidth / 2f, camera.pixelHeight / 2f), camera, out localPlanePosition))
             {
                 // Adjust for canvas pivot
                 localPlanePosition.x = localPlanePosition.x + canvasRTransform.sizeDelta.x * canvasRTransform.pivot.x;
@@ -127,11 +127,13 @@ namespace TMPro.EditorUtilities
                 localPlanePosition.y = Mathf.Clamp(localPlanePosition.y, 0, canvasRTransform.sizeDelta.y);
 
                 // Adjust for anchoring
-                position.x = localPlanePosition.x - canvasRTransform.sizeDelta.x * itemTransform.anchorMin.x;
-                position.y = localPlanePosition.y - canvasRTransform.sizeDelta.y * itemTransform.anchorMin.y;
+                var sizeDelta = canvasRTransform.sizeDelta;
+                var anchorMin = itemTransform.anchorMin;
+                position.x = localPlanePosition.x - sizeDelta.x * anchorMin.x;
+                position.y = localPlanePosition.y - sizeDelta.y * anchorMin.y;
 
                 Vector3 minLocalPosition;
-                minLocalPosition.x = canvasRTransform.sizeDelta.x * (0 - canvasRTransform.pivot.x) + itemTransform.sizeDelta.x * itemTransform.pivot.x;
+                minLocalPosition.x = sizeDelta.x * (0 - canvasRTransform.pivot.x) + itemTransform.sizeDelta.x * itemTransform.pivot.x;
                 minLocalPosition.y = canvasRTransform.sizeDelta.y * (0 - canvasRTransform.pivot.y) + itemTransform.sizeDelta.y * itemTransform.pivot.y;
 
                 Vector3 maxLocalPosition;

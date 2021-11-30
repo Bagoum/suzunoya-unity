@@ -19,7 +19,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
+public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollHandler {/*
     private readonly struct CharOrString {
         public readonly char? c;
         public readonly string? s;
@@ -48,7 +48,23 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
                 return t >= maxTime ? cs.s! : $"<alpha=#{ratio.ToByte():X2}>{cs.s}</color>";
             }
         }
+    }*/
+    private record LoadingChar2(List<byte> writeOpacityTo, int index, float overTime) {
+        private float t = 0;
+
+        /// <summary>
+        /// </summary>
+        /// <param name="dT"></param>
+        /// <returns>True if the opacity changed.</returns>
+        public bool DoUpdate(float dT) {
+            if (t > overTime) return false;
+            t += dT;
+            writeOpacityTo[index] = (t / overTime).ToByte();
+            return true;
+        }
     }
+    
+    
     public override Type[] CoreTypes => new[] {typeof(ADVDialogueBox)};
 
     public Canvas canvas = null!;
@@ -60,104 +76,73 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
     public GameObject speakerContainer = null!;
     public Image speakerIcon = null!;
     public Image nextOkIcon = null!;
-    public Image[] recolorables = null!;
     public DialogueBoxButton[] buttons = null!;
 
-    private readonly PushLerper<Color> uiColor = new PushLerper<Color>(.25f, Color.Lerp);
-    private readonly PushLerper<Color> nextOkColor = new PushLerper<Color>(0.8f, Color.Lerp);
-    private readonly PushLerper<Color> textColor = new PushLerper<Color>(0.3f, (a, b, t) => 
+    private readonly PushLerper<Color> textColor = new(0.1f, (a, b, t) => 
         Color.Lerp(a, b, Easers.EOutSine(t)));
     private const float nextOkLerpTime = 0.5f;
-    private readonly PushLerperF<float> nextOkAlpha = new PushLerperF<float>(nextOkLerpTime, Mathf.Lerp);
-    private readonly DisturbedAnd raycastable = new DisturbedAnd();
+    private readonly PushLerperF<float> nextOkAlpha = new(nextOkLerpTime, Mathf.Lerp);
+    private readonly DisturbedAnd raycastable = new();
 
-    public float charLoadTime = 0.3f;
+    public float charLoadTime = 0.15f;
+    /// <summary>
+    /// Time that must pass between successive scroll events being read.
+    /// </summary>
+    public float scrollWaitTime = 0.2f;
+        
     private ADVDialogueBox bound = null!;
-    private readonly Queue<(SpeechFragment frag, CharOrString text)> remainingText = new Queue<(SpeechFragment, CharOrString)>();
-    private readonly StringBuilder accText = new StringBuilder();
-    private readonly DMCompactingArray<LoadingChar> loadingChars = new DMCompactingArray<LoadingChar>();
+    private readonly List<byte> charOpacity = new();
+    private readonly List<LoadingChar2> loadingChars2 = new();
+
+    private float elapsedScrollWait = 0f;
 
 
     public override string SortingLayerFromPrefab => canvas.sortingLayerName;
+
     public override void _Initialize(IEntity ent) => Initialize((ent as ADVDialogueBox)!);
 
-    private void SetUIColor(Color c) {
-        for (int ii = 0; ii < recolorables.Length; ++ii)
-            recolorables[ii].color = c.WithA(recolorables[ii].color.a);
-        for (int ii = 0; ii < buttons.Length; ++ii)
-            buttons[ii].recolor.Value = c;
+    private void UpdateAlphas() {
+        TMPAlphaController.ModifyAlphas(mainText, charOpacity, 0);
     }
+
     private void SetTextColor(Color c) {
         speaker.color = mainText.color = c;
+        //Assigning mainText.color resets the alpha vertex overrides and triggers a lazy mesh redraw,
+        // so we have to reapply alphas like this...
+        mainText.onRebuild.Add(UpdateAlphas);
     }
 
     private void ClearText() {
-        loadingChars.Empty();
-        //openTags.Clear();
-        accText.Clear();
-        remainingText.Clear();
-        //lastLookahead = "";
+        charOpacity.Clear();
+        loadingChars2.Clear();
         mainText.UnditedText = "";
+        didOpacityUpdate = false;
+        TMPAlphaController.SetAlphasZero(mainText);
     }
 
-    //private string lastLookahead = "";
-    private void SetText(string? lookahead) {
-        var rem = new StringBuilder();
-        void AddCS(StringBuilder sb, CharOrString cs) {
-            if (cs.c != null)
-                sb.Append(cs.c.Value);
-            if (cs.s != null)
-                sb.Append(cs.s);
-        }
-        bool canSend = true;
-        for (int ii = 0; ii < loadingChars.Count; ++ii) {
-            if (loadingChars.ExistsAt(ii)) {
-                var lc = loadingChars[ii];
-                var ratio = lc.t / charLoadTime;
-                if (ratio >= 1 && canSend) {
-                    AddCS(accText, lc.cs);
-                    loadingChars.Delete(ii);
-                } else {
-                    canSend = false;
-                    rem.Append(loadingChars[ii].Rendered(charLoadTime));
-                }
-            }
-        }
-        loadingChars.Compact();
-        rem.Append("<alpha=#00>");
-        //rem.Append(lastLookahead = lookahead ?? lastLookahead);
-        /*foreach (var t in openTags) {
-            if (TagToClose(t).Try(out var s))
-                rem.Append(s);
-        }*/
-        foreach (var (frag, text) in remainingText) {
-            if (frag is SpeechFragment.TagOpen {tag: SpeechTag.Color _} ||
-                frag is SpeechFragment.TagClose {opener: {tag: SpeechTag.Color _}}) {
-                //Ignore color tags
-            } else
-                AddCS(rem, text);
-        }
-        mainText.UnditedText = accText.ToString() + rem.ToString();
+    private void CheckOpacity() {
+        if (didOpacityUpdate)
+            UpdateAlphas();
+        didOpacityUpdate = false;
     }
 
+    private bool didOpacityUpdate = false;
     protected override void DoUpdate(float dT) {
-        uiColor.Update(dT);
-        nextOkColor.Update(dT);
         textColor.Update(dT);
         nextOkAlpha.Update(dT);
-        for (int ii = 0; ii < loadingChars.Count; ++ii)
-            loadingChars[ii].t += dT;
         for (int ii = 0; ii < buttons.Length; ++ii)
             buttons[ii].DoUpdate(dT);
+        for (int ii = 0; ii < loadingChars2.Count; ++ii)
+            didOpacityUpdate |= loadingChars2[ii].DoUpdate(dT);
+        elapsedScrollWait += dT;
     }
 
     private void Update() {
-        if (loadingChars.Count > 0)
-            SetText(null);
+        CheckOpacity();
     }
 
     private IDisposable? rgToken;
-    public void Initialize(ADVDialogueBox db) {
+    public virtual void Initialize(ADVDialogueBox db) {
         bound = db;
         //As ADVDialogueBox is a trivial wrapper around DialogueBox, no bind is required.
         base.Initialize(db);
@@ -200,34 +185,33 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
         ClearText();
         Listen(db.DialogueCleared, _ => ClearText());
         Listen(db.DialogueStarted, op => {
-            remainingText.Clear();
+            var sb = new StringBuilder();
             foreach (var frag in op.Line.Fragments) {
-                var lc = frag switch {
-                    SpeechFragment.Char c => CharOrString.Char(c.fragment),
-                    SpeechFragment.TagOpen to => CharOrString.MaybeStr(TagToOpen(to.tag)),
-                    SpeechFragment.TagClose tc => CharOrString.MaybeStr(TagToClose(tc.opener.tag)),
+                sb.Append(frag switch {
+                    SpeechFragment.Char c => c.fragment,
+                    SpeechFragment.TagOpen to => TagToOpen(to.tag),
+                    SpeechFragment.TagClose tc => TagToClose(tc.opener.tag),
                     _ => null
-                };
-                if (lc != null) {
-                    remainingText.Enqueue((frag, lc.Value));
-                }
+                });
             }
+            mainText.UnditedText += sb.ToString();
+            UpdateAlphas();
+            didOpacityUpdate = true;
         });
         Listen(db.Dialogue, obj => {
-            if (obj.frag is SpeechFragment.Char || 
-                (obj.frag is SpeechFragment.TagOpen to && TagToClose(to.tag) != null) ||
-                (obj.frag is SpeechFragment.TagClose tc && TagToClose(tc.opener.tag) != null)) {
-                if (remainingText.Peek().frag != obj.frag)
-                    throw new Exception("Mismatched dialogue");
-                loadingChars.Add(new LoadingChar(remainingText.Dequeue().text, obj.frag switch {
-                    SpeechFragment.Char _ => 0f,
-                    _ => 99999f
-                }));
-            } else if (obj.frag is SpeechFragment.RollEvent re) {
+            void AddC() {
+                charOpacity.Add(0);
+                loadingChars2.Add(new(charOpacity, loadingChars2.Count, charLoadTime));
+            }
+            if (obj.frag is SpeechFragment.Char c)
+                AddC();
+            else if (obj.frag is SpeechFragment.TagClose { opener: { tag: SpeechTag.Furigana f } }) {
+                //We load opacity for ruby characters at the end since RubyTMP sticks the characters
+                // at the end, and it's difficult to deal with matching loadingChars indices otherwise.
+                foreach (var _ in f.furigana)
+                    AddC();
+            } else if (obj.frag is SpeechFragment.RollEvent re)
                 re.ev();
-            } else
-                return;
-            //lastLookahead = obj.lookahead;
         });
         //dialogue finished effect?
         Listen(db.Container.AwaitingConfirm, icr => {
@@ -236,22 +220,24 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
             else
                 nextOkAlpha.Push(NextOkEnable);
         });
-        
-        uiColor.Push(new Color(0.6f, 0.14f, 0.18f));
-        nextOkColor.Push(new Color(0.6f, 0.14f, 0.18f));
 
         Listen(nextOkAlpha, f => nextOkIcon.color = nextOkIcon.color.WithA(f));
-        Listen(uiColor, SetUIColor);
-        Listen(nextOkColor, c => nextOkIcon.color = c.WithA(nextOkIcon.color.a));
         Listen(textColor, SetTextColor);
         Listen(raycastable, v => raycaster.enabled = v);
     }
 
     public virtual void Pause() => bound.Container.PauseGameplay();
-
-    public virtual void Skip() {
+    
+    public virtual void Autoplay() {
         if (bound.Container.SkippingMode == null)
             bound.Container.SetSkipMode(SkipMode.AUTOPLAY);
+        else
+            bound.Container.SetSkipMode(null);
+    }
+    
+    public virtual void Skip() {
+        if (bound.Container.SkippingMode == null)
+            bound.Container.SetSkipMode(SkipMode.FASTFORWARD);
         else
             bound.Container.SetSkipMode(null);
     }
@@ -290,5 +276,12 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler {
         base.OnDisable();
     }
 
-    public void OnPointerClick(PointerEventData eventData) => ((IUnityVNState)bound.Container).ClickConfirm();
+    public void OnPointerClick(PointerEventData eventData) => ((IUnityVNState)bound.Container).ClickConfirmOrSkip();
+
+    public void OnScroll(PointerEventData ev) {
+        if (ev.scrollDelta.y < 0 && elapsedScrollWait > scrollWaitTime) {
+            if (((IUnityVNState)bound.Container).ClickConfirmOrSkip())
+                elapsedScrollWait = 0;
+        }
+    }
 }

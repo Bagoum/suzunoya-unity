@@ -8,15 +8,24 @@ using UnityEngine;
 
 namespace SuzunoyaUnity {
 public interface IUnityVNState : IVNState {
+    bool ClickConfirmAllowed { get; }
     void ClickConfirm();
+
+    bool ClickConfirmOrSkip() {
+        if (ClickConfirmAllowed) 
+            return AwaitingConfirm.Value != null ? 
+                UserConfirm() : 
+                RequestSkipOperation();
+        return false;
+    }
 }
 public class UnityVNState : VNState, IUnityVNState {
-    public UnityVNState(ICancellee extCToken, InstanceData? save = null) : 
+    public UnityVNState(ICancellee extCToken, IInstanceData save) : 
         base(extCToken, save) { }
     
     protected override RenderGroup MakeDefaultRenderGroup() => new UnityRenderGroup(this, visible: true);
 
-    protected bool ClickConfirmAllowed { get; set; } = true;
+    public bool ClickConfirmAllowed { get; protected set; } = true;
     public void ClickConfirm() {
         if (ClickConfirmAllowed)
             UserConfirm();

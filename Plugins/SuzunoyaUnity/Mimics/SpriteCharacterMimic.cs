@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BagoumLib;
 using BagoumLib.DataStructures;
 using Suzunoya.Entities;
 using SuzunoyaUnity.Components;
@@ -11,28 +12,7 @@ using UnityEngine.UI;
 using Transform = UnityEngine.Transform;
 
 namespace SuzunoyaUnity.Mimics {
-public abstract class CharacterMimic : RenderedMimic {
-    public Sprite? ADVSpeakerIcon;
-    private Character entity = null!;
-    private CharacterSpeakingDisturbance speakDisturb = null!;
-
-    
-    public override void _Initialize(IEntity ent) => Initialize((ent as SZYUCharacter)!);
-    private void Initialize(SZYUCharacter c) {
-        base.Initialize(entity = c);
-        c.Bind(this);
-        speakDisturb = new CharacterSpeakingDisturbance(this, c);
-        
-        Listen(entity.Emote, SetEmote);
-    }
-
-    protected override void DoUpdate(float dT) {
-        speakDisturb.DoUpdate(dT);
-    }
-
-    protected abstract void SetEmote(string? emote);
-}
-public class SpriteCharacterMimic : CharacterMimic {
+public class SpriteCharacterMimic : SpriteIconCharacterMimic {
     public SpriteRenderer sr = null!;
     public EmoteVariant[] emotes = null!;
 
@@ -60,7 +40,8 @@ public class SpriteCharacterMimic : CharacterMimic {
     }
 
     protected override void SetEmote(string? emote) {
-        sr.sprite = GetEmote(emote);
+        base.SetEmote(emote);
+        sr.sprite = SuzunoyaUnity.Helpers.FindSprite(emote, emotes, emoteMap).Try(out var s) ? s : sr.sprite;
     }
 
     protected override void SetSortingLayer(int layer) => sr.sortingLayerID = layer;

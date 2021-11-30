@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.UI;
 
 #nullable disable
 namespace TMPro
@@ -35,20 +37,19 @@ namespace TMPro
         [TextArea(5, 10)]
         private string m_uneditedText;
 
-        public string UnditedText
-        {
+        public string UnditedText {
+            get => m_uneditedText;
             set { m_uneditedText = value; SetTextCustom(m_uneditedText); }
         }
 
-        private void SetTextCustom(string value)
-        {
+        private void SetTextCustom(string value) {
             text = ReplaceRubyTags(value);
-
             // SetLayoutDirty called
-            if (m_isLayoutDirty)
-            {
+            if (m_isLayoutDirty) {
                 // changes to the text object properties need to be applied immediately.
                 ForceMeshUpdate();
+                //This fixes issues where incorrect width values are calculated
+                text = ReplaceRubyTags(value);
             }
         }
 
@@ -145,6 +146,15 @@ namespace TMPro
 
             return replace;
         }
+
+        public override void Rebuild(CanvasUpdate update) {
+            base.Rebuild(update);
+            foreach (var cb in onRebuild)
+                cb();
+            onRebuild.Clear();
+        }
+
+        public readonly List<Action> onRebuild = new();
 
 #if UNITY_EDITOR
 
