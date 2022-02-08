@@ -5332,7 +5332,8 @@ MonoBehaviour:
   m_FontFeatureTable:
     m_GlyphPairAdjustmentRecords: []
   fallbackFontAssets: []
-  m_FallbackFontAssetTable: []
+  m_FallbackFontAssetTable:
+  - {fileID: 11400000, guid: e49f3121bdba9a645bfe0c63c95c2553, type: 2}
   m_CreationSettings:
     sourceFontFileName: 
     sourceFontFileGUID: 5fb163a7aee8f8f4ca3250cfa734e2ef
@@ -5464,6 +5465,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _Ambient: 0.5
     - _Bevel: 0.5

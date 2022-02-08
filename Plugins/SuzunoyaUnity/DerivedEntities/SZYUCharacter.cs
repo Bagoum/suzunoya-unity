@@ -1,6 +1,7 @@
 ﻿using System.Reactive;
 using System.Threading.Tasks;
 using BagoumLib.Culture;
+using BagoumLib.Tasks;
 using Suzunoya;
 using Suzunoya.ControlFlow;
 using Suzunoya.Dialogue;

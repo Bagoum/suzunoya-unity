@@ -21,20 +21,20 @@ public class RenderGroupMimic : Tokenized {
         rg = urg;
         rg.Bind(this);
         //This maintains the Z-offset even when panning around carelessly
-        tokens.Add(rg.Location.AddDisturbance(new Evented<Vector3>(capturer.Camera.transform.localPosition._())));
+        tokens.Add(rg.ComputedLocation.AddDisturbance(new Evented<Vector3>(capturer.Camera.transform.localPosition._())));
         rg.RenderLayer.Value = sr.sortingLayerID;
 
         Listen(rg.NestedRenderGroup,
             r => gameObject.layer = r is UnityRenderGroup ur ?
                 ur.LayerId :
                 UnityRenderGroup.OutRenderLayerID);
-        Listen(rg.Location, _ => SetCameraLocation());
+        Listen(rg.ComputedLocation, _ => SetCameraLocation());
         Listen(rg.EulerAnglesD, v3 => capturer.Camera.transform.localEulerAngles = v3._());
         //Not listening to scale in v0.1
         Listen(rg.RenderLayer, layer => sr.sortingLayerID = layer);
         Listen(rg.Priority, i => sr.sortingOrder = i);
         Listen(rg.Visible, b => sr.enabled = b);
-        Listen(rg.Tint, c => sr.color = c._());
+        Listen(rg.ComputedTint, c => sr.color = c._());
         Listen(rg.Zoom, z => capturer.Camera.orthographicSize = baseOrthoSize / z);
         //Don't need ZoomTarget
         Listen(rg.ZoomTransformOffset, _ => SetCameraLocation());
@@ -53,7 +53,7 @@ public class RenderGroupMimic : Tokenized {
     }
     
     private void SetCameraLocation() =>
-        capturer.Camera.transform.localPosition = (rg.Location.Value + rg.ZoomTransformOffset)._();
+        capturer.Camera.transform.localPosition = (rg.ComputedLocation.Value + rg.ZoomTransformOffset)._();
 
 
 }

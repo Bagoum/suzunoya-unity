@@ -59,6 +59,7 @@ public class ExecutingVN {
     public readonly List<IDisposable> tokens;
     public readonly AccEvent<DialogueLogEntry> backlog = new();
     public Action<VNLocation>? doBacklog = null;
+    public bool Active { get; private set; }
         
     public ExecutingVN(IVNState vn) {
         this.vn = vn;
@@ -71,8 +72,15 @@ public class ExecutingVN {
         else
             backlog.OnNext(new DialogueLogEntry(op));
     }
+    
+    public void Destroy() {
+        Active = false;
+        foreach (var token in tokens)
+            token.Dispose();
+        vn.DeleteAll();
+    }
 }
-public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
+public class VNWrapper : MonoBehaviour, IVNWrapper {
 
     public GameObject renderGroupMimic = null!;
     public GameObject[] entityMimics = null!;
@@ -95,22 +103,17 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
         evn.tokens.Add(vns.Add(evn));
         evn.tokens.Add(vn.RenderGroupCreated.Subscribe(NewRenderGroup));
         evn.tokens.Add(vn.EntityCreated.Subscribe(NewEntity));
-        evn.tokens.Add(vn.InterrogatorCreated.Subscribe(this));
         evn.tokens.Add(vn.DialogueLog.Subscribe(evn.Log));
         //TODO AwaitingConfirm
         evn.tokens.Add(vn.Logs.Subscribe(Logging.Log));
         evn.tokens.Add(vn.VNStateActive.Subscribe(b => {
             if (!b)
-                ClearVN(evn);
+                evn.Destroy();
         }));
         return evn;
     }
 
-    private static void ClearVN(ExecutingVN vn) {
-        foreach (var token in vn.tokens)
-            token.Dispose();
-        vn.vn.DeleteAll();
-    }
+    
     
 
     public void DoUpdate(float dT, bool isConfirm, bool isFullSkip) {
@@ -153,12 +156,6 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
             Logging.Log(LogMessage.Error(new Exception($"Couldn't handle entity {ent} of type {ent.GetType()}")));
     }
 
-    public void OnNext<T>(IInterrogator<T> data) {
-        if (data is ChoiceInterrogator<T> choices) {
-            Debug.Log(string.Join(", ", choices.Choices.Select(x => $"{x.value}: {x.description}")));
-        }
-    }
-    
     public void UpdateAllVNSaves() {
         foreach (var ev in vns)
             ev.vn.UpdateSavedata();
@@ -167,7 +164,7 @@ public class VNWrapper : MonoBehaviour, IInterrogatorReceiver, IVNWrapper {
     private void OnDisable() {
         for (int ii = 0; ii < vns.Count; ++ii) {
             if (vns.ExistsAt(ii))
-                ClearVN(vns[ii]);
+                vns[ii].Destroy();
         }
         vns.Empty();
     }

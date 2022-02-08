@@ -24,9 +24,9 @@ public abstract class RenderedMimic : BaseMimic {
             }
         });
         
-        Listen(rd.Location, v3 => tr.localPosition = v3._());
-        Listen(rd.EulerAnglesD, v3 => tr.localEulerAngles = v3._());
-        Listen(rd.Scale, v3 => tr.localScale = v3._());
+        Listen(rd.ComputedLocation, v3 => tr.localPosition = v3._());
+        Listen(rd.ComputedEulerAnglesD, v3 => tr.localEulerAngles = v3._());
+        Listen(rd.ComputedScale, v3 => tr.localScale = v3._());
 
         rd.RenderLayer.Value = SortingLayer.NameToID(SortingLayerFromPrefab);
         Listen(rd.RenderGroup, rg => {
@@ -36,7 +36,7 @@ public abstract class RenderedMimic : BaseMimic {
         Listen(rd.RenderLayer, SetSortingLayer);
         Listen(rd.SortingID, SetSortingID);
         Listen(rd.Visible, SetVisible);
-        Listen(rd.Tint, t => SetTint(t._()));
+        Listen(rd.ComputedTint, t => SetTint(t._()));
     }
     
     protected virtual void DoUpdate(float dT) { }

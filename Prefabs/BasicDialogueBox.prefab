@@ -752,6 +752,8 @@ MonoBehaviour:
   - {fileID: 4074719346677952050}
   - {fileID: 2485967816665718138}
   - {fileID: 4033557086928356197}
+  autoplayButton: {fileID: 2485967816665718138}
+  skipButton: {fileID: 4033557086928356197}
   charLoadTime: 0.1
   scrollWaitTime: 0.2
 --- !u!114 &607608036421774574

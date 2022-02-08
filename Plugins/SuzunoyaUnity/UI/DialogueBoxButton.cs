@@ -30,6 +30,8 @@ public class DialogueBoxButton : MonoBehaviour, IPointerEnterHandler, IPointerEx
         get => _state;
         set => color.Push(new Color(1, 1, 1, StateToColor(_state = value)));
     }
+    public void DisableButton() => State |= ButtonState.Disabled;
+    public void EnableButton() => State &= ButtonState.All ^ ButtonState.Disabled;
 
     private readonly PushLerper<Color> color = 
         new(0.12f, (a, b, t) => Color.Lerp(a, b, Easers.EIOSine(t)));

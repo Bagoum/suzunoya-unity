@@ -14,8 +14,6 @@ This project's source code is on Github at [Bagoum/suzunoya-unity](https://githu
 
 All source code in the SuzunoyaUnity project is distributed under the MIT license.
 
-Non-code resources are distributed under various licenses. 
-
 
 
 Files under Plugins/RubyTextMeshPro and Editor/RubyTMP are from [RubyTextMeshPro](https://github.com/jp-netsis/RubyTextMeshPro). 

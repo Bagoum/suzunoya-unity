@@ -78,6 +78,9 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
     public Image nextOkIcon = null!;
     public DialogueBoxButton[] buttons = null!;
 
+    public DialogueBoxButton? autoplayButton;
+    public DialogueBoxButton? skipButton;
+
     private readonly PushLerper<Color> textColor = new(0.1f, (a, b, t) => 
         Color.Lerp(a, b, Easers.EOutSine(t)));
     private const float nextOkLerpTime = 0.5f;
@@ -90,7 +93,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
     /// </summary>
     public float scrollWaitTime = 0.2f;
         
-    private ADVDialogueBox bound = null!;
+    protected ADVDialogueBox bound = null!;
     private readonly List<byte> charOpacity = new();
     private readonly List<LoadingChar2> loadingChars2 = new();
 
@@ -146,7 +149,6 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         bound = db;
         //As ADVDialogueBox is a trivial wrapper around DialogueBox, no bind is required.
         base.Initialize(db);
-
 
         raycastable.AddDisturbance(db.Container.InputAllowed);
         Listen(db.RenderGroup, rg => {
@@ -224,19 +226,26 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         Listen(nextOkAlpha, f => nextOkIcon.color = nextOkIcon.color.WithA(f));
         Listen(textColor, SetTextColor);
         Listen(raycastable, v => raycaster.enabled = v);
+        
+        if (!bound.Container.AutoplayFastforwardAllowed) {
+            if (autoplayButton != null)
+                autoplayButton.DisableButton();
+            if (skipButton != null)
+                skipButton.DisableButton();
+        }
     }
 
     public virtual void Pause() => bound.Container.PauseGameplay();
     
     public virtual void Autoplay() {
-        if (bound.Container.SkippingMode == null)
+        if (bound.Container.SkippingMode == null && bound.Container.AutoplayFastforwardAllowed)
             bound.Container.SetSkipMode(SkipMode.AUTOPLAY);
         else
             bound.Container.SetSkipMode(null);
     }
     
     public virtual void Skip() {
-        if (bound.Container.SkippingMode == null)
+        if (bound.Container.SkippingMode == null && bound.Container.AutoplayFastforwardAllowed)
             bound.Container.SetSkipMode(SkipMode.FASTFORWARD);
         else
             bound.Container.SetSkipMode(null);
@@ -276,11 +285,11 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         base.OnDisable();
     }
 
-    public void OnPointerClick(PointerEventData eventData) => ((IUnityVNState)bound.Container).ClickConfirmOrSkip();
+    public void OnPointerClick(PointerEventData eventData) => ((UnityVNState)bound.Container).ClickConfirmOrSkip();
 
     public void OnScroll(PointerEventData ev) {
         if (ev.scrollDelta.y < 0 && elapsedScrollWait > scrollWaitTime) {
-            if (((IUnityVNState)bound.Container).ClickConfirmOrSkip())
+            if (((UnityVNState)bound.Container).ClickConfirmOrSkip())
                 elapsedScrollWait = 0;
         }
     }
