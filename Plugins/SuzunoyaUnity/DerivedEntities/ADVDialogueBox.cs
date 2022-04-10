@@ -3,5 +3,4 @@ using System.Collections.Generic;
 using Suzunoya.Entities;
 using UnityEngine;
 
-public class ADVDialogueBox : DialogueBox {
-}
+public class ADVDialogueBox : DialogueBox { }

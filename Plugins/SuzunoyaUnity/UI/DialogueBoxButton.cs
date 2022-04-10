@@ -36,7 +36,7 @@ public class DialogueBoxButton : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private readonly PushLerper<Color> color = 
         new(0.12f, (a, b, t) => Color.Lerp(a, b, Easers.EIOSine(t)));
 
-    private void Awake() {
+    protected virtual void Awake() {
         color.Subscribe(c => {
             for (int ii = 0; ii < sprites.Length; ++ii)
                 sprites[ii].color = c;

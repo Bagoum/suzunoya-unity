@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BagoumLib;
 using UnityEngine;
 
 namespace SuzunoyaUnity {
@@ -20,10 +21,7 @@ public class Tokenized : MonoBehaviour {
     }
 
     protected void DisableUpdates() {
-        for (int ii = 0; ii < tokens.Count; ++ii) {
-            tokens[ii].Dispose();
-        }
-        tokens.Clear();
+        tokens.DisposeAll();
     }
     
     protected virtual void BindListeners() { }

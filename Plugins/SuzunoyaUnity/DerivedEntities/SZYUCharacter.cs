@@ -16,15 +16,15 @@ namespace SuzunoyaUnity.Derived {
 public class SZYUCharacter : Character {
     public virtual Color TextColor => Color.white;
     public virtual Color UIColor => new Color(0.6f, 0.6f, 0.6f);
-    public virtual Sprite? ADVSpeakerIcon => mimic == null ? null : mimic.ADVSpeakerIcon;
+    public virtual Sprite? ADVSpeakerIcon => Mimic == null ? null : Mimic.ADVSpeakerIcon;
 
     public override SpeechSettings SpeechCfg => new(90, SpeechSettings.DefaultOpsPerChar, 8,
         SpeechSettings.DefaultRollEventAllowed, Container.SkipGuard(RollEvent));
 
-    private CharacterMimic? mimic;
+    public CharacterMimic? Mimic { get; private set; }
 
-    public void Bind(CharacterMimic mimic_) {
-        mimic = mimic_;
+    public void Bind(CharacterMimic mimic) {
+        Mimic = mimic;
     }
 
     public LazyAction SetEmote(string emote) => new LazyAction(() => Emote.Value = emote);

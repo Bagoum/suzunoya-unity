@@ -146,9 +146,9 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
 
     private IDisposable? rgToken;
     public virtual void Initialize(ADVDialogueBox db) {
-        bound = db;
-        //As ADVDialogueBox is a trivial wrapper around DialogueBox, no bind is required.
-        base.Initialize(db);
+        base.Initialize(bound = db);
+        //Not required as there are no current use cases for accessing mimic through ent
+        //db.Bind(this);
 
         raycastable.AddDisturbance(db.Container.InputAllowed);
         Listen(db.RenderGroup, rg => {
@@ -234,7 +234,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
                 skipButton.DisableButton();
         }
     }
-
+    
     public virtual void Pause() => bound.Container.PauseGameplay();
     
     public virtual void Autoplay() {

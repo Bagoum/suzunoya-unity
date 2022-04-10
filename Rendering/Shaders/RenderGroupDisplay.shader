@@ -16,7 +16,9 @@ Shader "SZYU/RenderGroupDisplay" {
 		Cull Off
 		Lighting Off
 		ZWrite Off
-		Blend One OneMinusSrcAlpha, OneMinusDstAlpha One
+		//As the source texes are render textures accumulating
+		// premulted colors, we use the merge (1 1-SrcA).
+		Blend One OneMinusSrcAlpha
 		
 		Pass { 
 			CGPROGRAM

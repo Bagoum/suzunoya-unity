@@ -19,9 +19,8 @@ public abstract class RenderedMimic : BaseMimic {
     public void Initialize(Rendered rd) {
         Listen(rd.OnUpdate, DoUpdate);
         Listen(rd.EntityActive, b => {
-            if (!b) {
-                Destroy(gameObject);
-            }
+            if (!b)
+                EntityDestroyed();
         });
         
         Listen(rd.ComputedLocation, v3 => tr.localPosition = v3._());
@@ -45,5 +44,9 @@ public abstract class RenderedMimic : BaseMimic {
     protected abstract void SetSortingID(int id);
     protected abstract void SetVisible(bool visible);
     protected abstract void SetTint(Color c);
+
+    protected virtual void EntityDestroyed() {
+        Destroy(gameObject);
+    }
 }
 }

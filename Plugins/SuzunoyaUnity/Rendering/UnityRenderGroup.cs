@@ -47,7 +47,7 @@ public class UnityRenderGroup : RenderGroup {
     public const string OutRenderLayer = "UI";
     public static int OutRenderLayerID => LayerMask.NameToLayer(OutRenderLayer);
     //public const string NullRenderLayer = "RenderGroupNull";
-    private static readonly DMCompactingArray<UnityRenderGroup> allRGs = new DMCompactingArray<UnityRenderGroup>();
+    private static readonly DMCompactingArray<UnityRenderGroup> allRGs = new();
     private RenderGroupMimic mimic = null!;
     public int LayerId { get; private set; }
 

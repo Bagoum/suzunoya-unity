@@ -22,6 +22,9 @@ namespace SuzunoyaUnity {
 /// When this object is disabled, all managed VNStates should receive a DeleteAll.
 /// </summary>
 public interface IVNWrapper {
+    /// <summary>
+    /// Keep track of a <see cref="IVNState"/> (pure C# object) and map its constructs into Unity (game objects).
+    /// </summary>
     ExecutingVN TrackVN(IVNState vn);
     IEnumerable<ExecutingVN> TrackedVNs { get; }
     public void UpdateAllVNSaves();
@@ -59,7 +62,7 @@ public class ExecutingVN {
     public readonly List<IDisposable> tokens;
     public readonly AccEvent<DialogueLogEntry> backlog = new();
     public Action<VNLocation>? doBacklog = null;
-    public bool Active { get; private set; }
+    public bool Active { get; private set; } = true;
         
     public ExecutingVN(IVNState vn) {
         this.vn = vn;
@@ -144,7 +147,7 @@ public class VNWrapper : MonoBehaviour, IVNWrapper {
     }
     
     private void NewEntity(IEntity ent) {
-        Logging.Log($"New VN entity {ent}");
+        Logging.Log($"VNWrapper is handling a new VN entity of type {ent}.");
         if (mimicTypeMap.TryGetValue(ent.GetType(), out var mimic))
             Instantiate(mimic, tr, false).GetComponent<BaseMimic>()._Initialize(ent);
         else
@@ -158,7 +161,7 @@ public class VNWrapper : MonoBehaviour, IVNWrapper {
 
     public void UpdateAllVNSaves() {
         foreach (var ev in vns)
-            ev.vn.UpdateSavedata();
+            ev.vn.UpdateInstanceData();
     }
 
     private void OnDisable() {

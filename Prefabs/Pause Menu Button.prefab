@@ -86,8 +86,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4994164961540008594}
   - component: {fileID: 6576900354494226630}
-  - component: {fileID: 7163755004153147470}
   - component: {fileID: 8461787187041984085}
+  - component: {fileID: 7163755004153147470}
   m_Layer: 0
   m_Name: Pause Menu Button
   m_TagString: Untagged
@@ -126,6 +126,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4052996557672399505}
   m_CullTransparentMesh: 1
+--- !u!114 &8461787187041984085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4052996557672399505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a73ff1444aa4be2449e9fdf785cc4874, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 7163755004153147470}
+  - {fileID: 6452690491538473475}
+  text: {fileID: 5136584994054858155}
+  onClicked:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7163755004153147470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,25 +175,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8461787187041984085
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4052996557672399505}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a73ff1444aa4be2449e9fdf785cc4874, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 7163755004153147470}
-  - {fileID: 6452690491538473475}
-  text: {fileID: 5136584994054858155}
-  onClicked:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &6301639029900922870
 GameObject:
   m_ObjectHideFlags: 0
