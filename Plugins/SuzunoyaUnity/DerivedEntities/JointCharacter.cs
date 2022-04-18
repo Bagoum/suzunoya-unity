@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using BagoumLib.Culture;
 using Suzunoya;
 using Suzunoya.Dialogue;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class JointCharacter : SZYUCharacter {
     public override Color UIColor => parts[0].UIColor;
     public override Sprite? ADVSpeakerIcon => parts[0].ADVSpeakerIcon;
     public override SpeechSettings SpeechCfg => parts[0].SpeechCfg;
-    public override string Name => string.Join(" & ", parts.Select(p => p.Name));
+    public override LString Name => string.Join(" & ", parts.Select(p => p.Name));
 
     public JointCharacter(params SZYUCharacter[] parts) {
         this.parts = parts;

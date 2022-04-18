@@ -17,8 +17,9 @@ public enum ButtonState {
     Hover = 1 << 0,
     Active = 1 << 1,
     Disabled = 1 << 2,
+    Hide = 1 << 3,
     
-    All = Hover | Active | Disabled
+    All = Hover | Active | Disabled | Hide
 }
 public class DialogueBoxButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler {
     public Image[] sprites = null!;
@@ -26,10 +27,16 @@ public class DialogueBoxButton : MonoBehaviour, IPointerEnterHandler, IPointerEx
     
     public UnityEvent onClicked = null!;
     private ButtonState _state = ButtonState.Normal;
-    private ButtonState State {
+    protected ButtonState State {
         get => _state;
         set => color.Push(new Color(1, 1, 1, StateToColor(_state = value)));
     }
+
+    protected void FastSetState(ButtonState state) {
+        color.Unset();
+        State = state;
+    }
+    
     public void DisableButton() => State |= ButtonState.Disabled;
     public void EnableButton() => State &= ButtonState.All ^ ButtonState.Disabled;
 
@@ -49,10 +56,11 @@ public class DialogueBoxButton : MonoBehaviour, IPointerEnterHandler, IPointerEx
     }
 
     private static float StateToColor(ButtonState s) => s switch {
+        { } when s.HasFlag(ButtonState.Hide) => 0f,
         { } when s.HasFlag(ButtonState.Disabled) => 0.4f,
         { } when s.HasFlag(ButtonState.Active) => 1f,
-        { } when s.HasFlag(ButtonState.Hover) => 0.8f,
-        _ => 0.6f
+        { } when s.HasFlag(ButtonState.Hover) => 0.85f,
+        _ => 0.56f
     };
     
     public void OnPointerEnter(PointerEventData eventData) {
@@ -60,7 +68,8 @@ public class DialogueBoxButton : MonoBehaviour, IPointerEnterHandler, IPointerEx
         State |= ButtonState.Hover;
     }
 
-    public void OnPointerExit(PointerEventData eventData) => State &= (ButtonState.All ^ ButtonState.Hover);
+    public void OnPointerExit(PointerEventData eventData) => 
+        State &= (ButtonState.All ^ ButtonState.Hover ^ ButtonState.Active);
 
     public void OnPointerDown(PointerEventData eventData) => State |= ButtonState.Active;
 

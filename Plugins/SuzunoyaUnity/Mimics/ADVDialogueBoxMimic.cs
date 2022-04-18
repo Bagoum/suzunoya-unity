@@ -147,8 +147,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
     private IDisposable? rgToken;
     public virtual void Initialize(ADVDialogueBox db) {
         base.Initialize(bound = db);
-        //Not required as there are no current use cases for accessing mimic through ent
-        //db.Bind(this);
+        db.Bind(this);
 
         raycastable.AddDisturbance(db.Container.InputAllowed);
         Listen(db.RenderGroup, rg => {
