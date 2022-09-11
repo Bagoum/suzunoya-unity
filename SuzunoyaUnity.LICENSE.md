@@ -12,104 +12,35 @@ This project's source code is on Github at [Bagoum/suzunoya-unity](https://githu
 
 
 
-All source code in the SuzunoyaUnity project is distributed under the MIT license.
-
-
-
-Files under Plugins/RubyTextMeshPro and Editor/RubyTMP are from [RubyTextMeshPro](https://github.com/jp-netsis/RubyTextMeshPro). 
-
-This project consumes the following projects as DLLs under Plugins/DLLs:
-
-- [BagoumLib/Mizuhashi/Suzunoya](https://github.com/Bagoum/suzunoya)
-- [System.*](https://www.nuget.org/packages/System.Memory/)
-
-## Non-Code Resources
-
-All files under Sprites are licensed by Bagoum under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-
-## Code Licenses
-
-### This project: MIT
+All source code in the SuzunoyaUnity project is distributed under the MIT license, provided immediately below.
 
 ```
 Copyright (c) 2021 Bagoum <reneedebatz@gmail.com>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-### BagoumLib/Mizuhashi/Suzunoya: MIT
+If you are making use of this project, please reproduce this license file or link to it ([Github link](https://github.com/Bagoum/suzunoya-unity/blob/main/SuzunoyaUnity.LICENSE.md)).
 
-See the Suzunoya license file distributed alongside this.
 
-### RubyTextMeshPro: MIT
 
-```
-MIT License
+Files under Plugins/RubyTextMeshPro and Editor/RubyTMP are from [RubyTextMeshPro](https://github.com/jp-netsis/RubyTextMeshPro) ([MIT](https://github.com/jp-netsis/RubyTextMeshPro/blob/828f9114d92ee926d8d7f978e1b944ebfabb09f7/LICENSE)). 
 
-Copyright (c) 2019 jp-netsis
+This project consumes the following projects as DLLs under Plugins/DLLs:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+- [BagoumLib/Mizuhashi/Suzunoya](https://github.com/Bagoum/suzunoya) ([MIT](https://github.com/Bagoum/suzunoya/blob/master/Suzunoya.LICENSE.md))
+- [FluentIL](https://github.com/Bagoum/FluentIL) ([MIT](https://github.com/Bagoum/FluentIL/blob/master/LICENSE))
+- [System.Reactive](https://www.nuget.org/packages/System.Reactive/) ([MIT](https://github.com/dotnet/reactive/blob/85f1eb7c53e27cccdbeee3e0b044916168843fcc/LICENSE))
+- [System.Runtime.CompilerServices.Unsafe](https://www.nuget.org/packages/System.Runtime.CompilerServices.Unsafe/) ([MIT](https://github.com/dotnet/runtime/blob/a7eda3eb376c8229069f6bf68e8981c852925b51/LICENSE.TXT))
+- [System.Threading.Tasks.Extensions](https://www.nuget.org/packages/System.Threading.Tasks.Extensions/) ([MIT](https://github.com/dotnet/runtime/blob/a7eda3eb376c8229069f6bf68e8981c852925b51/LICENSE.TXT))
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+## Non-Code Resources
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-### System.*: MIT
-
-```
-The MIT License (MIT)
-
-Copyright (c) .NET Foundation and Contributors
-
-All rights reserved.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+All files under Sprites are licensed by Bagoum under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## Font Licenses
 
