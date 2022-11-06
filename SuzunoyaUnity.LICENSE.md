@@ -33,7 +33,7 @@ Files under Plugins/RubyTextMeshPro and Editor/RubyTMP are from [RubyTextMeshPro
 This project consumes the following projects as DLLs under Plugins/DLLs:
 
 - [BagoumLib/Mizuhashi/Suzunoya](https://github.com/Bagoum/suzunoya) ([MIT](https://github.com/Bagoum/suzunoya/blob/master/Suzunoya.LICENSE.md))
-- [FluentIL](https://github.com/Bagoum/FluentIL) ([MIT](https://github.com/Bagoum/FluentIL/blob/master/LICENSE))
+- [FluentIL](https://github.com/Bagoum/FluentIL) ([MIT](https://github.com/Bagoum/FluentIL/blob/master/LICENSE.md))
 - [System.Reactive](https://www.nuget.org/packages/System.Reactive/) ([MIT](https://github.com/dotnet/reactive/blob/85f1eb7c53e27cccdbeee3e0b044916168843fcc/LICENSE))
 - [System.Runtime.CompilerServices.Unsafe](https://www.nuget.org/packages/System.Runtime.CompilerServices.Unsafe/) ([MIT](https://github.com/dotnet/runtime/blob/a7eda3eb376c8229069f6bf68e8981c852925b51/LICENSE.TXT))
 - [System.Threading.Tasks.Extensions](https://www.nuget.org/packages/System.Threading.Tasks.Extensions/) ([MIT](https://github.com/dotnet/runtime/blob/a7eda3eb376c8229069f6bf68e8981c852925b51/LICENSE.TXT))

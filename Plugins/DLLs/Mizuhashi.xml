@@ -1,0 +1,783 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Mizuhashi</name>
+    </assembly>
+    <members>
+        <member name="T:Mizuhashi.Combinators">
+            <summary>
+            Parser combinator functions
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.FMap``2(Mizuhashi.Parser{``0},System.Func{``0,``1})">
+            <summary>
+            Parses an object of type A and then map it to type B.
+            <br/>Equivalent to FParsec |>>
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Select``2(Mizuhashi.Parser{``0},System.Func{``0,``1})">
+            <summary>
+            Alias for FMap for LINQ compatibility.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Apply``2(Mizuhashi.Parser{System.Func{``0,``1}},Mizuhashi.Parser{``0})">
+            <summary>
+            Parses a function of type A->B, then an argument of type A, and returns type B.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Bind``2(Mizuhashi.Parser{``0},System.Func{``0,Mizuhashi.Parser{``1}})">
+            <summary>
+            Parses an object of type A, then parses an object of type B depending on the value of A,
+             then returns the object of type B.
+            <br/>Equivalent to FParsec >>=
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Bind``2(Mizuhashi.Parser{``0},System.Func{``0,Mizuhashi.ParseResult{``1}})">
+            <summary>
+            Parses an object of type A, then returns a result of type B depending on the value of A.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Bind``3(Mizuhashi.Parser{``0},System.Func{``0,Mizuhashi.Parser{``1}},System.Func{``0,``1,``2})">
+            <summary>
+            Parses an object of type A, then parses an object of type B depending on the value of A,
+             then finally combines the objects according to the project function.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.SelectMany``3(Mizuhashi.Parser{``0},System.Func{``0,Mizuhashi.Parser{``1}},System.Func{``0,``1,``2})">
+            <summary>
+            Alias for Bind for LINQ compatibility.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Pipe``3(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1},System.Func{``0,``1,``2})">
+            <summary>
+            Parses an object of type A, then parses an object of type B,
+             then finally combines the objects using the project function.
+            <br/>FParsec pipe2
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Pipe3``4(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1},Mizuhashi.Parser{``2},System.Func{``0,``1,``2,``3})">
+            <summary>
+            Sequentially parses objects of type A, B, C, then combines them using the project function.
+            <br/>FParsec pipe3
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Pipe4``5(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1},Mizuhashi.Parser{``2},Mizuhashi.Parser{``3},System.Func{``0,``1,``2,``3,``4})">
+            <summary>
+            Sequentially parses objects of type A, B, C, D, then combines them using the project function.
+            <br/>FParsec pipe4
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Pipe5``6(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1},Mizuhashi.Parser{``2},Mizuhashi.Parser{``3},Mizuhashi.Parser{``4},System.Func{``0,``1,``2,``3,``4,``5})">
+            <summary>
+            Sequentially parses objects of type A, B, C, D, E, then combines them using the project function.
+            <br/>FParsec pipe5
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Pipe6``7(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1},Mizuhashi.Parser{``2},Mizuhashi.Parser{``3},Mizuhashi.Parser{``4},Mizuhashi.Parser{``5},System.Func{``0,``1,``2,``3,``4,``5,``6})">
+            <summary>
+            Sequentially parses objects of type A, B, C, D, E, F, then combines them using the project function.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Sequential``3(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1},System.Func{``0,``1,``2})">
+            <summary>
+            Allocation-efficient syntax for SelectMany when parsers do not depend on the return value of previous parsers.
+            <br/>Delegates to Pipe when possible, as it is more efficient than SelectMany.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Attempt``1(Mizuhashi.Parser{``0})">
+            <summary>
+            FParsec attempt
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.ThenTryIg``2(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1})">
+            <summary>
+            FParsec .>>?
+            <br/>Backtracks only if the second parser hits a non-fatal error.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.IgThenTry``2(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1})">
+            <summary>
+            FParsec >>? (which should be >>.?)
+            <br/>Backtracks only if the second parser hits a non-fatal error.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.ThenTry``2(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1})">
+            <summary>
+            FParsec .>>.?
+            <br/>Backtracks only if the second parser hits a non-fatal error.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.IsPresent``1(Mizuhashi.Parser{``0})">
+            <summary>
+            FParsec followedBy/followedByL. Attempts to apply the parser, but does not change state.
+            <br/>Unlike FParsec, returns the parsed value.
+            <br/>Also unlike FParsec, uses the error message from the parser.
+             It is usually a good idea to wrap this in a label for clarity.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.IsNotPresent``1(Mizuhashi.Parser{``0},System.String)">
+            <summary>
+            FParsec notFollowedBy/notFollowedByL. Attempts to apply the parser, but does not change state.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.PReturn``1(``0)">
+            <summary>
+            FParsec preturn
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.ThenPReturn``2(Mizuhashi.Parser{``0},``1)">
+            <summary>
+            FParsec >>%
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Ignore">
+            <summary>
+            PReturn(Unit.Default)
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Fail``1(System.String)">
+            <summary>
+            Fails (fatally) with the given failure string.
+            <br/>Note: this consumes a character and constructs a fatal error.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Error``1(System.String)">
+            <summary>
+            See <see cref="M:Mizuhashi.Combinators.Error``1(Mizuhashi.ParserError)"/>
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Error``1(Mizuhashi.ParserError)">
+            <summary>
+            Fails (non-fatally) with the given failure string.
+            <br/>Note: this does not consume, and therefore constructs a non-fatal error.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.ReturnOrError``1(BagoumLib.Functional.Either{``0,Mizuhashi.ParserError})">
+            <summary>
+            If the provided value is R, then <see cref="M:Mizuhashi.Combinators.PReturn``1(``0)"/> it;
+            else <see cref="M:Mizuhashi.Combinators.Error``1(Mizuhashi.ParserError)"/> it.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.ThenIg``2(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1})">
+            <summary>
+            FParsec .>>
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.IgThen``2(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1})">
+            <summary>
+            FParsec >>.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Then``2(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1})">
+            <summary>
+            FParsec .>>.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Between``3(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1},Mizuhashi.Parser{``2})">
+            <summary>
+            FParsec between
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Between``2(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1})">
+            <summary>
+            Parse the outer parser, then the middle parse, then the outer parser again, and return
+            the result from the middle parser.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Label``1(Mizuhashi.Parser{``0},System.String)">
+            <summary>
+            FParsec &lt;??&gt;
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Or``1(Mizuhashi.Parser{``0},Mizuhashi.Parser{``0})">
+            <summary>
+            FParsec &lt;|&gt;
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Choice``1(Mizuhashi.Parser{``0}[])">
+            <summary>
+            FParsec choice
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.ChoiceL``1(System.String,Mizuhashi.Parser{``0}[])">
+            <summary>
+            FParsec choiceL
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Opt``1(Mizuhashi.Parser{``0})">
+            <summary>
+            FParsec opt
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Optional``1(Mizuhashi.Parser{``0})">
+            <summary>
+            FParsec optional
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.OptionalOr``1(Mizuhashi.Parser{``0},``0)">
+            <summary>
+            FParsec &lt;|&gt;?
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.OptionalOrNone``1(Mizuhashi.Parser{``0})">
+            <summary>
+            Try to parse an object of type R, and return it as type Maybe&lt;R&gt;.
+            If it fails (non-catastrophically), then succeed with Maybe.None.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.OptionalOrNull``1(Mizuhashi.Parser{``0})">
+            <summary>
+            Try to parse an object of type R, and return it as type R?.
+            If it fails (non-catastrophically), then succeed with null(R?).
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.NotEmpty``1(Mizuhashi.Parser{``0})">
+            <summary>
+            FParsec notEmpty
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Repeat``1(Mizuhashi.Parser{``0},System.Int32)">
+            <summary>
+            Applies a parser a specific number of times, and returns the list of all results.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Many``1(Mizuhashi.Parser{``0},System.Boolean)">
+            <summary>
+            Applies a parser repeatedly until it errors, and returns a list of all results.
+            <br/>Note that if the parser errors fatally, this will error fatally as well.
+            <br/>To avoid infinite recursion, if the parser succeeds without consumption, this will fail.
+            <br/>FParsec many
+            </summary>
+            <param name="p">Parser to apply repeatedly</param>
+            <param name="atleastOne">If true, then will require at least one result</param>
+            <returns></returns>
+        </member>
+        <member name="M:Mizuhashi.Combinators.SkipMany``1(Mizuhashi.Parser{``0},System.Boolean)">
+            <summary>
+            Applies a parser repeatedly until it errors.
+            <br/>Note that if the parser errors fatally, this will error fatally as well.
+            <br/>To avoid infinite recursion, if the parser succeeds without consumption, this will fail.
+            <br/>FParsec many
+            </summary>
+            <param name="p">Parser to apply repeatedly</param>
+            <param name="atleastOne">If true, then will require at least one result</param>
+            <returns></returns>
+        </member>
+        <member name="M:Mizuhashi.Combinators.SepBy``2(Mizuhashi.Parser{``0},Mizuhashi.Parser{``1},System.Boolean)">
+            <summary>
+            Parse `p (sep p)*`. If atleastOne is false, then allows parsing nothing.
+            <br/>FParsec sepBy
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.SepByAll``1(Mizuhashi.Parser{``0},Mizuhashi.Parser{``0},System.Int32)">
+            <summary>
+            Parse `p (sep p)*`. Both p and sep are included in the results list.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.GetState``1">
+            <summary>
+            FParsec getUserState
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.SetState``1(``0)">
+            <summary>
+            FParsec setUserState
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.UpdateState``1(System.Func{``0,``0})">
+            <summary>
+            FParsec updateUserState
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.GetPosition">
+            <summary>
+            FParsec getPosition
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.WrapPositionI``2(Mizuhashi.Parser{``0},System.Func{System.Int32,``0,System.Int32,``1})">
+            <summary>
+            Take the position information (<see cref="T:System.Int32"/> start and (exclusive) end) from the parse
+             result and put it in a condensed type.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.WrapPosition``2(Mizuhashi.Parser{``0},System.Func{``0,Mizuhashi.PositionRange,``1})">
+            <summary>
+            Take the position information (<see cref="T:Mizuhashi.Position"/> start and (exclusive) end) from the parse
+             result and put it in a condensed type.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.EOF">
+            <summary>
+            Fails if the stream is not at end-of-file.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.NotEOF``1(Mizuhashi.Parser{``0})">
+            <summary>
+            Fail if the stream is at end-of-file. If it is not, then run the nested parser.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Char(System.Char,System.String)">
+            <summary>
+            Parse a specific character.
+            </summary>
+            <param name="c">Character</param>
+            <param name="expected">Description of character (generally only necessary for characters that are
+            not well displayed, such as space or tab)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Mizuhashi.Combinators.NotChar(System.Char,System.String)">
+            <summary>
+            Parse any character except the one provided character.
+            <param name="c">Character</param>
+            <param name="expected">Description of character (generally only necessary for characters that are
+            not well displayed, such as space or tab)</param>
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.SoftScan">
+            <summary>
+            Return the next character in the stream, or null if it empty, without advancing the stream.
+            <br/>This parser does not fail.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.AnyChar">
+            <summary>
+            Parse any character (but not EOF).
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.AnyOf(System.Collections.Generic.IReadOnlyList{System.Char})">
+            <summary>
+            Parse any of the provided characters.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.NoneOf(System.Collections.Generic.IReadOnlyList{System.Char})">
+            <summary>
+            Parse any character except the provided characters.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Satisfy(System.Func{System.Char,System.Boolean},System.String)">
+            <summary>
+            Parse a character that satisfies the predicate.
+            </summary>
+            <param name="pred">Predicate</param>
+            <param name="expected">Description of what the predicate does</param>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Satisfy(System.Func{Mizuhashi.InputStream,System.Boolean},System.String)">
+            <summary>
+            Parse the next character when the input stream satisfies the predicate.
+            </summary>
+            <param name="pred">Predicate</param>
+            <param name="expected">Description of what the predicate does</param>
+        </member>
+        <member name="M:Mizuhashi.Combinators.ManySatisfy(System.Func{System.Char,System.Boolean},System.Boolean,System.String)">
+            <summary>
+            Sequentially parse as many characters as possible that satisfy the predicate,
+            and returns a string composed of them.
+            </summary>
+            <param name="pred">Predicate</param>
+            <param name="atleastOne">If true, will require at least one match</param>
+            <param name="expected">Description of what the predicate does</param>
+        </member>
+        <member name="M:Mizuhashi.Combinators.ManySatisfyI(System.Func{Mizuhashi.InputStream,System.Boolean},System.Boolean,System.String)">
+            <summary>
+            Sequentially parse as many characters as possible while the input stream satisfies the predicate,
+            and returns a string composed of them.
+            </summary>
+            <param name="pred">Predicate</param>
+            <param name="atleastOne">If true, will require at least one match</param>
+            <param name="expected">Description of what the predicate does</param>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Many1Satisfy(System.Func{System.Char,System.Boolean},System.String)">
+            <summary>
+            ManySatisfy with atleastOne set to true.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.SkipManySatisfy(System.Func{System.Char,System.Boolean},System.Boolean,System.String)">
+            <summary>
+            Sequentially parse as many characters as possible that satisfy the predicate,
+             but returns nothing.
+            </summary>
+            <param name="pred">Predicate</param>
+            <param name="atleastOne">If true, will require at least one match</param>
+            <param name="expected">Description of what the predicate does</param>
+        </member>
+        <member name="M:Mizuhashi.Combinators.SkipMany1Satisfy(System.Func{System.Char,System.Boolean},System.String)">
+            <summary>
+            SkipManySatisfy with atleastOne set to true.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.Whitespace">
+            <summary>
+            Parses zero or more whitespaces (including newlines).
+            This parser cannot fail.
+            <br/>FParsec spaces
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.WhitespaceIL">
+            <summary>
+            Parses zero or more whitespaces (not including newlines).
+            This parser cannot fail.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.Whitespace1">
+            <summary>
+            Parses one or more whitespaces (including newlines).
+            <br/>FParsec spaces1
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.WhitespaceIL1">
+            <summary>
+            Parses one or more whitespaces (not including newlines).
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.Newline">
+            <summary>
+            Parses \r\n or \n, and returns \n.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Tab">
+            <summary>
+            Parses \t.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.AsciiLower">
+            <summary>
+            Parse a-z.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.AsciiUpper">
+            <summary>
+            Parse A-Z.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.AsciiLetter">
+            <summary>
+            Parse a-zA-Z.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.Lower">
+            <summary>
+            Parse any lowercase character.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.Upper">
+            <summary>
+            Parse any uppercase character.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.Letter">
+            <summary>
+            Parse any letter.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.LetterOrDigit">
+            <summary>
+            Parse any letter or digit.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.Digit">
+            <summary>
+            Parse any digit.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.Hex">
+            <summary>
+            Parse a-fA-F0-9.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.Octal">
+            <summary>
+            Parse 0-7.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.String(System.String)">
+            <summary>
+            Parses a string.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.StringIg(System.String)">
+            <summary>
+            Parses a string, but returns nothing.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.StringCI(System.String)">
+            <summary>
+            Matches a string (case-insensitive). Returns the parsed string.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Combinators.ParseInt">
+            <summary>
+            Parse a sequence of digits and converts them into an integer.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Helpers.ResultOrError``1(Mizuhashi.Parser{``0},Mizuhashi.InputStream)">
+            <summary>
+            Returns either the result of a parser, or its final failure.
+            <br/>Does not include backtracking information, but that is stored in s.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Helpers.ResultOrErrorString``1(Mizuhashi.Parser{``0},Mizuhashi.InputStream)">
+            <summary>
+            Returns either the result of a parser, or its error string.
+            <br/>The error string includes backtracking information.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.ParserError">
+            <summary>
+            Abstract type for errors that occur while parsing.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.LocatedParserError">
+            <summary>
+            A <see cref="T:Mizuhashi.ParserError"/> paired with a location in the source string.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.Markdown">
+            <summary>
+            A representation of a Markdown element.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.Markdown.Block">
+            <summary>
+            A top-level Markdown block that includes a tailing newline or EOF.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.Markdown.Block.Paired">
+            <summary>
+            Convenience structure that contains two sequential blocks. This is used by internal
+             parsing handling, but will not be present in the results if you call Document or Parse.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Parsers.Markdown.Block.Paired.#ctor(Mizuhashi.Parsers.Markdown.Block,Mizuhashi.Parsers.Markdown.Block)">
+            <summary>
+            Convenience structure that contains two sequential blocks. This is used by internal
+             parsing handling, but will not be present in the results if you call Document or Parse.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.Markdown.Block.Empty">
+            <summary>
+            Empty block.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.Markdown.Block.Paragraph">
+            <summary>
+            A paragraph is a sequence of lines separated by single newlines. It cannot be empty.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Parsers.Markdown.Block.Paragraph.#ctor(System.Collections.Generic.List{Mizuhashi.Parsers.Markdown.TextRun})">
+            <summary>
+            A paragraph is a sequence of lines separated by single newlines. It cannot be empty.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.Markdown.Block.List">
+            <summary>
+            An ordered or unordered sequence of paragraphs displayed with bullets.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Parsers.Markdown.Block.List.#ctor(System.Boolean,System.Collections.Generic.List{System.Collections.Generic.List{Mizuhashi.Parsers.Markdown.Block}})">
+            <summary>
+            An ordered or unordered sequence of paragraphs displayed with bullets.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.Markdown.Block.CodeBlock">
+            <summary>
+            A code-block that may have a language tag.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Parsers.Markdown.Block.CodeBlock.#ctor(System.String,System.String)">
+            <summary>
+            A code-block that may have a language tag.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.Markdown.Block.Header">
+            <summary>
+            A header.
+            </summary>
+            <param name="Size">1-6, where 1 is the largest</param>
+            <param name="Text">Header text</param>
+        </member>
+        <member name="M:Mizuhashi.Parsers.Markdown.Block.Header.#ctor(System.Int32,Mizuhashi.Parsers.Markdown.TextRun)">
+            <summary>
+            A header.
+            </summary>
+            <param name="Size">1-6, where 1 is the largest</param>
+            <param name="Text">Header text</param>
+        </member>
+        <member name="P:Mizuhashi.Parsers.Markdown.Block.Header.Size">
+            <summary>1-6, where 1 is the largest</summary>
+        </member>
+        <member name="P:Mizuhashi.Parsers.Markdown.Block.Header.Text">
+            <summary>Header text</summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.Markdown.Block.HRule">
+            <summary>
+            A horizontal rule.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.Markdown.TextRun">
+            <summary>
+            A sequence of Markdown text that contains at least one non-whitespace character.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parsers.MarkdownParser">
+            <summary>
+            A Markdown parser. The top-level function is <see cref="M:Mizuhashi.Parsers.MarkdownParser.Parse(System.String,Mizuhashi.Parsers.MarkdownParser.Settings)"/>.
+            <br/>Parsing Markdown is quite an annoyance, and there are a lot of ambiguities. It is highly likely that
+            there are imperfections in the handling here. Also, TODO: blockquotes, underscore-based bold/italics, and images
+            are not yet supported
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Parsers.MarkdownParser.ParseURLLink">
+            <summary>
+            Parses the URL link, assuming the opening ( has already been parsed.
+            <br/>If it fails, it does not consume.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.Parsers.MarkdownParser.ParseNLOrEOF">
+            <summary>
+            Returns true if there exists a newline, false if there exists an EOF, after any amount of inline whitespace.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Parsers.MarkdownParser.ParseBlock(Mizuhashi.Parsers.MarkdownParser.Settings)">
+            <summary>
+            The parser will NOT look for whitespace at the start corresponding to indent.
+            If you need to enforce whitespace, then do Spaces(indent).IgThen(block(indent)).
+            <br/>The parser WILL consume the newline that ends the block.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Parsers.MarkdownParser.Parse(System.String,Mizuhashi.Parsers.MarkdownParser.Settings)">
+            <summary>
+            Parse a Markdown document.
+            </summary>
+            <param name="markdownText">Markdown document as raw text</param>
+            <param name="settings">Indentation settings (defaults to an indent of 2)</param>
+            <returns>A list of Markdown blocks constituting the entire document. There is a possibility
+            that this throws an exception, but it *should be* impossible for parsing to fail.</returns>
+        </member>
+        <member name="T:Mizuhashi.Position">
+            <summary>
+            A description of a position in a stream, including line and column information.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.Position.Index">
+            <summary>
+            Index in the source string (0-indexed) of the next character.
+            <br/>This points out of bounds when the source has no elements left.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.Position.Line">
+            <summary>
+            Current line number (1-indexed).
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.Position.IndexOfLineStart">
+            <summary>
+            Index in the parse string of the first character in the current line.
+            <br/>Note that newlines (\n) are considered to be "at the end of the previous line".
+            <br/>Note that this may point out of bounds if the source ends with a newline.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.Position.Column">
+            <summary>
+            Column of the next character (1-indexed). This does not handle tab width.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Position.#ctor(System.String,System.Int32,System.Int32)">
+            <summary>
+            </summary>
+            <param name="source">Source string</param>
+            <param name="line">Line number (1-indexed)</param>
+            <param name="column">Column number (1-indexed)</param>
+        </member>
+        <member name="M:Mizuhashi.Position.Increment">
+            <summary>
+            Return this position with the index increased by one.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Mizuhashi.PositionRange">
+            <summary>
+            A description of a position range in a stream, with an inclusive start and exclusive end.
+            <br/>When printed, the columns are printed inclusively.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.InputStreamState.Position">
+            <summary>
+            Current position of the stream.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.InputStreamState.State">
+            <summary>
+            User-defined state variable.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.InputStream">
+            <summary>
+            A lightweight description of a parseable string.
+            <br/>A single mutable instance of this is threaded through the parsing process.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.InputStream.Source">
+            <summary>
+            Source string.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.InputStream.Description">
+            <summary>
+            Human-readable description of this parseable stream.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.InputStream.Stative">
+            <summary>
+            Mutable state of the input string.
+            <br/>Design-wise, it is possible to extract this into ParserResult and make the stream immutable,
+            but that's more expensive.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.InputStream.ShowAllFailures(Mizuhashi.LocatedParserError)">
+            <summary>
+            Returns an error string containing all rollback information and the final error.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.ResultStatus">
+            <summary>
+            The status of a parse result.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.ResultStatus.OK">
+            <summary>
+            Parsing was successful.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.ResultStatus.ERROR">
+            <summary>
+            Parsing failed, but backtracking is enabled.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.ResultStatus.FATAL">
+            <summary>
+            Parsing failed and backtracking is not enabled.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.ParseResult`1">
+            <summary>
+            The result of running a parser on a string.
+            </summary>
+            <typeparam name="R">Type of parser return value.</typeparam>
+        </member>
+        <member name="P:Mizuhashi.ParseResult`1.Error">
+            <summary>
+            Errors may be present even if the parsing was successful, specifically during no-consume successes.
+             Consider the example: \(A(,B)?\) which parses either (A) or (A,B). If we provide (AB) then the
+             error should print "expected ',' or ')'", the first part of which is provided by the optional parser.
+            <br/>Errors are always present if parsing fails.
+            </summary>
+        </member>
+        <member name="T:Mizuhashi.Parser`1">
+            <summary>
+            A parser is a function that accepts a string to parse and an initial state,
+            passes it through parsing code,
+            and returns a parse result (which, loosely speaking, contains either a result value or an error).
+            </summary>
+        </member>
+    </members>
+</doc>

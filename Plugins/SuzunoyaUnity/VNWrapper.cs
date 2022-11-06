@@ -57,6 +57,10 @@ public class DialogueLogEntry {
         readableSpeech += nxt.Line.Readable;
     }
 }
+
+/// <summary>
+/// A wrapper around an executing VN context that links it to the Unity backlog and allows destroying the VN context based on Unity input.
+/// </summary>
 public class ExecutingVN {
     public readonly IVNState vn;
     public readonly List<IDisposable> tokens;

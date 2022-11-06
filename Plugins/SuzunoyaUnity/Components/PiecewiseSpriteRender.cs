@@ -23,11 +23,16 @@ public class PiecewiseSpriteRender : PiecewiseRender {
     public override string SortingLayerFromPrefab => sr.sortingLayerName;
     
     private void Awake() {
-        transform.localPosition = offsetPx * (1 / sr.sprite.pixelsPerUnit);
+        Relocate();
         for(int ii = 0; ii < emotes.Length; ++ii) {
             emotes[ii].emote = emotes[ii].emote.ToLower();
             emoteMap[emotes[ii].emote] = emotes[ii].sprite;
         }
+    }
+
+    [ContextMenu("Relocate")]
+    private void Relocate() {
+        transform.localPosition = offsetPx * (1 / sr.sprite.pixelsPerUnit);
     }
 
 

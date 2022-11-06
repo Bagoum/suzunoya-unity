@@ -1,0 +1,1663 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Suzunoya</name>
+    </assembly>
+    <members>
+        <member name="T:Suzunoya.Assertions.EntityAssertion">
+            <summary>
+            Base class for assertions that operate over Suzunoya entity objects
+            (specifically anything deriving <see cref="T:Suzunoya.Entities.IRendered"/>).
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion.ID">
+            <inheritdoc cref="!:IAssertion&lt;T&gt;.ID"/>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion.Priority">
+            <inheritdoc cref="!:IAssertion&lt;T&gt;.Priority"/>
+        </member>
+        <member name="F:Suzunoya.Assertions.EntityAssertion.Parent">
+            <summary>
+            The entity assertion for the <see cref="T:Suzunoya.Entities.ITransform"/>
+             that is a parent for this assertion's bound object.
+            See <see cref="!:EntityAssertion&lt;T&gt;.TakeParent"/>
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion.Children">
+            <summary>
+            Assertions for all the <see cref="T:Suzunoya.Entities.ITransform"/>s that
+             are children of this assertion's bound object.
+            See <see cref="M:Suzunoya.Assertions.EntityAssertion`1.WithChildren(Suzunoya.Assertions.EntityAssertion[])"/>
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion.Location">
+            <summary>
+            Bound to <see cref="P:Suzunoya.Entities.ITransform.Location"/>
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion.EulerAnglesD">
+            <summary>
+            Bound to <see cref="P:Suzunoya.Entities.ITransform.EulerAnglesD"/>
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion.Scale">
+            <summary>
+            Bound to <see cref="P:Suzunoya.Entities.ITransform.Scale"/>
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion.Tint">
+            <summary>
+            Bound to <see cref="!:IRendered.Tint"/>
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion.BoundGeneric">
+            <summary>
+            The renderable object produced by this assertion.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion.TakeParent(Suzunoya.Assertions.EntityAssertion)">
+            <summary>
+            Set the <see cref="F:Suzunoya.Assertions.EntityAssertion.Parent"/> of this assertion.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Assertions.EntityAssertion`1">
+            <summary>
+            Assertions that operate over Suzunoya entity objects
+            (specifically anything deriving <see cref="T:Suzunoya.Entities.IRendered"/>).
+            </summary>
+            <typeparam name="C">Type of entity</typeparam>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion`1.vn">
+            <summary>
+            VNState within which this entity is contained.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion`1.ExtraBind">
+            <summary>
+            Extra bindings to apply to actualized objects.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion`1.OnActualize">
+            <summary>
+            Callback to invoke when an actualized object is first create (not during inheritance).
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion`1.DynamicEntryAllowed">
+            <summary>
+            Whether or not this object should perform an entry animation (such as a fade-in)
+             after its object is created during gameplay.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.DefaultDynamicEntryHandler(`0)">
+            <summary>
+            Default entry animation.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion`1.DynamicEntryHandler">
+            <summary>
+            Entry animation. Defaults to <see cref="M:Suzunoya.Assertions.EntityAssertion`1.DefaultDynamicEntryHandler(`0)"/>. Only runs if <see cref="P:Suzunoya.Assertions.EntityAssertion`1.DynamicEntryAllowed"/> is set to true.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion`1.DynamicExitAllowed">
+            <summary>
+            Whether or not this object should perform an exit animation (such as a fade-out)
+             before its object is destroyed during gameplay.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.DefaultDynamicExitHandler(`0)">
+            <summary>
+            Default exit animation.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion`1.DynamicExitHandler">
+            <summary>
+            Exit animation. Defaults to <see cref="M:Suzunoya.Assertions.EntityAssertion`1.DefaultDynamicExitHandler(`0)"/>. Only runs if <see cref="P:Suzunoya.Assertions.EntityAssertion`1.DynamicExitAllowed"/> is set to true.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion`1.Bound">
+            <inheritdoc cref="P:Suzunoya.Assertions.EntityAssertion`1.BoundGeneric"/>
+        </member>
+        <member name="P:Suzunoya.Assertions.EntityAssertion`1.BoundGeneric">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.HandleDynamicExit(System.Func{`0,System.Threading.Tasks.Task})">
+            <summary>
+            Enable ad set an exit animation.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.#ctor(Suzunoya.ControlFlow.IVNState,System.String)">
+            <summary>
+            Create an entity assertion for the given entity type.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.Bind(`0)">
+            <summary>
+            Bind the ent's fields to the values in this assertion. Run before the ent is added to the VNState.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.LateBind(`0)">
+            <summary>
+            Bind the ent's fields to the values in this assertion. Run after the object is added to the VNState.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.ActualizeOnNewState">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.ActualizeOnNoPreceding">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.DeactualizeOnEndState">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.DeactualizeOnNoSucceeding">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1.WithChildren(Suzunoya.Assertions.EntityAssertion[])">
+            <summary>
+            Add children to this assertion, calling <see cref="M:Suzunoya.Assertions.EntityAssertion.TakeParent(Suzunoya.Assertions.EntityAssertion)"/> on each of them.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.EntityAssertion`1._Inherit(Suzunoya.Assertions.EntityAssertion{`0})">
+            <inheritdoc />
+        </member>
+        <member name="T:Suzunoya.ControlFlow.BoundedContext">
+            <summary>
+            Non-generic base class for BoundedContext&lt;T&gt;.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.BoundedContext.VN">
+            <summary>
+            The <see cref="T:Suzunoya.ControlFlow.IVNState"/> within which the bounded context is executing.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.BoundedContext.ID">
+            <summary>
+            An identifier for the bounded context.
+            If this is empty, then the context will be considered unidentifiable,
+             and features such as save/load will be disabled.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.BoundedContext.Identifiable">
+            <summary>
+            Whether this bounded context has an identifier that allows it to be identified for save/load and persistent
+             data storage in BCTXData.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.BoundedContext.#ctor(Suzunoya.ControlFlow.VNState,System.String)">
+            <summary>
+            Create a bounded context.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.StrongBoundedContext`1">
+            <summary>
+            A <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> with the guarantee that any lasting effects on game state
+             produced by running this task are duplicated in <see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.ShortCircuit"/>.
+            <br/><see cref="M:Suzunoya.ControlFlow.VNState.SaveLocalValue``1(System.String,``0)"/> does NOT need to be duplicated in ShortCircuit,
+             as it can be automatically handled in <see cref="T:Suzunoya.Data.BoundedContextData"/>. However, any other modifications
+             to instance data must be duplicated in ShortCircuit.
+            <br/>Note that if these are nested, then the outer SBC must also execute the short-circuit code
+             in all of its nested children in its own short-circuit.
+            <br/>When skipping the game state to various points for usages such as loading or backlogging,
+             the engine may skip the entirety of a StrongBoundedContext.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.StrongBoundedContext`1.ShortCircuit">
+            <summary>
+            Code to run if the BCTX is short-circuit that should mimic any nontransient
+             changes to the world state.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.StrongBoundedContext`1.OnFinish">
+            <summary>
+            Code to run at the end of the BCTX execution. Also run if short-circuit.
+             Useful for encoding state changes without duplicating them in <see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.ShortCircuit"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.StrongBoundedContext`1.LoadingDefault">
+            <summary>
+            Default value to provide for this bounded context if it needs to be skipped during loading,
+             but has not saved a result value in the instance save.
+            <br/>This only occurs if execution of the context was limited by an if statement/etc
+             without a ComputeFlag guard, or if an update was made to the game.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.StrongBoundedContext`1.#ctor(Suzunoya.ControlFlow.VNState,System.String,System.Func{System.Threading.Tasks.Task{`0}},System.Action,System.Action)">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.StrongBoundedContext`1"/>
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.BoundedContext`1">
+            <summary>
+            A representation of a (possibly nested) task run on a VNState.
+            <br/>The return value of the contained task is automatically saved in the VNState when this runs to completion.
+            <br/>All external awaited tasks should be wrapped in BoundedContext (see <see cref="!:VNState.Bound&lt;T&gt;"/>)
+            </summary>
+            <typeparam name="T">Type of the return value of the contained task</typeparam>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.IsCompletedInContexts(System.String[])">
+            <summary>
+            Return true if the context has been executed and completed in the given parentage path.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.#ctor(Suzunoya.ControlFlow.VNState,System.String,System.Func{System.Threading.Tasks.Task{`0}})">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/>
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.GetAwaiter">
+            <summary>
+            Syntactic sugar for `await ctx.Execute()`.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.OpenedContext">
+            <summary>
+            A representation of a currently-executing <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> within a <see cref="T:Suzunoya.ControlFlow.IVNState"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.OpenedContext.BCtx">
+            <summary>
+            The bounded context that is currently being executed.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.OpenedContext.Data">
+            <summary>
+            The local data of the bounded context
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.OpenedContext.ID">
+            <inheritdoc cref="P:Suzunoya.ControlFlow.BoundedContext.ID"/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.OpenedContext.RemapData(Suzunoya.Data.IInstanceData)">
+            <summary>
+            Link <see cref="P:Suzunoya.ControlFlow.OpenedContext.Data"/> to the data in the provided <see cref="T:Suzunoya.Data.IInstanceData"/>.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.OpenedContext`1">
+            <inheritdoc cref="T:Suzunoya.ControlFlow.OpenedContext"/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.OpenedContext`1.BCtx">
+            <inheritdoc cref="P:Suzunoya.ControlFlow.OpenedContext.BCtx"/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.OpenedContext`1.Data">
+            <inheritdoc cref="P:Suzunoya.ControlFlow.OpenedContext.Data"/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.OpenedContext`1.RemapData(Suzunoya.Data.IInstanceData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.OpenedContext`1.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.ControlFlow.OpenedContext`1.ToString">
+            <inheritdoc />
+        </member>
+        <member name="F:Suzunoya.ControlFlow.SkipMode.LOADING">
+            <summary>
+            Loading state during backlogging or loading a save file.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ControlFlow.SkipMode.AUTOPLAY">
+            <summary>
+            Autoplay state (confirms after delay) that can be activated at player will.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ControlFlow.SkipMode.FASTFORWARD">
+            <summary>
+            Fast-forward state that can be activated at player will.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.IVNInterruptionToken">
+            <summary>
+            A disposable-ish token returned when the current VN execution is interrupted.
+            <br/>To end the interruption, "dispose" this token by calling <see cref="M:Suzunoya.ControlFlow.IVNInterruptionToken.ReturnInterrupt(BagoumLib.InterruptionStatus)"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNInterruptionToken.ReturnInterrupt(BagoumLib.InterruptionStatus)">
+            <summary>
+            Finish interrupting the enclosing process layer.
+            <br/>Has no effect if called a second time.
+            </summary>
+            <param name="resultStatus">Either <see cref="F:BagoumLib.InterruptionStatus.Normal"/> (continue the enclosing process)
+             or <see cref="F:BagoumLib.InterruptionStatus.Abort"/> (stop the enclosing process).</param>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNInterruptionToken.FinalStatus">
+            <summary>
+            The status provided to <see cref="M:Suzunoya.ControlFlow.IVNInterruptionToken.ReturnInterrupt(BagoumLib.InterruptionStatus)"/> (or null if it has not been called yet).
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.VNInterruptionLayer">
+            <summary>
+            An executing process layer on a VN, described by <see cref="T:Suzunoya.ControlFlow.VNInterruptionLayer"/>,
+             may be interrupted by another process layer (<see cref="M:Suzunoya.ControlFlow.VNState.Interrupt"/>) and later resumed.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNInterruptionLayer.VN">
+            <summary>
+            VN on which this process layer is running.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNInterruptionLayer.Parent">
+            <summary>
+            The parent process layer that this process layer interrupted.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNInterruptionLayer.Status">
+            <summary>
+            The current status of the process layer.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNInterruptionLayer.InducedOperationCancelLevel">
+            <summary>
+            The <see cref="T:BagoumLib.Cancellation.ICancellee"/> skip level corresponding to <see cref="P:Suzunoya.ControlFlow.VNInterruptionLayer.Status"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNInterruptionLayer.InterruptedBy">
+            <summary>
+            The interruption currently interrupting this process layer.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNInterruptionLayer.CurrentProcesses">
+            <summary>
+            The currently-executing processes on this process layer, all sharing a single skip/confirm token.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNInterruptionLayer.ConfirmToken">
+            <summary>
+            <see cref="P:Suzunoya.ControlFlow.VNInterruptionLayer.CurrentProcesses"/>?.<see cref="P:Suzunoya.ControlFlow.VNProcessGroup.ConfirmToken"/>
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNInterruptionLayer.#ctor(Suzunoya.ControlFlow.IVNState,Suzunoya.ControlFlow.VNInterruptionLayer)">
+            <summary>
+            Create a new process layer. (Should only be called by <see cref="T:Suzunoya.ControlFlow.VNState"/>)
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNInterruptionLayer.GetOrMakeProcessGroup">
+            <summary>
+            Get the currently-executing process group, or create a new one if none exists.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNInterruptionLayer.DoConfirm">
+            <summary>
+            Send a confirm input to the currently-executing process group.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.VNLocation">
+            <summary>
+            A class describing a saveable position within a VN. 
+            <br/>A position is a script line ID contextualized by the (non-empty) lists of contexts.
+            <br/>By default, positions are associated with script lines, but
+            can be manually established via the vn.RecordPosition(VNLocation) function.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.#ctor">
+            <summary>
+            Json constructor-- do not use.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.ContextsMatchPrefix(System.Collections.Generic.List{Suzunoya.ControlFlow.OpenedContext})">
+            <summary>
+            Return true iff the provided contexts are a nonstrict prefix of this object's contexts.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.VNCancellee">
+            <summary>
+            A wrapper around a cancellation token that also links to the containing VN.
+            </summary>
+            <param name="vn"></param>
+            <param name="cT"></param>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNCancellee.#ctor(Suzunoya.ControlFlow.IVNState,BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            A wrapper around a cancellation token that also links to the containing VN.
+            </summary>
+            <param name="vn"></param>
+            <param name="cT"></param>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNCancellee.vn">
+            <summary></summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNCancellee.cT">
+            <summary></summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.ILazyAwaitable">
+            <summary>
+            A lazy wrapper around a task that is not started until it is awaited.
+            This allows chaining in ways that are a bit difficult for tasks.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.ILazyAwaitable.Task">
+            <summary>
+            Task object (accessing this property will cause it to be computed).
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.ILazyAwaitable.GetAwaiter">
+            <summary>
+            Syntactic sugar for `await Task`.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ControlFlow.ILazyAwaitable.Null">
+            <summary>
+            Awaitable that does nothing.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.ILazyAwaitable`1">
+            <summary>
+            <see cref="T:Suzunoya.ControlFlow.ILazyAwaitable"/> with a specified task return type.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.ILazyAwaitable`1.Task">
+            <inheritdoc cref="P:Suzunoya.ControlFlow.ILazyAwaitable.Task"/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.ILazyAwaitable`1.GetAwaiter">
+            <inheritdoc cref="M:Suzunoya.ControlFlow.ILazyAwaitable.GetAwaiter"/>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.LazyFunc`1">
+            <summary>
+            An function pretending to be a task.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.LazyFunc`1.#ctor(System.Func{`0})">
+            <summary>
+            An function pretending to be a task.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.LazyFunc`1.Task">
+            <inheritdoc cref="P:Suzunoya.ControlFlow.ILazyAwaitable.Task"/>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.LazyAction">
+            <summary>
+            An action predenting to be a task.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.VNProcessGroup">
+            <summary>
+            A group of processes (generally <see cref="T:Suzunoya.ControlFlow.VNOperation"/>)
+            running on a VN bounded by a common cancellation/confirmation/interruption interface.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNProcessGroup.ProcessLayer">
+            <summary>
+            The process layer on which this process group is running.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNProcessGroup.VN">
+            <summary>
+            The <see cref="T:Suzunoya.ControlFlow.IVNState"/> on which this process group is running.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNProcessGroup.LastInterruption">
+            <summary>
+            The last interruption that occured on this process group.
+            <br/>NB: This is not set to null when the interruption is complete.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNProcessGroup.OperationCTS">
+            <summary>
+            The cancellation token source bounding execution of this process group.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ControlFlow.VNProcessGroup.userSkipAllowed">
+            <summary>
+            Whether or not the user can skip this process group.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNProcessGroup.OperationCToken">
+            <summary>
+            The cancellation token bounding execution of this process group.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNProcessGroup.CancelLevel">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNProcessGroup.Root">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.VNConfirmTask">
+            <summary>
+            The task that is produced when waiting for a confirmation signal.
+            This is similar to VNOperation, but cannot be soft-skipped except by interruption.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNConfirmTask.#ctor(Suzunoya.ControlFlow.IVNState,Suzunoya.ControlFlow.VNOperation,System.Func{Suzunoya.ControlFlow.VNProcessGroup,System.Threading.Tasks.Task{BagoumLib.Completion}})">
+            <summary>
+            The task that is produced when waiting for a confirmation signal.
+            This is similar to VNOperation, but cannot be soft-skipped except by interruption.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.VNOperation">
+            <summary>
+            A VNOperation is a sequential sequence of tasks bounded by a common cancellation/interruption interface.
+            <br/>The cancellation/interruption is provided through <see cref="T:Suzunoya.ControlFlow.VNProcessGroup"/>.
+            If multiple VNOperations are run at the same time, they may end up sharing the same <see cref="T:Suzunoya.ControlFlow.VNProcessGroup"/>.
+            <br/>Tasks batched under a VNOperation do not need to check cancellation at their start or end.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.IVNState">
+            <summary>
+            A top-level stateful object containing all information for the execution of a visual novel.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.InstanceData">
+            <summary>
+            Save data specific to the save file backing this execution.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.GlobalData">
+            <summary>
+            Save data common to all save files.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.CToken">
+            <summary>
+            A cancellation token bounded by the lifetime of the <see cref="T:Suzunoya.ControlFlow.IVNState"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.dT">
+            <summary>
+            Within the update loop, this is set to the delta-time of the frame.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.MainDialogue">
+            <summary>
+            The main dialogue box, if it exists.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.MainDialogueOrThrow">
+            <summary>
+            Get the main dialogue box or throw an exception.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.Contexts">
+            <summary>
+            A list of currently-executing nested <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/>s.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.ContextStarted">
+            <summary>
+            An event called when a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> begins.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.ContextFinished">
+            <summary>
+            An event called when a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> ends.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.LowestContext">
+            <summary>
+            The most recently opened bounded context (<see cref="P:Suzunoya.ControlFlow.IVNState.Contexts"/>[^1]).
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.SkippingMode">
+            <summary>
+            Returns the type of skipping the VN currently has active.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.SetSkipMode(System.Nullable{Suzunoya.ControlFlow.SkipMode})">
+            <summary>
+            Set the skip mode. Note that you cannot set the skip mode to LOADING.
+            <br/>Some modes may be disabled (eg. autoplay, fastforward may be disabled for replay-safe uses).
+            If you try to set the skip mode to a disabled mode, the function will return false. Otherwise,
+            it will return true.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.TryFullSkip">
+            <summary>
+            If the VNState allows full-skipping, then skips the entire VNState (ie. destroy it).
+            <br/>Returns true iff a skip was performed.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.AutoplayFastforwardAllowed">
+            <summary>
+            True if autoplay and fastforward are allowed as operations.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.TimePerAutoplayConfirm">
+            <summary>
+            The amount of time the VNState will wait before executing confirm commands while autoplaying.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.TimePerFastforwardConfirm">
+            <summary>
+            The amount of time the VNState will wait before executing confirm commands while fastforwarding.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.PauseGameplay">
+            <summary>
+            Implement this in derived classes to provide a way for entities such as dialogue boxes to pause the game.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.OpenLog">
+            <summary>
+            Implement this in derived classes to provide a way for entities such as dialogue boxes to open the dialogue log.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.DefaultRenderGroup">
+            <summary>
+            The default rendering group.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.Add``1(``0,Suzunoya.Display.RenderGroup,System.Nullable{System.Int32})">
+            <summary>
+            Add an entity to the VNState.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState._AddRenderGroup(Suzunoya.Display.RenderGroup)">
+            <summary>
+            This is called within the RenderGroup constructor. You do not need to call it explicitly.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.Update(System.Single)">
+            <summary>
+            Update all entities controlled by the VNState.
+            </summary>
+            <param name="deltaTime"></param>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.Run(System.Collections.IEnumerator)">
+            <summary>
+            Run a coroutine.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.SpinUntilConfirm(Suzunoya.ControlFlow.VNOperation)">
+            <summary>
+            Create a lazy task that completes when a Confirm is sent to the VNState (see <see cref="M:Suzunoya.ControlFlow.IVNState.UserConfirm"/>).
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.UserConfirm">
+            <summary>
+            Use this to proceed operations that require confirmation via SpinUntilConfirm.
+            <returns>True iff a confirmation occurred.</returns>
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.GetOperationCanceller(Suzunoya.ControlFlow.VNProcessGroup@,System.Boolean)">
+            <summary>
+            Get a cToken that indicates when a task has been cancelled via skip.
+            <br/>The caller should dispose the IDisposable when their task is complete, whether or not it has been skipped.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.SkipOperation">
+            <summary>
+            Skip the current operation. This will result in a skip even if user input skips are ignored.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.RequestSkipOperation">
+            <summary>
+            Called through user input. Use to skip animations or the like.
+            <br/>Note that a skip may not occur as a result if user input is set to be ignored.
+            <br/>Returns true if a skip occurred.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.ExecuteContext``1(Suzunoya.ControlFlow.BoundedContext{``0},System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Executes the bounded context, saves the output value in instance save data, and returns the output value.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.RecordCG(Suzunoya.Entities.IGalleryable)">
+            <summary>
+            Record a gallery object as having been viewed ingame. (WIP)
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.InstanceDataChanged">
+            <summary>
+            Event that is published whenever the instance data changes,
+             either due to the ending of a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/>
+             or a value manually saved via <see cref="M:Suzunoya.ControlFlow.VNState.SaveContextValue``1(System.String,``0,System.String[])"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.UpdateInstanceData">
+            <summary>
+            Update and return the save data.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.DeleteAll">
+            <summary>
+            Cascade destroy all currently running enumerators, then destroy all objects.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.DialogueLog">
+            <summary>
+            Log of all dialogue passed through this VNState.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.EntityCreated">
+            <summary>
+            Event called when an entity is added to the VNState.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.RenderGroupCreated">
+            <summary>
+            Event called when a render group is added to the VNState.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.AwaitingConfirm">
+            <summary>
+            Null if no target is waiting for a confirm.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.InputAllowed">
+            <summary>
+            Whether or not VN components should allow user input. Set this to false eg. during pauses.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.VNStateActive">
+            <summary>
+            When this is set to false, the VN is destroyed and no further operations can be run.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.OperationID">
+            <summary>
+            The current operation being executed on the VNState.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.Logs">
+            <summary>
+            All logs from executed VN code.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.TryGetContextData``1(Suzunoya.Data.BoundedContextData{``0}@,System.String[])">
+            <summary>
+            Try to get the local data for the <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> with the given parentage path.
+            <br/>If a context is executed multiple times in different parent contexts, the local data is not shared.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.AllowsRepeatContextExecution">
+            <summary>
+            True if it is possible to run a context twice.
+            <br/>This will avoid throwing a "duplicate definition" exception.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.VNState">
+            <inheritdoc cref="T:Suzunoya.ControlFlow.IVNState"/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.dT">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.LoadTo">
+            <summary>
+            If this value is set (via LoadLocation),
+            the VNState will almost instantaneously skip forward to the given location.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.LoadToLocation(Suzunoya.ControlFlow.VNLocation,Suzunoya.Data.IInstanceData,System.Action)">
+            <summary>
+            Before loading, the <see cref="T:Suzunoya.ControlFlow.VNState"/> should be initialized with the
+             save data that it had *before* running the BCtx being loaded into.
+            <br/>The instance data at the time of save, with the BCtx partially executed,
+             should be passed as <see cref="!:replayer"/> here.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.IsLoadSkipping">
+            <summary>
+            While this value is true, the current operation should be skipped in order to load to the target LoadTo.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ControlFlow.VNState.FastforwardReadTextOnly">
+            <summary>
+            True iff only read text can be fast-forwarded. 
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.AllowFullSkip">
+            <summary>
+            True iff the entire VN sequence can be skipped with a single button.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.SetSkipMode(System.Nullable{Suzunoya.ControlFlow.SkipMode})">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.SkippingMode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.TryFullSkip">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.AutoplayFastforwardAllowed">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.TimePerAutoplayConfirm">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.TimePerFastforwardConfirm">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.DefaultLoadSkipUnit">
+            <summary>
+            True iff bounded contexts with Unit return type can be skipped
+            even if they have no save data.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.MainDialogue">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.DialogueLog">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.Tokens">
+            <summary>
+            The disposable tokens within the scope of this object.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ControlFlow.VNState.extCToken">
+            <summary>
+            Cancellation token provided by external controls.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ControlFlow.VNState.lifetimeToken">
+            <summary>
+            Cancellation token governing the lifetime of the VNState.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.ResetInterruptStatus">
+            <summary>
+            Reset the interruption status on the current process layer.
+            <br/>Call this after a BCTX is finished running in an ADV context to avoid cross-pollution of interruption.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.InterruptionStarted">
+            <summary>
+            Event called when an interruption layer is added.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.InterruptionEnded">
+            <summary>
+            Event called when an interruption layer is completed.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.CToken">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.Contexts">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.ContextStarted">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.ContextFinished">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.InstanceDataChanged">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.ContextsDescriptor">
+            <summary>
+            A string describing all the currently-opened <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/>s. This should only be used
+             for logging purposes.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.DefaultRenderGroup">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.RenderGroups">
+            <summary>
+            All active rendering groups.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.EntityCreated">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.RenderGroupCreated">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.AwaitingConfirm">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.InputAllowed">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.OperationID">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.Logs">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.VNStateActive">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.InstanceData">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.MainDialogueOrThrow">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.AllowsRepeatContextExecution">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.#ctor(BagoumLib.Cancellation.ICancellee,Suzunoya.Data.IInstanceData)">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNState"/>.
+            </summary>
+            <param name="extCToken">Cancellation token bounding the execution of the VN</param>
+            <param name="save">Save file for the VN</param>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.MakeDefaultRenderGroup">
+            <summary>
+            Create a default rendering group. This is called at the end of the constructor.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.GetOperationCanceller(Suzunoya.ControlFlow.VNProcessGroup@,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.ExecuteContext``1(Suzunoya.ControlFlow.BoundedContext{``0},System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Execute a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/>, nesting its execution within any currently-running contexts.
+            </summary>
+            <param name="ctx"><see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> providing metadata of execution</param>
+            <param name="innerTask">Task code to execute</param>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.TryGetContextData``1(Suzunoya.Data.BoundedContextData{``0}@,System.String[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.GetContextData(System.String[])">
+            <summary>
+            Get the local data for the <see cref="T:Suzunoya.ControlFlow.BoundedContext"/> with the provided parentage path,
+            or throw an exception if it is not found.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.GetContextData``1(System.String[])">
+            <summary>
+            Get the local data for the <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> with the provided parentage path,
+            or throw an exception if it is not found.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.GetContextResult``1(System.String[])">
+            <summary>
+            Get the saved result (ie. return value) of the context with the provided ID list.
+            <br/>Will throw if the variable is not assigned.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.TryGetContextValue``1(System.String,``0@,System.String[])">
+            <summary>
+            Try to get a saved local variable assigned to the context with the provided ID list.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.GetContextValue``1(System.String,System.String[])">
+            <summary>
+            Get a saved local variable assigned to the context with the provided ID list.
+            <br/>Will throw if the variable is not assigned.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.TryGetLocalValue``1(System.String,``0@)">
+            <summary>
+            Try to get a saved variable assigned to the current context.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.GetLocalValue``1(System.String)">
+            <summary>
+            Get a saved variable assigned to the current context.
+            <br/>Will throw if the variable is not assigned.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.GetLocalValueOrDefault``1(System.String,System.Func{``0})">
+            <summary>
+            Try to get a saved variable assigned to the current context.
+            <br/>If it does not exist, create the variable and assign it a
+             value from the defaulter function.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.SaveContextValue``1(System.String,``0,System.String[])">
+            <summary>
+            WARNING: THIS FUNCTION MAY NOT BE SAFE TO CALL WITHIN A BOUNDEDCONTEXT.
+             EDITING OTHER CONTEXTS' DATA MAY CAUSE ISSUES WITH LOADING.
+            Save a variable to the context with the provided ID list. It can be accessed via
+            <see cref="M:Suzunoya.ControlFlow.VNState.GetContextValue``1(System.String,System.String[])"/> or <see cref="M:Suzunoya.ControlFlow.VNState.GetLocalValue``1(System.String)"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.SaveLocalValue``1(System.String,``0)">
+            <summary>
+            Save a variable to the current bounded context. It can be accessed via
+            <see cref="M:Suzunoya.ControlFlow.VNState.GetContextValue``1(System.String,System.String[])"/> or <see cref="M:Suzunoya.ControlFlow.VNState.GetLocalValue``1(System.String)"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.GetFlag(System.String[])">
+            <summary>
+            Get the boolean result of a bounded context.
+            <br/>Alias for <see cref="M:Suzunoya.ControlFlow.VNState.GetContextValue``1(System.String,System.String[])"/> with T=bool
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.Flush">
+            <summary>
+            Update with a timestep of zero to flush any cancelled coroutines.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.Update(System.Single)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.Find``1">
+            <summary>
+            Find an entity of type T, or throw.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.FindEntity``1">
+            <summary>
+            Find an entity of type T, or return null.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.FindEntity(System.Type)">
+            <summary>
+            Find an entity of the provided type, or return null.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.FindEntities``1">
+            <summary>
+            Find all entities of the provided type.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.Add``1(``0,Suzunoya.Display.RenderGroup,System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState._AddRenderGroup(Suzunoya.Display.RenderGroup)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.Wait(System.Single)">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> that waits for the given amount of time.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.Wait(System.Func{System.Boolean})">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> that waits until the condition is satisfied.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.WaitExternal``1(System.Threading.Tasks.Task{``0})">
+            <summary>
+            Wrap an external task (that does not respect skip/cancel semantics) in a cancellable VNOperation.
+            <br/>Note that this cannot be skipped. It will loop.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.Run(System.Collections.IEnumerator)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.Parallel(Suzunoya.ControlFlow.ILazyAwaitable[])">
+            <summary>
+            Run multiple <see cref="T:Suzunoya.ControlFlow.ILazyAwaitable"/>s in parallel.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.Sequential(Suzunoya.ControlFlow.ILazyAwaitable[])">
+            <summary>
+            Run multiple <see cref="T:Suzunoya.ControlFlow.ILazyAwaitable"/>s in sequence.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.Interrupt">
+            <summary>
+            Add a new interruption layer. This hangs the VNOperations on the current layer
+             until it is resumed.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.SpinUntilConfirm(Suzunoya.ControlFlow.VNOperation)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.UserConfirm">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.SkipOperation">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.RequestSkipOperation">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.RecordCG(Suzunoya.Entities.IGalleryable)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState._DeleteAll">
+            <summary>
+            Inner handler called by <see cref="M:Suzunoya.ControlFlow.VNState.DeleteAll"/> to destroy all dependencies of this object.
+            </summary>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.DeleteAll">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.UpdateInstanceData">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.OpenLog">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNState.PauseGameplay">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.Data.IGlobalData">
+            <summary>
+            Container for data relevant to VN execution that is shared by all instances.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.IGlobalData.LineRead(System.String)">
+            <summary>
+            Inform the save data that a certain line has been read.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.IGlobalData.IsLineRead(System.String)">
+            <summary>
+            Check whether a line has been read.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Data.GlobalData">
+            <summary>
+            A barebones implementation of <see cref="T:Suzunoya.Data.IGlobalData"/>.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Data.BoundedContextData">
+            <summary>
+            A recursive data structure containing locals and results for bounded contexts in the process
+            of execution or having finished execution.
+            The result value is typed in subclass <see cref="T:Suzunoya.Data.BoundedContextData`1"/>.
+            </summary>
+            <param name="Key">String key for this bounded context. If empty, it cannot be accurately saved.</param>
+            <param name="Locals">Variables saved to this bounded context via <see cref="M:Suzunoya.ControlFlow.VNState.SaveLocalValue``1(System.String,``0)"/>.</param>
+            <param name="Nested">Data for bounded contexts executed within this one.</param>
+        </member>
+        <member name="M:Suzunoya.Data.BoundedContextData.#ctor(System.String,Suzunoya.Data.KeyValueRepository,System.Collections.Generic.Dictionary{System.String,Suzunoya.Data.BoundedContextData})">
+            <summary>
+            A recursive data structure containing locals and results for bounded contexts in the process
+            of execution or having finished execution.
+            The result value is typed in subclass <see cref="T:Suzunoya.Data.BoundedContextData`1"/>.
+            </summary>
+            <param name="Key">String key for this bounded context. If empty, it cannot be accurately saved.</param>
+            <param name="Locals">Variables saved to this bounded context via <see cref="M:Suzunoya.ControlFlow.VNState.SaveLocalValue``1(System.String,``0)"/>.</param>
+            <param name="Nested">Data for bounded contexts executed within this one.</param>
+        </member>
+        <member name="P:Suzunoya.Data.BoundedContextData.Key">
+            <summary>String key for this bounded context. If empty, it cannot be accurately saved.</summary>
+        </member>
+        <member name="P:Suzunoya.Data.BoundedContextData.Locals">
+            <summary>Variables saved to this bounded context via <see cref="M:Suzunoya.ControlFlow.VNState.SaveLocalValue``1(System.String,``0)"/>.</summary>
+        </member>
+        <member name="P:Suzunoya.Data.BoundedContextData.Nested">
+            <summary>Data for bounded contexts executed within this one.</summary>
+        </member>
+        <member name="T:Suzunoya.Data.BoundedContextData`1">
+            <summary>
+            See <see cref="T:Suzunoya.Data.BoundedContextData"/>
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.BoundedContextData`1.#ctor(System.String,BagoumLib.Functional.Maybe{`0},Suzunoya.Data.KeyValueRepository,System.Collections.Generic.Dictionary{System.String,Suzunoya.Data.BoundedContextData})">
+            <summary>
+            See <see cref="T:Suzunoya.Data.BoundedContextData"/>
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Data.BoundedContextData`1.Result">
+            <summary>
+            Result returned by the bounded context.
+            <br/>This is None while the context is executing.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Data.IInstanceData">
+            <summary>
+            Data for a (saveable) in-progress VN sequence.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Data.InstanceData">
+            <summary>
+            A barebones implementation of <see cref="T:Suzunoya.Data.IInstanceData"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Data.InstanceData.FrozenGlobalData">
+            <summary>
+            A frozen copy of the global data constructed on initialization.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.InstanceData.#ctor">
+            <summary>
+            Json constructor, do not use.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.InstanceData.#ctor(Suzunoya.Data.GlobalData)">
+            <summary>
+            </summary>
+            <param name="global">A global data object. The constructor will freeze this object (ie. a deep copy)
+            and provide it as <see cref="P:Suzunoya.Data.InstanceData.FrozenGlobalData"/>,
+            and also provide a direct link as <see cref="P:Suzunoya.Data.InstanceData.GlobalData"/>.</param>
+        </member>
+        <member name="M:Suzunoya.Data.InstanceData.Deserialize``1(System.String,Suzunoya.Data.GlobalData)">
+            <summary>
+            Recreate an <see cref="T:Suzunoya.Data.InstanceData"/> object from a JSON string.
+            Will throw an exception if deserialization fails.
+            </summary>
+            <param name="serialized">The serialized JSON string.</param>
+            <param name="currentGlobal">The current global data information. This will be linked as
+            <see cref="P:Suzunoya.Data.InstanceData.GlobalData"/>, while <see cref="P:Suzunoya.Data.InstanceData.FrozenGlobalData"/> will be read from the JSON.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Suzunoya.Data.IKeyValueRepository.SaveData``1(System.String,``0)">
+            <summary>
+            Saves a key-value pair in the repository. Overwrites if existing. Noop if key is null.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.IKeyValueRepository.GetData``1(System.String)">
+            <summary>
+            Retrieve a value from the repository. Throws if nonexistent or key is null.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.IKeyValueRepository.HasData(System.String)">
+            <summary>
+            Check if a key exists in the repository. False if key is null.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Data.IKeyValueRepository.Keys">
+            <summary>
+            Get all keys saved in this repository.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Dialogue.SpeechParser.Parse(System.String)">
+            <summary>
+            Parse rich text tags out of a raw string.
+            </summary>
+            <param name="raw">Raw string</param>
+            <returns>Parsed content</returns>
+            <exception cref="T:System.Exception">Thrown if parsing fails</exception>
+        </member>
+        <member name="M:Suzunoya.Dialogue.SpeechTag.ModifySettings(Suzunoya.Dialogue.SpeechSettings)">
+            <summary>
+            Apply modifications to the text unrolling settings.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Dialogue.SpeechTag.RequiresRender">
+            <summary>
+            If FALSE, the tag is used internally for data management and does not need to be handled by rendering plugins.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Dialogue.SpeechTag.Unknown">
+            <summary>
+            A speech tag not handled by Suzunoya.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Dialogue.SpeechTag.Unknown.#ctor(System.String,System.String)">
+            <summary>
+            A speech tag not handled by Suzunoya.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Dialogue.SpeechTag.Speed">
+            <summary>
+            Changes the speed of text unrolling.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Dialogue.SpeechTag.Speed.#ctor(System.Single)">
+            <summary>
+            Changes the speed of text unrolling.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Dialogue.SpeechTag.Silent">
+            <summary>
+            Disables rolling events.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Dialogue.SpeechTag.Color">
+            <summary>
+            Changes text color.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Dialogue.SpeechTag.Color.#ctor(System.String)">
+            <summary>
+            Changes text color.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Dialogue.SpeechTag.Furigana">
+            <summary>
+            Shows furigana (ruby) next to the main text.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Dialogue.SpeechTag.Furigana.#ctor(System.String)">
+            <summary>
+            Shows furigana (ruby) next to the main text.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.Display.DisplayConfig.ZoomCenter">
+            <summary>
+            In (-1,1) screen coordinates, the location on the screen that is targeted by Zoom.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.Display.DisplayConfig.Zoom">
+            <summary>
+            The amount of zoom to apply in each coordinate axis.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Display.RenderGroup">
+            <summary>
+            A group of objects rendered by the same camera to a unique texture.
+            The Location/EulerAnglesD fields should be considered as referring to the transform
+             of the render group's associated camera.
+            The Scale field should be considered as referring to axis-specific zoom multipliers. As this requires nontrivial
+             shader implementation in some engines, it is separated from Zoom, which is a single field.
+            A render group is also a rendered object and this has similar fields to IRendered.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.NestedRenderGroup">
+            <summary>
+            A render group may render to another render group. Roughly equivalent to IRendered.RenderGroup,
+             but it is a valid case for this to be null (in which case it renders to screen).
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.RenderLayer">
+            <summary>
+            Equivalent to IRendered.RenderLayer.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.Priority">
+            <summary>
+            Equivalent to IRendered.SortingID.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.Visible">
+            <summary>
+            Whether or not the render group is visible.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.Tint">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.ComputedTint">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.Zoom">
+            <summary>
+            The camera zoom applied to the render group.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.ZoomTarget">
+            <summary>
+            The target that should be zoomed in on or away from when <see cref="P:Suzunoya.Display.RenderGroup.Zoom"/> != 1.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.ZoomTransformOffset">
+            <summary>
+            An offset that should be added to the camera position to handle simulating <see cref="P:Suzunoya.Display.RenderGroup.ZoomTarget"/> on
+             cameras that only support zooming upon their center.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.Contents">
+            <summary>
+            The elements rendered within this rendering group.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Display.RenderGroup.RendererAdded">
+            <summary>
+            An event that is fired whenever a new element is added to this rendering group.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Display.RenderGroup.AddToVNState(Suzunoya.ControlFlow.IVNState,System.IDisposable)">
+            <summary>
+            DO NOT CALL THIS. VNState should be provided in the constructor of <see cref="T:Suzunoya.Display.RenderGroup"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Display.RenderGroup.Add(Suzunoya.Entities.IRendered)">
+            <summary>
+            Add a new element to this rendering group.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Display.RenderGroup.SortContents">
+            <summary>
+            Sort <see cref="P:Suzunoya.Display.RenderGroup.Contents"/> by sorting ID.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Display.RenderGroup.Delete">
+            <inheritdoc/>
+        </member>
+        <member name="F:Suzunoya.Entities.SpeakFlags.DontClearText">
+            <summary>
+            By default, every text command will reset all visible text and the speaker. To avoid this,
+            use this flag (or call AlsoSay).
+            </summary>
+        </member>
+        <member name="F:Suzunoya.Entities.SpeakFlags.Anonymous">
+            <summary>
+            Don't show the name, image, etc of the speaker on the dialogue box. This should be
+            utilized by the mimic class.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.DialogueBox.DialogueStarted">
+            <summary>
+            A dialogue request starts with a DialogueStarted proc containing all information of the dialogue request.
+            It then unrolls the text one character at a time over many Dialogue procs.
+            Finally, it procs DialogueFinished.
+            Note: DialogueStarted and Dialogue are accumulated until a clear command is issued (which also procs DialogueCleared and nullifies Speaker). AllDialogue is never cleared.
+            Note: the VNContainer should be listening to DialogueStarted to accumulate the dialogue log.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IEntity.MimicRequested">
+            <summary>
+            Plugin libraries generally will try to construct mimics for all entities.
+            However, some entities may not desire mimics (such as unsprited characters).
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IEntity.OnUpdate">
+            <summary>
+            Called after Update is complete. Mimics may listen to this.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.IEntity.Delete">
+            <summary>
+            Destroy the object and sets EntityActive to false.
+            Same as <see cref="M:System.IDisposable.Dispose"/>.
+            </summary>
+            <exception cref="T:System.Exception">Thrown if any running coroutines cannot be closed.</exception>
+        </member>
+        <member name="P:Suzunoya.Entities.IEntity.EntityActive">
+            <summary>
+            When this is set to false, the object is destroyed and no further operations can be run.
+            <br/>Do not modify this externally. To destroy the object, run Delete().
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Entity.SoftDelete">
+            <summary>
+            SoftSkip all coroutines before deleting.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Entities.ITinted">
+            <summary>
+            Interface for entities that can be tinted.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITinted.Tint">
+            <summary>
+            Base tint of the entity.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITinted.ComputedTint">
+            <summary>
+            Base tint with disturbance effects applied.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Entities.IRendered">
+            <summary>
+            Interface for renderable entities.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IRendered.RenderGroup">
+            <summary>
+            A basic plugin setup would be to associate a RenderGroup  with an engine camera and game-object layer,
+             then treat RenderLayer and SortingID as equivalent to engine "sorting layer" / "order in layer".
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IRendered.RenderLayer">
+            <summary>
+            The rendering layer of the entity.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IRendered.SortingID">
+            <summary>
+            The sorting ID of the entity.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IRendered.UseSortingIDAsReference">
+            <summary>
+            Whether or not the render group should consider this sorting ID when automatically assigning sorting IDs.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IRendered.Visible">
+            <summary>
+            Whether or not the entity is visible.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.IRendered.AddToRenderGroup(Suzunoya.Display.RenderGroup,System.Nullable{System.Int32})">
+            <summary>
+            If the object is already associated with a render group,
+            then it should deattach from the existing render group.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Entities.Rendered">
+            <summary>
+            An entity with a transform that can be rendered.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.Rendered.RenderGroup">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Rendered.RenderLayer">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Rendered.SortingID">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Rendered.UseSortingIDAsReference">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Rendered.Visible">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Rendered.Tint">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Rendered.ComputedTint">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Rendered.Alpha">
+            <summary>
+            The alpha value of the tint. GET returns the computed alpha, SET sets the base alpha.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.Rendered.DefaultRenderLayer">
+            <summary>
+            The default rendering layer for this class.
+            <br/>NB: this should be "effectively static" as it is called in the constructor.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Rendered.BindParent(Suzunoya.Entities.ITransform)">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Entities.Rendered.Delete">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Entities.Rendered.Hide">
+            <summary>
+            Short for Visible.Value = false
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Rendered.Show">
+            <summary>
+            Short for Visible.Value = true
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Entities.ITransform">
+            <summary>
+            Interface for entities that have transforms.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITransform.Location">
+            <summary>
+            Base location of the entity.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITransform.ComputedLocation">
+            <summary>
+            Location with disturbance effects such as screenshake or displacement applied.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITransform.EulerAnglesD">
+            <summary>
+            Base euler angles of the entity.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITransform.ComputedEulerAnglesD">
+            <summary>
+            Euler angles with disturbance effects applied.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITransform.Scale">
+            <summary>
+            Base scale of the entity.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITransform.ComputedScale">
+            <summary>
+            Scale with disturbance effects applied.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITransform.Children">
+            <summary>
+            Children of this transform.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITransform.Parent">
+            <summary>
+            Parent of this transform.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.ITransform.NotifyChildCreated(Suzunoya.Entities.ITransform)">
+            <summary>
+            Add a child to this object's <see cref="P:Suzunoya.Entities.ITransform.Children"/> list.
+            <br/>Any modification of child properties caused by parenting should be handled by the caller,
+            not this function.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Entities.Transform">
+            <summary>
+            An entity with a transform.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.Transform.Location">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Transform.ComputedLocation">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Transform.EulerAnglesD">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Transform.ComputedEulerAnglesD">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Transform.Scale">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Transform.ComputedScale">
+            <inheritdoc />
+        </member>
+        <member name="F:Suzunoya.Entities.Transform.parentTokens">
+            <summary>
+            Tokens that control dependencies on the parent.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.Transform.Children">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Transform.Parent">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Entities.Transform.#ctor(System.Nullable{System.Numerics.Vector3},System.Nullable{System.Numerics.Vector3},System.Nullable{System.Numerics.Vector3})">
+            <summary>
+            Create a transform entity.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Transform.BindParent(Suzunoya.Entities.ITransform)">
+            <summary>
+            Set the parent of this transform. This means that the location, euler angles, and scale will be
+             offset by the parent's values.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Transform.NotifyChildCreated(Suzunoya.Entities.ITransform)">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Helpers.BindLifetime(Suzunoya.Entities.IEntity,BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Makes a derived cancellee that is cancelled by both the entity lifetime token and the given cT.
+            <br/>Coroutines run on entities should pass their given tokens through this function.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -11,6 +11,7 @@ public static class Adapters {
     
     public static UnityEngine.Vector3 _(this Vector3 v3) => new UnityEngine.Vector3(v3.X, v3.Y, v3.Z);
     public static UnityEngine.Vector2 _(this Vector2 v2) => new UnityEngine.Vector2(v2.X, v2.Y);
+    public static FColor _(this Color c) => new FColor(c.r, c.g, c.b, c.a);
 
 }
 }

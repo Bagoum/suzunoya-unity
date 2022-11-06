@@ -22,6 +22,7 @@ public class Tokenized : MonoBehaviour {
 
     protected void DisableUpdates() {
         tokens.DisposeAll();
+        Enabled = false;
     }
     
     protected virtual void BindListeners() { }
