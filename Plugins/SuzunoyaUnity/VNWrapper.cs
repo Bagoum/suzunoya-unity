@@ -67,7 +67,7 @@ public class ExecutingVN {
     public readonly AccEvent<DialogueLogEntry> backlog = new();
     public Action<VNLocation>? doBacklog = null;
     public bool Active { get; private set; } = true;
-        
+
     public ExecutingVN(IVNState vn) {
         this.vn = vn;
         this.tokens = new List<IDisposable>();
@@ -79,7 +79,7 @@ public class ExecutingVN {
         else
             backlog.OnNext(new DialogueLogEntry(op));
     }
-    
+
     public void Destroy() {
         Active = false;
         foreach (var token in tokens)
@@ -87,14 +87,16 @@ public class ExecutingVN {
         vn.DeleteAll();
     }
 }
+
+/// <inheritdoc cref="IVNWrapper"/>
 public class VNWrapper : MonoBehaviour, IVNWrapper {
 
     public GameObject renderGroupMimic = null!;
     public GameObject[] entityMimics = null!;
     protected Transform tr { get; private set; } = null!;
     
-    private readonly Dictionary<Type, GameObject> mimicTypeMap = new Dictionary<Type, GameObject>();
-    private readonly DMCompactingArray<ExecutingVN> vns = new DMCompactingArray<ExecutingVN>();
+    private readonly Dictionary<Type, GameObject> mimicTypeMap = new();
+    private readonly DMCompactingArray<ExecutingVN> vns = new();
     public IEnumerable<ExecutingVN> TrackedVNs => vns;
 
     protected virtual void Awake() {

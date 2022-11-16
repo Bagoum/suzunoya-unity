@@ -284,9 +284,16 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         base.OnDisable();
     }
 
-    public void OnPointerClick(PointerEventData eventData) => ((UnityVNState)bound.Container).ClickConfirmOrSkip();
+    public void OnPointerClick(PointerEventData eventData) {
+        if (!bound.Active) return;
+        if (eventData.button == PointerEventData.InputButton.Left)
+            ((UnityVNState)bound.Container).ClickConfirmOrSkip();
+        else
+            Pause();
+    }
 
     public void OnScroll(PointerEventData ev) {
+        if (!bound.Active) return;
         if (ev.scrollDelta.y < 0 && elapsedScrollWait > scrollWaitTime) {
             if (((UnityVNState)bound.Container).ClickConfirmOrSkip())
                 elapsedScrollWait = 0;
