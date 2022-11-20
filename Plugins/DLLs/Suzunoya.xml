@@ -285,6 +285,11 @@
         <member name="P:Suzunoya.ControlFlow.OpenedContext`1.Data">
             <inheritdoc cref="P:Suzunoya.ControlFlow.OpenedContext.Data"/>
         </member>
+        <member name="M:Suzunoya.ControlFlow.OpenedContext`1.#ctor(Suzunoya.ControlFlow.IVNState,Suzunoya.ControlFlow.BoundedContext{`0})">
+            <summary>
+            Open a bounded context in the executing VN state,
+            </summary>
+        </member>
         <member name="M:Suzunoya.ControlFlow.OpenedContext`1.RemapData(Suzunoya.Data.IInstanceData)">
             <inheritdoc/>
         </member>
@@ -320,7 +325,7 @@
             Finish interrupting the enclosing process layer.
             <br/>Has no effect if called a second time.
             </summary>
-            <param name="resultStatus">Either <see cref="F:BagoumLib.InterruptionStatus.Normal"/> (continue the enclosing process)
+            <param name="resultStatus">Either <see cref="F:BagoumLib.InterruptionStatus.Continue"/> (continue the enclosing process)
              or <see cref="F:BagoumLib.InterruptionStatus.Abort"/> (stop the enclosing process).</param>
         </member>
         <member name="P:Suzunoya.ControlFlow.IVNInterruptionToken.FinalStatus">
@@ -1171,6 +1176,29 @@
         <member name="P:Suzunoya.Data.BoundedContextData.Nested">
             <summary>Data for bounded contexts executed within this one.</summary>
         </member>
+        <member name="M:Suzunoya.Data.BoundedContextData.SaveNested(Suzunoya.Data.BoundedContextData,System.Boolean)">
+            <summary>
+            Save the information of a bounded context executed while nested within this one.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.BoundedContextData.HasNested(System.String)">
+            <summary>
+            Check if there exists saved information for a nested bounded context with the provided key.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.BoundedContextData.GetNested(System.String)">
+            <summary>
+            Get the saved information for a nested bounded context with the provided key.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.BoundedContextData.GetNested``1(System.String)">
+            <inheritdoc cref="M:Suzunoya.Data.BoundedContextData.GetNested(System.String)"/>
+        </member>
+        <member name="M:Suzunoya.Data.BoundedContextData.CastTo``1">
+            <summary>
+            Cast this to a more specific type.
+            </summary>
+        </member>
         <member name="T:Suzunoya.Data.BoundedContextData`1">
             <summary>
             See <see cref="T:Suzunoya.Data.BoundedContextData"/>
@@ -1192,6 +1220,47 @@
             Data for a (saveable) in-progress VN sequence.
             </summary>
         </member>
+        <member name="P:Suzunoya.Data.IInstanceData.GlobalData">
+            <summary>
+            Global save data, shared between instances.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Data.IInstanceData.Location">
+            <summary>
+            Position in any executing VN dialogue.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.IInstanceData.SaveBCtxData(Suzunoya.Data.BoundedContextData,System.Boolean)">
+            <summary>
+            Save the locals and result information from a top-level bounded context execution.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.IInstanceData.HasBCtxData(System.String)">
+            <summary>
+            Check if there exists saved top-level bounded context information for the provided key.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.IInstanceData.GetBCtxData(System.String)">
+            <summary>
+            Get the locals and result information from a top-level bounded context with the provided key.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Data.IInstanceData.GetBCtxData``1(System.String)">
+            <inheritdoc cref="M:Suzunoya.Data.IInstanceData.GetBCtxData(System.String)"/>
+        </member>
+        <member name="M:Suzunoya.Data.IInstanceData.TryGetChainedData(System.String[])">
+            <summary>
+            Get the locals and result information from a bounded context that was executed while nested in
+             other bounded contexts.
+            </summary>
+            <param name="keys">Bounded context keys describing the nesting state, starting with the top-level and ending with the key for the bounded context that needs to be retrieved.</param>
+        </member>
+        <member name="M:Suzunoya.Data.IInstanceData.TryGetChainedData``1(System.String[])">
+            <inheritdoc cref="M:Suzunoya.Data.IInstanceData.TryGetChainedData(System.String[])"/>
+        </member>
+        <member name="M:Suzunoya.Data.IInstanceData.TryGetChainedData``1(System.Collections.Generic.IList{Suzunoya.ControlFlow.OpenedContext})">
+            <inheritdoc cref="M:Suzunoya.Data.IInstanceData.TryGetChainedData(System.String[])"/>
+        </member>
         <member name="T:Suzunoya.Data.InstanceData">
             <summary>
             A barebones implementation of <see cref="T:Suzunoya.Data.IInstanceData"/>.
@@ -1199,7 +1268,18 @@
         </member>
         <member name="P:Suzunoya.Data.InstanceData.FrozenGlobalData">
             <summary>
-            A frozen copy of the global data constructed on initialization.
+            A frozen copy of the global data constructed when the instance data is initially created.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Data.InstanceData.GlobalData">
+            <inheritdoc cref="P:Suzunoya.Data.IInstanceData.GlobalData"/>
+        </member>
+        <member name="P:Suzunoya.Data.InstanceData.Location">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Data.InstanceData.BCtxData">
+            <summary>
+            Top-level saved bounded context information.
             </summary>
         </member>
         <member name="M:Suzunoya.Data.InstanceData.#ctor">
@@ -1213,6 +1293,24 @@
             <param name="global">A global data object. The constructor will freeze this object (ie. a deep copy)
             and provide it as <see cref="P:Suzunoya.Data.InstanceData.FrozenGlobalData"/>,
             and also provide a direct link as <see cref="P:Suzunoya.Data.InstanceData.GlobalData"/>.</param>
+        </member>
+        <member name="M:Suzunoya.Data.InstanceData._SetGlobalData_OnlyUseForInitialization(Suzunoya.Data.GlobalData)">
+            <summary>
+            Set the global data.
+            </summary>
+            <param name="g"></param>
+        </member>
+        <member name="M:Suzunoya.Data.InstanceData.SaveBCtxData(Suzunoya.Data.BoundedContextData,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Data.InstanceData.HasBCtxData(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Data.InstanceData.GetBCtxData(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Data.InstanceData.GetBCtxData``1(System.String)">
+            <inheritdoc/>
         </member>
         <member name="M:Suzunoya.Data.InstanceData.Deserialize``1(System.String,Suzunoya.Data.GlobalData)">
             <summary>

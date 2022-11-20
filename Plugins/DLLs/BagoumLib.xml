@@ -602,6 +602,89 @@
             Baseline implementation of <see cref="T:BagoumLib.Culture.ILocaleProvider"/>.
             </summary>
         </member>
+        <member name="T:BagoumLib.DataStructures.AbstractDMCompactingArray`1">
+            <summary>
+            Generalized implementation of <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/> for multiple types of <see cref="T:BagoumLib.DataStructures.DeletionMarker`1"/> in one array.
+            </summary>
+            <typeparam name="D"></typeparam>
+        </member>
+        <member name="F:BagoumLib.DataStructures.AbstractDMCompactingArray`1.count">
+            <inheritdoc cref="P:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Count"/>
+        </member>
+        <member name="P:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Count">
+            <summary>
+            Number of elements present in the array.
+            Some of the elements may be deleted. Call <see cref="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Compact"/> to remove deleted elements and make this number
+             stricter.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Data">
+            <summary>
+            Underlying data array.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.#ctor(System.Int32)">
+            <summary>
+            Create a new compacting array with the provided initial capacity.
+            </summary>
+            <param name="capacity"></param>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Compact">
+            <summary>
+            Remove deleted elements from the underlying data array.
+            </summary>
+            <returns>True iff compaction occurred, false iff the array was not modified.</returns>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.MaybeResize">
+            <summary>
+            Resize the array if it is full.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.NextIndexForPriority(System.Int32)">
+            <summary>
+            Returns the first index where the priority is greater than the given value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.FirstPriorityGT(System.Int32)">
+            <summary>
+            Find the first index at which the sorting priority is greater than or equal to the given value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.AddPriority(`0)">
+            <summary>
+            Add an element to the array with the priority assigned in the DeletionMarker.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.ExistsAt(System.Int32)">
+            <summary>
+            Returns true iff the element at the given index has not been deleted.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.GetMarkerIfExistsAt(System.Int32,`0@)">
+            <summary>
+            Get the index'th element's metadata if it has not been deleted.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Delete(System.Int32)">
+            <summary>
+            Mark the element at the provided index for deletion.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Empty">
+            <summary>
+            Clear the array.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Sort(System.Collections.Generic.IComparer{`0})">
+            <summary>
+            Sort the array. 
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.CopyIntoList(System.Collections.Generic.List{`0})">
+            <summary>
+            Copy the non-deleted elements of this array into a list.
+            </summary>
+        </member>
         <member name="T:BagoumLib.DataStructures.ArrayDictionary`1">
             <summary>
             A class with a dictionary interface that is implemented without hashing by iterating over an array.
@@ -626,6 +709,31 @@
             can function with zero reference overhead and zero garbage.
             </summary>
             <typeparam name="T"></typeparam>
+        </member>
+        <member name="F:BagoumLib.DataStructures.CompactingArray`1.count">
+            <summary>
+            Number of elements present in the array.
+            Some of the elements may be deleted. Call <see cref="M:BagoumLib.DataStructures.CompactingArray`1.Compact"/> to remove deleted elements and make this number
+             stricter.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.CompactingArray`1.Count">
+            <inheritdoc cref="F:BagoumLib.DataStructures.CompactingArray`1.count"/>
+        </member>
+        <member name="P:BagoumLib.DataStructures.CompactingArray`1.Deleted">
+            <summary>
+            Iff the object at index i has been marked for deletion, then the i'th element in this array is true.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.CompactingArray`1.Data">
+            <summary>
+            Underlying data array.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.CompactingArray`1.NullElements">
+            <summary>
+            Number of elements that are marked for deletion.
+            </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.CoroutineType">
             <summary>
@@ -681,14 +789,34 @@
         <member name="P:BagoumLib.DataStructures.CoroutineOptions.ExecType">
             <summary>Instructions on how to add the new coroutine to the existing list.</summary>
         </member>
+        <member name="F:BagoumLib.DataStructures.CoroutineOptions.Default">
+            <summary>
+            Default coroutine options (non-droppable and <see cref="F:BagoumLib.DataStructures.CoroutineType.TryStepPrepend"/>)
+            </summary>
+        </member>
+        <member name="F:BagoumLib.DataStructures.CoroutineOptions.DroppableDefault">
+            <summary>
+            Default coroutine options (droppable and <see cref="F:BagoumLib.DataStructures.CoroutineType.TryStepPrepend"/>)
+            </summary>
+        </member>
         <member name="T:BagoumLib.DataStructures.ICoroutineRunner">
             <summary>
             An object on which coroutines can be run.
             </summary>
         </member>
+        <member name="M:BagoumLib.DataStructures.ICoroutineRunner.Run(System.Collections.IEnumerator,BagoumLib.DataStructures.CoroutineOptions)">
+            <summary>
+            Run the provided coroutine.
+            </summary>
+        </member>
         <member name="T:BagoumLib.DataStructures.Coroutines">
             <summary>
             A class that permits manually stepping through IEnumerator-based coroutines.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.Coroutines.AsIEnum">
+            <summary>
+            Convert this object to an IEnumerator.
             </summary>
         </member>
         <member name="M:BagoumLib.DataStructures.Coroutines.Step">
@@ -718,9 +846,50 @@
             <param name="ienum">Coroutine</param>
             <param name="opts">Settings</param>
         </member>
+        <member name="T:BagoumLib.DataStructures.DictionaryWithKeys`2">
+            <summary>
+            A dictionary where the set of keys is stored separately, allowing zero-garbage iteration.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.DictionaryWithKeys`2.Data">
+            <summary>
+            Dictionary data.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.DictionaryWithKeys`2.Keys">
+            <summary>
+            Array of dictionary keys.
+            <br/>Do NOT call MarkForDeletion on the deletion markers from this array. Instead, pass them to <see cref="M:BagoumLib.DataStructures.DictionaryWithKeys`2.Remove(BagoumLib.DataStructures.DeletionMarker{`0})"/> in this class.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.DictionaryWithKeys`2.Item(`0)">
+            <summary>
+            Get/set accessors for the underlying data.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DictionaryWithKeys`2.Remove(BagoumLib.DataStructures.DeletionMarker{`0})">
+            <summary>
+            Remove the given element from the dictionary.
+            </summary>
+        </member>
         <member name="T:BagoumLib.DataStructures.IDeletionMarker">
             <summary>
             A disposable marker. When disposed, some underlying object will be removed from a collection.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.IDeletionMarker.Priority">
+            <summary>
+            Sorting priority in the array.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.IDeletionMarker.MarkedForDeletion">
+            <summary>
+            Whether or not the element is currently marked as deleted.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.IDeletionMarker.MarkForDeletion">
+            <summary>
+            Mark the element as deleted.
             </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.DeletionMarker`1">
@@ -728,25 +897,46 @@
             A disposable marker for a value <see cref="F:BagoumLib.DataStructures.DeletionMarker`1.Value"/> within a collection (see <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/>).
             </summary>
         </member>
+        <member name="P:BagoumLib.DataStructures.DeletionMarker`1.Priority">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.DataStructures.DeletionMarker`1.MarkedForDeletion">
+            <inheritdoc/>
+        </member>
+        <member name="F:BagoumLib.DataStructures.DeletionMarker`1.Value">
+            <summary>
+            Value of the object in the array.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DeletionMarker`1.#ctor(`0,System.Int32)">
+            <summary>
+            Create a new deletion marker with the given value and priority.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DeletionMarker`1.MarkForDeletion">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DeletionMarker`1.ToString">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.DataStructures.DMCompactingArray`1">
             <summary>
             An ordered collection that supports iteration, as well as deletion of arbitrary elements via
             disposable tokens (<see cref="T:BagoumLib.DataStructures.DeletionMarker`1"/>) returned to consumers.
             Indices are not guaranteed to be persistent and should not be used for identification.
-            <br/>Deletion is O(1) amortized, assuming that <see cref="M:BagoumLib.DataStructures.DMCompactingArray`1.Compact"/> is called at a reasonable frequency.
+            <br/>Deletion is O(1) amortized, assuming that <see cref="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Compact"/> is called at a reasonable frequency.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.Compact">
+        <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.#ctor(System.Int32)">
             <summary>
-            Remove deleted elements from the underlying data array.
+            Create a new compacting array with the provided initial capacity.
             </summary>
+            <param name="capacity"></param>
         </member>
-        <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.NextIndexForPriority(System.Int32)">
+        <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.Add(`0)">
             <summary>
-            Returns the first index where the priority is greater than the given value.
+            Add an element to the array with a default ordering priority of zero.
             </summary>
-            <param name="p"></param>
-            <returns></returns>
         </member>
         <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.AddPriority(`0,System.Int32)">
             <summary>
@@ -757,9 +947,32 @@
             <param name="priority"></param>
             <returns></returns>
         </member>
-        <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.ExistsAt(System.Int32)">
+        <member name="P:BagoumLib.DataStructures.DMCompactingArray`1.Item(System.Int32)">
             <summary>
-            Returns true iff the element at the given index has not been deleted.
+            Get the index'th element in the array. Note that this does not check if the element has been deleted.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)">
+            <summary>
+            Get the index'th element in the array if it has not been deleted.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.CopyIntoList(System.Collections.Generic.List{`0})">
+            <summary>
+            Copy the non-deleted elements of this array into a list.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.FirstOrNull">
+            <summary>
+            Get the first element in the array, or null if it is empty.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.FirstOrNone">
+            <summary>
+            Get the first element in the array, or None if it is empty.
             </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.FColor">
@@ -2446,7 +2659,8 @@
         </member>
         <member name="M:BagoumLib.Tasks.Utilities.ContinueWithSync(System.Threading.Tasks.Task,System.Action)">
             <summary>
-            Runs a continuation and logs errors from the task or the continuation.
+            Runs a continuation after a task and logs errors from the task or the continuation.
+            <br/>The continuation runs even if the task is cancelled/hits an exception.
             <br/>It is useful to use this on unawaited tasks with a null continuation, as it logs errors.
             </summary>
         </member>
