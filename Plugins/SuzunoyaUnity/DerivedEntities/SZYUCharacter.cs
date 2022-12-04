@@ -43,6 +43,10 @@ public class SZYUCharacter : Character {
         EmoteSayC(emote, content, flags);
     
 
+    /// <summary>
+    /// When a character is speaking dialogue, this function is called every few frames to allow
+    ///  constructing a sound effect for the dialogue.
+    /// </summary>
     public virtual void RollEvent() { }
 }
 

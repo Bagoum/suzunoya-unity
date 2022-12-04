@@ -6,6 +6,7 @@ using BagoumLib;
 using BagoumLib.DataStructures;
 using BagoumLib.Events;
 using BagoumLib.Mathematics;
+using Suzunoya.ADV;
 using Suzunoya.ControlFlow;
 using Suzunoya.Dialogue;
 using Suzunoya.Entities;
@@ -225,6 +226,8 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         Listen(nextOkAlpha, f => nextOkIcon.color = nextOkIcon.color.WithA(f));
         Listen(textColor, SetTextColor);
         Listen(raycastable, v => raycaster.enabled = v);
+        if (ServiceLocator.FindOrNull<ADVManager>() is { } advMan)
+            tokens.Add(bound.MinimalState.AddDisturbance(advMan.VNExecutionStarting));
         
         if (!bound.Container.AutoplayFastforwardAllowed) {
             if (autoplayButton != null)

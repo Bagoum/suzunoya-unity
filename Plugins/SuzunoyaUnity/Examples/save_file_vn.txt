@@ -1,0 +1,30 @@
+{
+  "$type": "Suzunoya.Data.InstanceData, Suzunoya",
+  "FrozenGlobalData": {
+    "Settings": {
+      "TextSpeed": 1.0
+    },
+    "ReadLines": [],
+    "Gallery": []
+  },
+  "Location": {
+    "Contexts": [
+      "exampleContent"
+    ],
+    "LastOperationID": "Lorem ipsum dolor sit amet"
+  },
+  "BCtxData": {
+    "exampleContent": {
+      "$type": "Suzunoya.Data.BoundedContextData`1[[System.Reactive.Unit, System.Reactive]], Suzunoya",
+      "Result": {
+        "Valid": false,
+        "Value": {}
+      },
+      "Key": "exampleContent",
+      "Locals": {
+        "Data": {}
+      },
+      "Nested": {}
+    }
+  }
+}

@@ -28,17 +28,6 @@ public class SpriteCharacterMimic : SpriteIconCharacterMimic {
         }
     }
 
-    private Sprite GetEmote(string? key) {
-        key = (key ?? emotes[0].emote).ToLower();
-        if (emoteMap.TryGetValue(key, out var em))
-            return em;
-        foreach (var emote in emotes) {
-            if (emote.emote.StartsWith(key))
-                return emote.sprite;
-        }
-        return emotes[0].sprite;
-    }
-
     protected override void SetEmote(string? emote) {
         base.SetEmote(emote);
         sr.sprite = SuzunoyaUnity.Helpers.FindSprite(emote, emotes, emoteMap).Try(out var s) ? s : sr.sprite;

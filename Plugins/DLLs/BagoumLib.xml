@@ -137,34 +137,6 @@
             Add assertions.
             </summary>
         </member>
-        <member name="T:BagoumLib.Assertions.CompletionAssertion">
-            <summary>
-            An assertion that sets the given <see cref="T:System.Threading.Tasks.TaskCompletionSource`1"/> when it is actualized.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Assertions.CompletionAssertion.#ctor(System.Threading.Tasks.TaskCompletionSource{System.Reactive.Unit})">
-            <summary>
-            An assertion that sets the given <see cref="T:System.Threading.Tasks.TaskCompletionSource`1"/> when it is actualized.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Assertions.CompletionAssertion.ActualizeOnNewState">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Assertions.CompletionAssertion.ActualizeOnNoPreceding">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Assertions.CompletionAssertion.DeactualizeOnEndState">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Assertions.CompletionAssertion.DeactualizeOnNoSucceeding">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Assertions.CompletionAssertion.Inherit(BagoumLib.Assertions.IAssertion)">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Assertions.CompletionAssertion._Inherit(BagoumLib.Assertions.CompletionAssertion)">
-            <inheritdoc />
-        </member>
         <member name="T:BagoumLib.Assertions.OnActualize">
             <summary>
             An assertion that invokes a callback when it is actualized (but not when it is inherited).
@@ -232,6 +204,46 @@
         <member name="T:BagoumLib.Mathematics.BMath">
             <summary>
             Static class providing low-level math utilities.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.BMath.HPI">
+            <summary>
+            Half of pi.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.BMath.PI">
+            <summary>
+            Pi.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.BMath.TAU">
+            <summary>
+            Tau (2*pi).
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.BMath.TWAU">
+            <summary>
+            2*tau (4*pi).
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.BMath.PHI">
+            <summary>
+            Phi (golden ratio, ~1.618)
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.BMath.IPHI">
+            <summary>
+            Inverse of phi (~.618)
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.BMath.degRad">
+            <summary>
+            pi/180: multiply by this to convert degrees to radians.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.BMath.radDeg">
+            <summary>
+            180/pi: multiply by this to convert radians to degrees.
             </summary>
         </member>
         <member name="M:BagoumLib.Mathematics.BMath.Mod(System.Double,System.Double)">
@@ -385,36 +397,6 @@
             Lerper should be unclamped.
             </summary>
         </member>
-        <member name="T:BagoumLib.Cancellation.ICancellable">
-            <summary>
-            A source of cancellation information.
-            Similar to CancellationTokenSource, but allocates minimal garbage, does not require disposal,
-            and *is not thread-safe*.
-            <br/>NB: This implements IDisposable, but does not generally require disposal;
-             Dispose is an alias for Cancel.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Cancellation.ICancellable.Cancel(System.Int32)">
-            <summary>
-            Mark a cancellable as cancelled.
-            </summary>
-            <param name="level">Numerical level of cancellation. 0 = no cancellation.</param>
-        </member>
-        <member name="M:BagoumLib.Cancellation.ICancellable.Cancel">
-            <summary>
-            Cancel with a level of HardCancelLevel.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Cancellation.ICancellable.SoftCancel">
-            <summary>
-            Cancel with a level of SoftSkipLevel.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Cancellation.ICancellable.Token">
-            <summary>
-            Get a token that reflects the cancellation status of this cancellable.
-            </summary>
-        </member>
         <member name="T:BagoumLib.Cancellation.ICancellee">
             <summary>
             A token passed into tasks to track cancellation.
@@ -446,10 +428,107 @@
             A value LEQ 0 (default 0) indicates that the operation has not been cancelled.
             </summary>
         </member>
+        <member name="P:BagoumLib.Cancellation.ICancellee.Cancelled">
+            <summary>
+            True iff the token is cancelled (<see cref="P:BagoumLib.Cancellation.ICancellee.CancelLevel"/> > 0).
+            </summary>
+        </member>
         <member name="P:BagoumLib.Cancellation.ICancellee.Root">
             <summary>
             Get the youngest ancestor cancellee that is not a passthrough.
             </summary>
+        </member>
+        <member name="T:BagoumLib.Cancellation.ICancellable">
+            <summary>
+            A source of cancellation information.
+            Similar to CancellationTokenSource, but allocates minimal garbage, does not require disposal,
+            and *is not thread-safe*.
+            <br/>NB: This implements IDisposable, but does not generally require disposal;
+             Dispose is an alias for Cancel.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Cancellation.ICancellable.Cancel(System.Int32)">
+            <summary>
+            Mark a cancellable as cancelled.
+            </summary>
+            <param name="level">Numerical level of cancellation. 0 = no cancellation.</param>
+        </member>
+        <member name="M:BagoumLib.Cancellation.ICancellable.Cancel">
+            <summary>
+            Cancel with a level of HardCancelLevel.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Cancellation.ICancellable.SoftCancel">
+            <summary>
+            Cancel with a level of SoftSkipLevel.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Cancellation.ICancellable.Token">
+            <summary>
+            Get a token that reflects the cancellation status of this cancellable.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.Cancellation.Cancellable">
+            <inheritdoc cref="T:BagoumLib.Cancellation.ICancellable"/>
+        </member>
+        <member name="F:BagoumLib.Cancellation.Cancellable.Null">
+            <summary>
+            A cancellee that is never cancelled.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Cancellation.Cancellable.CancelLevel">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Cancellation.Cancellable.Cancelled">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.Cancellable.Cancel(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.Cancellable.Cancel">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.Cancellable.SoftCancel">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Cancellation.Cancellable.Token">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Cancellation.JointCancellable">
+            <summary>
+            A cancellable token that is cancelled when its parent is cancelled or it is locally cancelled (via <see cref="M:BagoumLib.Cancellation.JointCancellable.Cancel(System.Int32)"/>).
+            <br/>Note that `new JointCancellable(parent)` is almost the same as `new JointCancellee(parent, new Cancellable())`,
+             but this is slightly more garbage-efficient.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Cancellation.JointCancellable.Parent">
+            <summary>
+            The parent cancellation token. When it is cancelled, this token will also be cancelled.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Cancellation.JointCancellable.CancelLevel">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Cancellation.JointCancellable.Cancelled">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.JointCancellable.#ctor(BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Create a <see cref="T:BagoumLib.Cancellation.JointCancellable"/>.
+            </summary>
+            <param name="parent">Parent token. If the parent token is cancelled, then this is also cancelled.</param>
+        </member>
+        <member name="M:BagoumLib.Cancellation.JointCancellable.Cancel(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.JointCancellable.Cancel">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.JointCancellable.SoftCancel">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Cancellation.JointCancellable.Token">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Cancellation.PassthroughCancellee">
             <summary>
@@ -457,6 +536,31 @@
             Y has a PassthroughCancellee of (X, Y) and Z has a PassthroughCancellee of (X, Z).
             In this case, the formation of Z's JointCancellee needs to skip Y, treating X as the root
             against which to make a joint. 
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Cancellation.PassthroughCancellee.CancelLevel">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Cancellation.PassthroughCancellee.Cancelled">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Cancellation.PassthroughCancellee.Root">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Cancellation.JointCancellee">
+            <summary>
+            A cancellee that is cancelled when either of its two parents are cancelled.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Cancellation.JointCancellee.CancelLevel">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Cancellation.JointCancellee.Cancelled">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.JointCancellee.From(BagoumLib.Cancellation.ICancellee,BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Create a cancellee from two parents. If either is null, the other will be directly returned.
             </summary>
         </member>
         <member name="T:BagoumLib.Cancellation.StrongCancellee">
@@ -469,12 +573,34 @@
             A cancellee that proxies a source by treating soft cancellations as no-cancellation.
             </summary>
         </member>
+        <member name="P:BagoumLib.Cancellation.StrongCancellee.CancelLevel">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.Cancellation.ICancellee`1">
             <summary>
             A token passed into tasks to track cancellation.
-            Similar to ICancellee, but when it is cancelled, it must be provided a value of type T
+            Similar to <see cref="T:BagoumLib.Cancellation.ICancellee"/>, but when it is cancelled, it must be provided a value of type T
             (for example, a canceller for a state machine passing the next state).
             </summary>
+        </member>
+        <member name="M:BagoumLib.Cancellation.ICancellee`1.Cancelled(`0@)">
+            <summary>
+            Check if the token is cancelled, and if it is, get the cancellation value.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.Cancellation.GCancellable`1">
+            <inheritdoc cref="T:BagoumLib.Cancellation.ICancellee`1"/>
+        </member>
+        <member name="F:BagoumLib.Cancellation.GCancellable`1.Null">
+            <summary>
+            A cancellee that is never cancelled.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Cancellation.GCancellable`1.CancelLevel">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.GCancellable`1.Cancelled(`0@)">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Cancellation.ITokenized">
             <summary>
@@ -604,24 +730,10 @@
         </member>
         <member name="T:BagoumLib.DataStructures.AbstractDMCompactingArray`1">
             <summary>
-            Generalized implementation of <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/> for multiple types of <see cref="T:BagoumLib.DataStructures.DeletionMarker`1"/> in one array.
+            Alternate implementation of <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/> which allows multiple concrete implementations of
+            <see cref="T:BagoumLib.DataStructures.IDeletionMarker`1"/> in one array.
             </summary>
-            <typeparam name="D"></typeparam>
-        </member>
-        <member name="F:BagoumLib.DataStructures.AbstractDMCompactingArray`1.count">
-            <inheritdoc cref="P:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Count"/>
-        </member>
-        <member name="P:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Count">
-            <summary>
-            Number of elements present in the array.
-            Some of the elements may be deleted. Call <see cref="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Compact"/> to remove deleted elements and make this number
-             stricter.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Data">
-            <summary>
-            Underlying data array.
-            </summary>
+            <typeparam name="T">Value type of array elements</typeparam>
         </member>
         <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.#ctor(System.Int32)">
             <summary>
@@ -629,58 +741,107 @@
             </summary>
             <param name="capacity"></param>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Compact">
+        <member name="P:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Item(System.Int32)">
+            <inheritdoc cref="!:DMCompactingArray&lt;T&gt;.Item"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)">
+            <inheritdoc cref="M:BagoumLib.DataStructures.DMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.CopyIntoList(System.Collections.Generic.List{`0})">
+            <summary>
+            Copy the non-deleted elements of this array into a list.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.FirstOrNull">
+            <inheritdoc cref="M:BagoumLib.DataStructures.DMCompactingArray`1.FirstOrNull"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.FirstOrNone">
+            <inheritdoc cref="M:BagoumLib.DataStructures.DMCompactingArray`1.FirstOrNone"/>
+        </member>
+        <member name="T:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1">
+            <summary>
+            Generalized implementation of <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/> for multiple types of <see cref="T:BagoumLib.DataStructures.DeletionMarker`1"/> in one array,
+             even if the underlying value types are different.
+            </summary>
+            <typeparam name="D">Subimplementation of <see cref="T:BagoumLib.DataStructures.IDeletionMarker"/></typeparam>
+        </member>
+        <member name="F:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.count">
+            <inheritdoc cref="P:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Count"/>
+        </member>
+        <member name="P:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Count">
+            <summary>
+            Number of elements present in the array.
+            Some of the elements may be deleted. Call <see cref="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Compact"/> to remove deleted elements and make this number
+             stricter.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Data">
+            <summary>
+            Underlying data array.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.#ctor(System.Int32)">
+            <summary>
+            Create a new compacting array with the provided initial capacity.
+            </summary>
+            <param name="capacity"></param>
+        </member>
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Compact">
             <summary>
             Remove deleted elements from the underlying data array.
             </summary>
             <returns>True iff compaction occurred, false iff the array was not modified.</returns>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.MaybeResize">
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.MaybeResize">
             <summary>
             Resize the array if it is full.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.NextIndexForPriority(System.Int32)">
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.NextIndexForPriority(System.Int32)">
             <summary>
             Returns the first index where the priority is greater than the given value.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.FirstPriorityGT(System.Int32)">
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.FirstPriorityGT(System.Int32)">
             <summary>
             Find the first index at which the sorting priority is greater than or equal to the given value.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.AddPriority(`0)">
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.AddPriority(`0)">
             <summary>
             Add an element to the array with the priority assigned in the DeletionMarker.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.ExistsAt(System.Int32)">
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.ExistsAt(System.Int32)">
             <summary>
             Returns true iff the element at the given index has not been deleted.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.GetMarkerIfExistsAt(System.Int32,`0@)">
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.GetMarkerIfExistsAt(System.Int32,`0@)">
             <summary>
             Get the index'th element's metadata if it has not been deleted.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Delete(System.Int32)">
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Delete(System.Int32)">
             <summary>
             Mark the element at the provided index for deletion.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Empty">
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Empty">
             <summary>
             Clear the array.
+            <br/>Note that this will result in markers currently in the array not receiving <see cref="M:BagoumLib.DataStructures.IDeletionMarker.RemovedFromCollection"/>.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Sort(System.Collections.Generic.IComparer{`0})">
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Sort(System.Collections.Generic.IComparer{`0})">
             <summary>
             Sort the array. 
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.CopyIntoList(System.Collections.Generic.List{`0})">
+        <member name="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.CopyIntoList(System.Collections.Generic.List{`0})">
             <summary>
             Copy the non-deleted elements of this array into a list.
             </summary>
@@ -734,6 +895,15 @@
             <summary>
             Number of elements that are marked for deletion.
             </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CompactingArray`1.Delete(System.Int32)">
+            <inheritdoc cref="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Delete(System.Int32)"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CompactingArray`1.Compact">
+            <inheritdoc cref="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Compact"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CompactingArray`1.Empty">
+            <inheritdoc cref="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Empty"/>
         </member>
         <member name="T:BagoumLib.DataStructures.CoroutineType">
             <summary>
@@ -823,6 +993,7 @@
             <summary>
             Step once through all coroutines.
             </summary>
+            <returns>True iff the coroutine set changed.</returns>
         </member>
         <member name="P:BagoumLib.DataStructures.Coroutines.Count">
             <summary>
@@ -834,6 +1005,15 @@
             Step through all coroutines once, and stops executing any droppable coroutines.
             <br/>Before calling this, non-droppable coroutines should be cancelled via cancellation tokens.
             <br/>After calling this, the caller may want to enforce that no (non-droppable) coroutines remain.
+            <br/>Use <see cref="M:BagoumLib.DataStructures.Coroutines.CloseRepeated"/> instead of coroutines have dependences on other coroutines.
+            </summary>
+            <returns>True iff the coroutine set changed.</returns>
+        </member>
+        <member name="M:BagoumLib.DataStructures.Coroutines.CloseRepeated">
+            <summary>
+            Step through all coroutines once, dropping any droppable coroutines,
+             then repeat the process while this results in changes to the coroutine set.
+            <br/>Use this over <see cref="M:BagoumLib.DataStructures.Coroutines.CloseRepeated"/> when coroutines may be dependent on the results of other coroutines.
             </summary>
         </member>
         <member name="M:BagoumLib.DataStructures.Coroutines.Run(System.Collections.IEnumerator,BagoumLib.DataStructures.CoroutineOptions)">
@@ -859,17 +1039,11 @@
         <member name="P:BagoumLib.DataStructures.DictionaryWithKeys`2.Keys">
             <summary>
             Array of dictionary keys.
-            <br/>Do NOT call MarkForDeletion on the deletion markers from this array. Instead, pass them to <see cref="M:BagoumLib.DataStructures.DictionaryWithKeys`2.Remove(BagoumLib.DataStructures.DeletionMarker{`0})"/> in this class.
             </summary>
         </member>
         <member name="P:BagoumLib.DataStructures.DictionaryWithKeys`2.Item(`0)">
             <summary>
             Get/set accessors for the underlying data.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.DataStructures.DictionaryWithKeys`2.Remove(BagoumLib.DataStructures.DeletionMarker{`0})">
-            <summary>
-            Remove the given element from the dictionary.
             </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.IDeletionMarker">
@@ -889,7 +1063,27 @@
         </member>
         <member name="M:BagoumLib.DataStructures.IDeletionMarker.MarkForDeletion">
             <summary>
-            Mark the element as deleted.
+            Mark the element as deleted. The caller should stop using the marker after this.
+            <br/>It is unsafe to reuse (eg. via caching) deletion markers at this point, as the collection
+             may not have deleted them. Wait until <see cref="M:BagoumLib.DataStructures.IDeletionMarker.RemovedFromCollection"/> is called to cache deletion markers.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.IDeletionMarker.RemovedFromCollection">
+            <summary>
+            Called when the collection removes the marker and the underlying element.
+            <br/>It is *not guaranteed* that this function will be called, so you should not depend on it.
+            <br/>It is permissible to reuse (eg. via caching) deletion markers when this is called,
+             as long as you are not using the marker somewhere else.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.DataStructures.IDeletionMarker`1">
+            <summary>
+            An <see cref="T:BagoumLib.DataStructures.IDeletionMarker"/> for an underlying value of type <see cref="!:T"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.IDeletionMarker`1.Value">
+            <summary>
+            Value of the object in the collection.
             </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.DeletionMarker`1">
@@ -898,9 +1092,6 @@
             </summary>
         </member>
         <member name="P:BagoumLib.DataStructures.DeletionMarker`1.Priority">
-            <inheritdoc/>
-        </member>
-        <member name="P:BagoumLib.DataStructures.DeletionMarker`1.MarkedForDeletion">
             <inheritdoc/>
         </member>
         <member name="F:BagoumLib.DataStructures.DeletionMarker`1.Value">
@@ -913,8 +1104,27 @@
             Create a new deletion marker with the given value and priority.
             </summary>
         </member>
+        <member name="M:BagoumLib.DataStructures.DeletionMarker`1.Make(`0,System.Int32)">
+            <summary>
+            Create a new deletion marker with the given value and priority.
+            </summary>
+        </member>
         <member name="M:BagoumLib.DataStructures.DeletionMarker`1.MarkForDeletion">
             <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DeletionMarker`1.RemovedFromCollection">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DeletionMarker`1.AllowPooling">
+            <summary>
+            Mark that a DeletionMarker is safe to be pooled when it receives <see cref="M:BagoumLib.DataStructures.DeletionMarker`1.RemovedFromCollection"/>.
+            <br/>Call this on construction if you are not using the DeletionMarker anywhere else.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DeletionMarker`1.DisallowPooling">
+            <summary>
+            Mark that a DeletionMarker is unsafe to be pooled.
+            </summary>
         </member>
         <member name="M:BagoumLib.DataStructures.DeletionMarker`1.ToString">
             <inheritdoc/>
@@ -924,7 +1134,7 @@
             An ordered collection that supports iteration, as well as deletion of arbitrary elements via
             disposable tokens (<see cref="T:BagoumLib.DataStructures.DeletionMarker`1"/>) returned to consumers.
             Indices are not guaranteed to be persistent and should not be used for identification.
-            <br/>Deletion is O(1) amortized, assuming that <see cref="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Compact"/> is called at a reasonable frequency.
+            <br/>Deletion is O(1) amortized, assuming that <see cref="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Compact"/> is called at a reasonable frequency.
             </summary>
         </member>
         <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.#ctor(System.Int32)">
@@ -1001,12 +1211,143 @@
             Alpha component.
             </summary>
         </member>
+        <member name="M:BagoumLib.DataStructures.FColor.#ctor(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Create a new <see cref="T:BagoumLib.DataStructures.FColor"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.WithA(System.Single)">
+            <summary>
+            Copy this color with a different alpha component.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.Lerp(BagoumLib.DataStructures.FColor,BagoumLib.DataStructures.FColor,System.Single)">
+            <summary>
+            Lerp (clamped) between colors.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.LerpU(BagoumLib.DataStructures.FColor,BagoumLib.DataStructures.FColor,System.Single)">
+            <summary>
+            Lerp (unclamped) between colors.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Addition(BagoumLib.DataStructures.FColor,BagoumLib.DataStructures.FColor)">
+            <summary>
+            Add colors (unclamped).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Subtraction(BagoumLib.DataStructures.FColor,BagoumLib.DataStructures.FColor)">
+            <summary>
+            Subtract colors (unclamped).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Multiply(BagoumLib.DataStructures.FColor,BagoumLib.DataStructures.FColor)">
+            <summary>
+            Multiply colors component-wise.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Multiply(BagoumLib.DataStructures.FColor,System.Single)">
+            <summary>
+            Multiply all components of a color by a scalar (unclamped).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Multiply(System.Single,BagoumLib.DataStructures.FColor)">
+            <summary>
+            Multiply all components of a color by a scalar (unclamped).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Division(BagoumLib.DataStructures.FColor,System.Single)">
+            <summary>
+            Divide all components of a color by a scalar (unclamped).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Equality(BagoumLib.DataStructures.FColor,BagoumLib.DataStructures.FColor)">
+            <summary>
+            Check if two colors are equal.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Inequality(BagoumLib.DataStructures.FColor,BagoumLib.DataStructures.FColor)">
+            <summary>
+            Check if two colors are not equal.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Implicit(BagoumLib.DataStructures.FColor)~System.Numerics.Vector4">
+            <summary>
+            Convert a color to a 0-1 vector4.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Implicit(System.Numerics.Vector4)~BagoumLib.DataStructures.FColor">
+            <summary>
+            Convert a 0-1 vector4 to a color.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.op_Implicit(System.Drawing.Color)~BagoumLib.DataStructures.FColor">
+            <summary>
+            Convert a 0-255 color to a 0-1 color.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.FColor.White">
+            <summary>
+            White (1, 1, 1, 1).
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.FColor.Clear">
+            <summary>
+            Transparent (0, 0, 0, 0).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FColor.Equals(BagoumLib.DataStructures.FColor)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.DataStructures.JointDisposable">
+            <summary>
+            A disposable token that, when disposed, disposes multiple other tokens and then calls a function.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.JointDisposable.#ctor(System.Action,System.IDisposable[])">
+            <summary>
+            </summary>
+            <param name="afterDispose">Function to call after all linked tokens are disposed</param>
+            <param name="disps">Linked tokens to dispose when this token is disposed</param>
+        </member>
+        <member name="M:BagoumLib.DataStructures.JointDisposable.Dispose">
+            <inheritdoc/>
+        </member>
         <member name="M:BagoumLib.DataStructures.ListDisposable.Dispose">
             <inheritdoc/>
         </member>
         <member name="T:BagoumLib.DataStructures.Node`1">
             <summary>
-            An object holding inert data for a NodeLinkedList.
+            An object holding inert data for a NodeLinkedList. Instances are cached.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.Node`1.Prev">
+            <summary>
+            Previous node in the list.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.Node`1.Next">
+            <summary>
+            Next node in the list.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.Node`1.Value">
+            <summary>
+            Value of contained data.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.Node`1.DeletedCount">
+            <summary>
+            The number of times this object has been deleted. Use this to determine if the object has been deleted during iteration.
             </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.Node`1.LinkedList">
@@ -1081,8 +1422,26 @@
         </member>
         <member name="F:BagoumLib.InterruptionStatus.Abort">
             <summary>
-            The process should abort due to a signal from an interrupting process.
+            The process should abort due to a signal from an interrupting process,
+             or if the interrupting process itself was cancelled.
             </summary>
+        </member>
+        <member name="T:BagoumLib.Events.ConstantObservable`1">
+            <summary>
+            An observable with an unchanging value.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.ConstantObservable`1.Value">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.ConstantObservable`1.#ctor(`0)">
+            <summary>
+            Create a new <see cref="T:BagoumLib.Events.ConstantObservable`1"/>.
+            </summary>
+            <param name="value">Fixed value of the observable.</param>
+        </member>
+        <member name="M:BagoumLib.Events.ConstantObservable`1.Subscribe(System.IObserver{`0})">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Events.DisturbedEvented`1">
             <summary>
@@ -1095,15 +1454,44 @@
             <br/>Note that, like <see cref="T:BagoumLib.Events.Evented`1"/>, new subscribers will be sent the current value immediately.
             </summary>
         </member>
+        <member name="P:BagoumLib.Events.DisturbedEvented`1.BaseValue">
+            <summary>
+            Initial (aggregation seed) value.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.DisturbedEvented`1.Value">
+            <summary>
+            Aggregate value. Note that the set operator modifies <see cref="P:BagoumLib.Events.DisturbedEvented`1.BaseValue"/>.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Events.DisturbedEvented`1.#ctor(`0)">
             <summary>
             The initial value is published to onSet.
             </summary>
         </member>
+        <member name="M:BagoumLib.Events.DisturbedEvented`1.op_Implicit(BagoumLib.Events.DisturbedEvented{`0})~`0">
+            <summary>
+            Get the aggregate value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedEvented`1.Fold(`0,`0)">
+            <summary>
+            Function that aggregates values.
+            </summary>
+            <param name="acc">Accumulated value</param>
+            <param name="next">Next value to fold into acc</param>
+            <returns></returns>
+        </member>
         <member name="M:BagoumLib.Events.DisturbedEvented`1.AddDisturbance(BagoumLib.Events.IBObservable{`0})">
             <summary>
             Add a disturbance.
             Whenver the disturbance receives a new value, this aggregate will update as well.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedEvented`1.AddConst(`0)">
+            <summary>
+            Add a constant value disturbance.
+            This aggregate will also update immediately.
             </summary>
         </member>
         <member name="M:BagoumLib.Events.DisturbedEvented`1.CopyDisturbances(BagoumLib.Events.DisturbedEvented{`0})">
@@ -1113,20 +1501,119 @@
             </summary>
             <param name="src"></param>
         </member>
+        <member name="M:BagoumLib.Events.DisturbedEvented`1.ClearDisturbances">
+            <summary>
+            Remove all additional provided values. 
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedEvented`1.Subscribe(System.IObserver{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedEvented`1.OnNext(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedEvented`1.OnError(System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedEvented`1.OnCompleted">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Events.DisturbedFold`1">
+            <summary>
+            An aggregator that does a fold (reduction) over all values using the provided monoidal addition function.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedFold`1.#ctor(`0,System.Func{`0,`0,`0})">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedFold`1.Fold(`0,`0)">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.Events.OverrideEvented`1">
             <summary>
             Get the most recent value.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Events.OverrideEvented`1.#ctor(`0)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.OverrideEvented`1.Fold(`0,`0)">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Events.DisturbedSum`1">
             <summary>
             Get the sum of all values.
             </summary>
         </member>
+        <member name="M:BagoumLib.Events.DisturbedSum`1.#ctor">
+            <summary>
+            Get the sum of all values with the monoidal zero.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedSum`1.#ctor(`0)">
+            <summary>
+            Get the sum of all values with the provided base value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedSum`1.#ctor(BagoumLib.Events.IBObservable{`0})">
+            <summary>
+            Get the sum of all values with the provided base value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedSum`1.Fold(`0,`0)">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.Events.DisturbedProduct`1">
             <summary>
             Get the product of all values.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedProduct`1.#ctor">
+            <summary>
+            Get the product of all values with the monoidal zero.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedProduct`1.#ctor(`0)">
+            <summary>
+            Get the product of all values with the provided base value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedProduct`1.#ctor(BagoumLib.Events.IBObservable{`0})">
+            <summary>
+            Get the product of all values with the provided base value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedProduct`1.Fold(`0,`0)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Events.DisturbedAnd">
+            <summary>
+            Get the AND of all provided values (true when all values are true).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedAnd.#ctor(System.Boolean)">
+            <summary>
+            </summary>
+            <param name="first">Initial value (true by default)</param>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedAnd.Fold(System.Boolean,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Events.DisturbedOr">
+            <summary>
+            Get the OR of all provided values (true when any value is true).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedOr.#ctor(System.Boolean)">
+            <summary>
+            </summary>
+            <param name="first">Initial value (false by default)</param>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedOr.Fold(System.Boolean,System.Boolean)">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Events.IBObservable`1">
             <summary>
@@ -1381,6 +1868,48 @@
             <br/>Includes a stacktrace from the innermost exception.
             </summary>
         </member>
+        <member name="T:BagoumLib.Expressions.ExFunction">
+            <summary>
+            A representation of a <see cref="T:System.Reflection.MethodInfo"/> with efficient static lookup methods and
+             convenience methods for expression invocation.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Expressions.ExFunction.Mi">
+            <summary>
+            Wrapped <see cref="T:System.Reflection.MethodInfo"/> instance.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.ExFunction.#ctor(System.Reflection.MethodInfo)">
+            <summary>
+            Create an <see cref="T:BagoumLib.Expressions.ExFunction"/> with the provided <see cref="T:System.Reflection.MethodInfo"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.ExFunction.Of(System.Linq.Expressions.Expression[])">
+            <summary>
+            Create an expression representing calling a static method on the provided arguments.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.ExFunction.InstanceOf(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression[])">
+            <summary>
+            Create an expression representing calling an instance method on the provided arguments.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.ExFunction.WrapByRetType(System.Type,System.String,System.Type)">
+            <summary>
+            Disambiguate a method based on its return type.
+            </summary>
+            <param name="cls">Type containing the method</param>
+            <param name="methodName">Method name</param>
+            <param name="retType">Return type</param>
+        </member>
+        <member name="M:BagoumLib.Expressions.ExFunction.Wrap(System.Type,System.String,System.Type[])">
+            <summary>
+            Disambiguate a method based on its parameter types.
+            </summary>
+            <param name="cls">Type containing the method</param>
+            <param name="methodName">Method name</param>
+            <param name="types">Parameter types</param>
+        </member>
         <member name="M:BagoumLib.Expressions.ExFunction.WrapAny(System.Type,System.String)">
             <summary>
             Get any method on the enclosing type with the corresponding method name.
@@ -1390,6 +1919,39 @@
             <param name="methodName"></param>
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:BagoumLib.Expressions.ExFunction.Wrap``1(System.String,System.Type[])">
+            <summary>
+            Disambiguate a method based on its parameter types.
+            </summary>
+            <typeparam name="C">Type containing the method</typeparam>
+            <param name="methodName">Method name</param>
+            <param name="types">Parameter types</param>
+        </member>
+        <member name="M:BagoumLib.Expressions.ExFunction.WrapAny``1(System.String)">
+            <summary>
+            Find any method with the given name.
+            </summary>
+            <typeparam name="C">Type containing the method</typeparam>
+            <param name="methodName">Method name</param>
+        </member>
+        <member name="M:BagoumLib.Expressions.ExFunction.Wrap``2(System.String,System.Int32)">
+            <summary>
+            Disambiguate a method based on its parameter types, when all parameters are of the same type.
+            </summary>
+            <typeparam name="C">Type containing the method</typeparam>
+            <typeparam name="T">Parameter type</typeparam>
+            <param name="methodName">Method name</param>
+            <param name="typeCt">Number of times the parameter occurs</param>
+        </member>
+        <member name="M:BagoumLib.Expressions.ExFunction.Wrap``1(System.Type,System.String,System.Int32)">
+            <summary>
+            Disambiguate a method based on its parameter types, when all parameters are of the same type.
+            </summary>
+            <param name="cls">Type containing the method</param>
+            <typeparam name="T">Parameter type</typeparam>
+            <param name="methodName">Method name</param>
+            <param name="typeCt">Number of times the parameter occurs</param>
         </member>
         <member name="T:BagoumLib.Expressions.ExpressionPrinter">
             <summary>
@@ -1562,7 +2124,11 @@
         <member name="P:BagoumLib.Expressions.PrintAsStatementVisitor.Stmter">
             <inheritdoc/>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:BagoumLib.Expressions.PrintAsStatementVisitor.#ctor(BagoumLib.Expressions.PrintVisitor)" -->
+        <member name="M:BagoumLib.Expressions.PrintAsStatementVisitor.#ctor(BagoumLib.Expressions.PrintVisitor)">
+            <summary>
+            Create a <see cref="T:BagoumLib.Expressions.PrintAsStatementVisitor"/>
+            </summary>
+        </member>
         <member name="M:BagoumLib.Expressions.PrintAsStatementVisitor.Visit(System.Linq.Expressions.Expression)">
             <inheritdoc/>
         </member>
@@ -2557,10 +3123,20 @@
             <br/>A base type can be provided, but that type must derive from <see cref="P:BagoumLib.Reflection.CustomDataBuilder.CustomDataBaseType"/>, and it must have a descriptor registered in the builder. 
             </summary>
         </member>
+        <member name="T:BagoumLib.Reflection.ReflectionUtils">
+            <summary>
+            Helpers for reflection and type handling.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Reflection.ReflectionUtils.RName(System.Type)">
             <summary>
             Alias for CSharpTypePrinter.Default.Print(t), which prints the type as close to the native
             C# description as possible without namespaces.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.IsWeakSubclassOf(System.Type,System.Type)">
+            <summary>
+            Returns true iff either t is equal to parent, or t is a strict subclass of parent.
             </summary>
         </member>
         <member name="M:BagoumLib.Reflection.ReflectionUtils.ConstructedGenericTypeMatch(System.Type,System.Type,System.Collections.Generic.Dictionary{System.Type,System.Type}@)">
@@ -2568,6 +3144,65 @@
             Check if a realized type (eg. List&lt;List&lt;int&gt;&gt;)
             and a generic type (eg. List&lt;List&lt;T&gt;&gt;, where T is a generic method type)
             match. If they do, also get a dictionary mapping each generic type to its realized type.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.MakeGeneric(System.Reflection.MethodInfo,System.Collections.Generic.Dictionary{System.Type,System.Type})">
+            <summary>
+            Create a concrete method from a generic method provided a dictionary mapping generic types to concrete types.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.CreateInstance``1(System.Object[])">
+            <summary>
+            Create an instance of type T using its constructor.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.PropertyInfo(System.Type,System.String,System.Boolean)">
+            <summary>
+            Find a property.
+            </summary>
+            <param name="t">Type containing the property</param>
+            <param name="prop">Property name</param>
+            <param name="instance">True if this is an instance property</param>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.FieldInfo(System.Type,System.String,System.Boolean)">
+            <summary>
+            Find a field.
+            </summary>
+            <param name="t">Type containing the field</param>
+            <param name="field">Field name</param>
+            <param name="instance">True if this is an instance field</param>
+        </member>
+        <member name="T:BagoumLib.ServiceLocator">
+            <summary>
+            A store that allows registering and locating services at runtime.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ServiceLocator.Register``1(``0,BagoumLib.ServiceLocator.ServiceOptions)">
+            <summary>
+            Register a service that can be reached globally via service location.
+            <br/>The caller must dispose the disposable when the registered service is no longer available
+             (eg. due to object deletion).
+            <br/>TODO send alerts to consumers when the service is disposed
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ServiceLocator.FindOrNull``1">
+            <summary>
+            Find a service of type T, or return null.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ServiceLocator.MaybeFind``1">
+            <summary>
+            Find a service of type T, or return null.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ServiceLocator.FindAll``1">
+            <summary>
+            Find all services of type T. The returned array may be empty.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ServiceLocator.Find``1">
+            <summary>
+            Find a service of type T, or throw an exception.
             </summary>
         </member>
         <member name="T:BagoumLib.Sorting.AlternatingMergeSorter`1">
@@ -2657,6 +3292,11 @@
             Wikisort sorting algorithm, adapted for C# from https://github.com/BonzaiThePenguin/WikiSort/blob/master/WikiSort.java
             </summary>
         </member>
+        <member name="T:BagoumLib.Tasks.Utilities">
+            <summary>
+            Task-related helpers.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Tasks.Utilities.ContinueWithSync(System.Threading.Tasks.Task,System.Action)">
             <summary>
             Runs a continuation after a task and logs errors from the task or the continuation.
@@ -2673,11 +3313,6 @@
         <member name="M:BagoumLib.Tasks.Utilities.Pipe``1(System.Threading.Tasks.Task{``0},System.Threading.Tasks.TaskCompletionSource{``0})">
             <summary>
             Put the result of this task into a <see cref="T:System.Threading.Tasks.TaskCompletionSource`1"/>.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Tasks.Utilities.IsWeakSubclassOf(System.Type,System.Type)">
-            <summary>
-            Returns true iff either t is equal to parent, or t is a strict subclass of parent.
             </summary>
         </member>
         <member name="M:BagoumLib.Tasks.WaitingUtils.WaitFor(System.Single,System.Action{BagoumLib.Completion},BagoumLib.Cancellation.ICancellee,System.Func{System.Single})">

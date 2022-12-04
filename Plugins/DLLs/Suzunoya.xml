@@ -4,6 +4,665 @@
         <name>Suzunoya</name>
     </assembly>
     <members>
+        <member name="T:Suzunoya.ADV.ADVData">
+            <summary>
+            All data for a (saveable) in-progress ADV game instance.
+            <br/>This class should be derived for game-specific data.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVData.#ctor(Suzunoya.Data.InstanceData)">
+            <summary>
+            All data for a (saveable) in-progress ADV game instance.
+            <br/>This class should be derived for game-specific data.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVData.CurrentMap">
+            <summary>
+            The currently realized map.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVData.UnmodifiedSaveData">
+            <summary>
+            While in a VN segment, put the serialized save data before entering the segment here.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVData.LockedContextData">
+            <summary>
+            When entering a context where save/load is not allowed (<see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.LoadSafe"/> is false),
+             put the save data at that point in time in this field.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVData.GetLoadProxyInfo">
+            <summary>
+            If this data was saved while in a VN segment (ie. UnmodifiedSaveData is not null),
+             then use UnmodifiedSaveData as the replayee save data, and use this data (or locked save data) as a loading proxy.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVData.PreserveData">
+            <summary>
+            When entering a top-level bounded context,
+            call this method to store the save data at that point in <see cref="P:Suzunoya.ADV.ADVData.UnmodifiedSaveData"/>.
+            <br/>When loading into this bounded context, the engine will start with <see cref="P:Suzunoya.ADV.ADVData.UnmodifiedSaveData"/>
+             and replay it until it is equal to the savedata at the point of saving.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVData.RemovePreservedData">
+            <summary>
+            When leaving a top-level bounded context,
+            call this method to remove the handling from <see cref="M:Suzunoya.ADV.ADVData.PreserveData"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVData.LockContext(Suzunoya.ControlFlow.OpenedContext)">
+            <summary>
+            When entering a bounded context that is not safe for save/load (<see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.LoadSafe"/>),
+            call this method to store the save data at that point in <see cref="P:Suzunoya.ADV.ADVData.LockedContextData"/>.
+            <br/><see cref="M:Suzunoya.ADV.ADVManager.GetSaveReadyADVData"/> will return <see cref="P:Suzunoya.ADV.ADVData.LockedContextData"/> if it exists.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVData.UnlockContext(Suzunoya.ControlFlow.OpenedContext)">
+            <summary>
+            When leaving a bounded context that is not safe for save/load (<see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.LoadSafe"/>),
+            call this method to remove the handling from <see cref="M:Suzunoya.ADV.ADVData.LockContext(Suzunoya.ControlFlow.OpenedContext)"/>.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.RunOnEntryVNPriority">
+            <summary>
+            Enum describing the reason for which a VN segment should be run on entry.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ADV.RunOnEntryVNPriority.LOAD">
+            <summary>
+            Run a VN segment on entry because the game was saved while that segment was running.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ADV.RunOnEntryVNPriority.MAP_ENTER">
+            <summary>
+            Run a VN segment on entry because the map configuration says so.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.ADVIdealizedState">
+            <summary>
+            A set of assertions about the state of an ADV game.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVIdealizedState.HasEntryVN">
+            <summary>
+            Whether or not this idealized state has a VN segment it will run on actualization.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVIdealizedState.#ctor(Suzunoya.ADV.IExecutingADV)">
+            <summary>
+            Constructor for <see cref="T:Suzunoya.ADV.ADVIdealizedState"/> that starts with no assertions.
+            <br/>Assertions can be added via <see cref="M:BagoumLib.Assertions.IdealizedState.Assert(BagoumLib.Assertions.IAssertion[])"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVIdealizedState.SetEntryVN(Suzunoya.ControlFlow.BoundedContext{System.Reactive.Unit},Suzunoya.ADV.RunOnEntryVNPriority)">
+            <summary>
+            Set a visual novel segment to be run when this idealized state is actualized.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVIdealizedState.ActualizeOnNewState">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVIdealizedState.DeactualizeOnEndState">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVIdealizedState.FadeIn">
+            <summary>
+            A task that is run after <see cref="M:Suzunoya.ADV.ADVIdealizedState.ActualizeOnNewState"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVIdealizedState.FadeOut">
+            <summary>
+            A task that is run before <see cref="M:Suzunoya.ADV.ADVIdealizedState.DeactualizeOnEndState"/>.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.ADVInstance">
+            <summary>
+            Contains all top-level metadata about an executing ADV instance that is not specific to the game.
+            <br/>The actual execution process is handled by a game-specific <see cref="T:Suzunoya.ADV.IExecutingADV"/>.
+            </summary>
+            <param name="Request">Request data storing information required to start the ADV instance</param>
+            <param name="VN">VN state container that is persistent through the game, on which all bounded contexts are run</param>
+            <param name="Tracker">Cancellation token wrapping the ADV instance execution</param>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVInstance.#ctor(Suzunoya.ADV.IADVInstanceRequest,Suzunoya.ControlFlow.IVNState,BagoumLib.Cancellation.Cancellable)">
+            <summary>
+            Contains all top-level metadata about an executing ADV instance that is not specific to the game.
+            <br/>The actual execution process is handled by a game-specific <see cref="T:Suzunoya.ADV.IExecutingADV"/>.
+            </summary>
+            <param name="Request">Request data storing information required to start the ADV instance</param>
+            <param name="VN">VN state container that is persistent through the game, on which all bounded contexts are run</param>
+            <param name="Tracker">Cancellation token wrapping the ADV instance execution</param>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVInstance.Request">
+            <summary>Request data storing information required to start the ADV instance</summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVInstance.VN">
+            <summary>VN state container that is persistent through the game, on which all bounded contexts are run</summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVInstance.Tracker">
+            <summary>Cancellation token wrapping the ADV instance execution</summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVInstance.ADVData">
+            <summary>
+            Game data describing the player's progress through the game.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVInstance.Manager">
+            <inheritdoc cref="P:Suzunoya.ADV.IADVInstanceRequest.Manager"/>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVInstance.Cancel">
+            <summary>
+            Cancel the cancellation token and destroy all contents of the executing VN.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVInstance.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.ADV.IADVInstanceRequest">
+            <summary>
+            Contains information necessary to start an ADV instance.
+            <br/>Once the instance is started, metadata such as the execution tracker
+            is stored in a constructed <see cref="T:Suzunoya.ADV.ADVInstance"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.IADVInstanceRequest.Manager">
+            <inheritdoc cref="T:Suzunoya.ADV.ADVManager"/>
+        </member>
+        <member name="P:Suzunoya.ADV.IADVInstanceRequest.ADVData">
+            <summary>
+            Save data to load from.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.IADVInstanceRequest.LoadProxyData">
+            <summary>
+            When loading into an in-progress BoundedContext, this contains the "true" save data,
+             that is replayed onto the "blank" save data in <see cref="P:Suzunoya.ADV.IADVInstanceRequest.ADVData"/>.
+            <br/>You can set this up by calling `(ADVData, LoadProxyData) = advData.GetLoadProxyInfo();` in the constructor.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.IADVInstanceRequest.FinalizeProxyLoad">
+            <summary>
+            After loading into an in-progress BoundedContext, call this method to swap <see cref="P:Suzunoya.ADV.IADVInstanceRequest.LoadProxyData"/>
+            (the "true" save data) and <see cref="P:Suzunoya.ADV.IADVInstanceRequest.ADVData"/> (the "blank/replayee" save data).
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.IADVInstanceRequest.Run">
+            <summary>
+            Enter the ADV scene and run the ADV instance.
+            Returns false if the scene fails to load.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.IADVInstanceRequest.Restart(Suzunoya.ADV.ADVData)">
+            <summary>
+            Restart the ADV instance, possibly with an overriden data.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.ADVManager">
+            <summary>
+            Service that manages the execution of an ADV context.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.ADVManager.State">
+            <summary>
+            Enum describing the state that governs what interactions the player may do.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ADV.ADVManager.State.Investigation">
+            <summary>
+            Investigation state: the player can interact with objects in the environment.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ADV.ADVManager.State.Dialogue">
+            <summary>
+            Dialogue state: the VN is executing dialogue.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ADV.ADVManager.State.Waiting">
+            <summary>
+            Waiting state: Some loading process is occurring that disables player interaction.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVManager.ADVData">
+            <inheritdoc cref="P:Suzunoya.ADV.IExecutingADV.ADVData"/>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVManager.VNState">
+            <inheritdoc cref="P:Suzunoya.ADV.IExecutingADV.VN"/>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVManager.ExecAdv">
+            <summary>
+            The currently executing ADV process.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVManager.ADVState">
+            <summary>
+            The current <see cref="T:Suzunoya.ADV.ADVManager.State"/> of the game.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVManager.Tokens">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVManager.VNExecutionStarting">
+            <summary>
+            Event invoked right before VN execution begins. Bool: whether or not parallel investigation is permitted.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVManager.DestroyCurrentInstance">
+            <summary>
+            Destroy the currently running ADV instance, if it exists.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVManager.SetupInstance(Suzunoya.ADV.IExecutingADV)">
+            <summary>
+            Set the provided ADV execution as the current executing ADV.
+            <br/>(Only one <see cref="T:Suzunoya.ADV.IExecutingADV"/> may be handled by this service at a time.)
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVManager.GetSaveReadyADVData">
+            <summary>
+            Update and retrieve the save data that should be serialized to disk.
+            <br/>This may not be <see cref="P:Suzunoya.ADV.ADVManager.ADVData"/> in cases where the current VN location is unidentifiable or
+             within a locked context (<see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.LoadSafe"/> = false).
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVManager.TryExecuteVN``1(Suzunoya.ControlFlow.BoundedContext{``0},System.Boolean)">
+            <summary>
+            Execute a top-level VN segment. May fail with null if a VN segment is already executing.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVManager.ExecuteVN``1(Suzunoya.ControlFlow.BoundedContext{``0},System.Boolean)">
+            <summary>
+            Execute a top-level VN segment.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.BaseExecutingADV`2">
+            <summary>
+            Base implementation of <see cref="T:Suzunoya.ADV.IExecutingADV"/> for ADV games requiring assertion logic and map controls.
+            <br/>Almost all game configuration is done in abstract method <see cref="M:Suzunoya.ADV.BaseExecutingADV`2.ConfigureMapStates"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.BaseExecutingADV`2.Inst">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ADV.BaseExecutingADV`2.Manager">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ADV.BaseExecutingADV`2.VN">
+            <inheritdoc cref="P:Suzunoya.ADV.ADVInstance.VN"/>
+        </member>
+        <member name="P:Suzunoya.ADV.BaseExecutingADV`2.Data">
+            <inheritdoc cref="P:Suzunoya.ADV.ADVInstance.ADVData"/>
+        </member>
+        <member name="P:Suzunoya.ADV.BaseExecutingADV`2.DataChanged">
+            <summary>
+            Event called immediately after save data is changed, and before assertions are recomputed.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.BaseExecutingADV`2.MapStates">
+            <summary>
+            Handler for managing maps and assertions.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.BaseExecutingADV`2.MapTransitionTask">
+            <inheritdoc cref="P:Suzunoya.ADV.MapStateTransition`2.MapUpdateTask"/>
+        </member>
+        <member name="F:Suzunoya.ADV.BaseExecutingADV`2.executingCrossMapTransition">
+            <summary>
+            True when the current map is changing (eg. from Hakurei Shrine to Moriya Shrine).
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ADV.BaseExecutingADV`2.completion">
+            <summary>
+            Task describing the output of the entire game. Set the result when the entire game is complete.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ADV.BaseExecutingADV`2.tokens">
+            <inheritdoc cref="P:BagoumLib.Cancellation.ITokenized.Tokens"/>
+        </member>
+        <member name="F:Suzunoya.ADV.BaseExecutingADV`2.bctxes">
+            <summary>
+            Maps a BCtx ID to the corresponding BCtx for all top-level BCtxes that can be loaded into
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ADV.BaseExecutingADV`2.MapWillUpdate">
+            <summary>
+            Event called when the map is updated via <see cref="M:Suzunoya.ADV.BaseExecutingADV`2.GoToMap(System.String,System.Action{`1})"/>.
+            <br/>It is called right before assertions are recomputed.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.#ctor(Suzunoya.ADV.ADVInstance)">
+            <summary>
+            Constructor for <see cref="T:Suzunoya.ADV.BaseExecutingADV`2"/>.
+            <br/>Note that <see cref="M:Suzunoya.ADV.BaseExecutingADV`2.ConfigureMapStates"/> is called in this constructor.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.DisposeWithMap``1(``0)">
+            <summary>
+            Set a disposable to be automatically disposed when the map changes.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.GoToMap(System.String,System.Action{`1})">
+            <summary>
+            Change the current map. Always call this method instead of setting <see cref="P:Suzunoya.ADV.ADVData.CurrentMap"/>,
+             as it triggers <see cref="F:Suzunoya.ADV.BaseExecutingADV`2.MapWillUpdate"/>.
+            </summary>
+            <param name="map">New map to go to</param>
+            <param name="updater">Optional data update step that will run before the map change</param>
+            <returns></returns>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.UpdateDataV(System.Action{`1},Suzunoya.ADV.MapStateTransitionSettings{`0})">
+            <summary>
+            Update the game data and recompute map assertions. This returns nothing; use <see cref="M:Suzunoya.ADV.BaseExecutingADV`2.UpdateData(System.Action{`1},Suzunoya.ADV.MapStateTransitionSettings{`0})"/> if you
+             want to await the update task.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.UpdateData(System.Action{`1},Suzunoya.ADV.MapStateTransitionSettings{`0})">
+            <summary>
+            Update the game data and recompute map assertions.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.Context(System.String,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Use this proxy function to register BCTXs so they can be inspected and run on load.
+            Top-level contexts should always be {Unit}.
+            If you provide an unidentifiable id (eg. empty string), it won't be loadable.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.Run">
+            <summary>
+            Boilerplate code for running an ADV-based game. 
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.ConfigureMapStates">
+            <summary>
+            Map setup function run once during game initialization. This handles the game's entire logical configuration.
+            <br/>Subclasses must override this to make data-dependent assertions on maps.
+            <br/>Assertions will be re-evaluated whenever the instance data changes.
+            <br/>Example usage, where SomeEntity appears on MyMapName after QuestYYY is accepted:
+            <code>
+            ms.ConfigureMap("MyMapName", (i, d) => {
+              if (d.QuestState.QuestYYY >= QuestState.ACCEPTED) {
+                i.Assert(new EntityAssertion&lt;SomeEntity&gt;(vn));
+            ...
+            </code>
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.ADV.EvidenceRequest`1">
+            <summary>
+            An object that allows consumers to request "evidence", which, when provided,
+             interrupts VN execution and runs a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> on top.
+            </summary>
+            <param name="VN">VN process on which this is running.</param>
+            <typeparam name="E">Type of evidence object.</typeparam>
+        </member>
+        <member name="M:Suzunoya.ADV.EvidenceRequest`1.#ctor(Suzunoya.ControlFlow.IVNState)">
+            <summary>
+            An object that allows consumers to request "evidence", which, when provided,
+             interrupts VN execution and runs a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> on top.
+            </summary>
+            <param name="VN">VN process on which this is running.</param>
+            <typeparam name="E">Type of evidence object.</typeparam>
+        </member>
+        <member name="P:Suzunoya.ADV.EvidenceRequest`1.VN">
+            <summary>VN process on which this is running.</summary>
+        </member>
+        <member name="P:Suzunoya.ADV.EvidenceRequest`1.CanPresent">
+            <summary>
+            Whether or not there exists a consumer to which evidence can be presented.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.EvidenceRequest`1.RequestsChanged">
+            <summary>
+            Event called when the stack of requests has changed. The stack is not publicly visible, but you
+             may examine <see cref="P:Suzunoya.ADV.EvidenceRequest`1.CurrentRequest"/>/<see cref="P:Suzunoya.ADV.EvidenceRequest`1.CanPresent"/> to see the top of the stack.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.EvidenceRequest`1.Present(`0)">
+            <summary>
+            Present evidence that has been requested, and run a continuation based on how the request has been configured
+             via <see cref="M:Suzunoya.ADV.EvidenceRequest`1.Request(System.Func{`0,Suzunoya.ControlFlow.BoundedContext{BagoumLib.InterruptionStatus}})"/> or <see cref="M:Suzunoya.ADV.EvidenceRequest`1.WaitForEvidence(System.String)"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.EvidenceRequest`1.Request(System.Func{`0,Suzunoya.ControlFlow.BoundedContext{BagoumLib.InterruptionStatus}})">
+            <summary>
+            Returns a disposable token that temporarily allows the executing BCTX to be interrupted
+             if evidence is provided.
+            <br/>This cannot be used in a saveable BCTX.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.EvidenceRequest`1.WaitForEvidence(System.String)">
+            <summary>
+            Return an unskippable task that waits until evidence is provided.
+            <br/>This is constructed as a BCTX and therefore can be nested within a saveable BCTX.
+            </summary>
+            <param name="key">Key used to identify this BCTX.</param>
+        </member>
+        <member name="T:Suzunoya.ADV.IADVCompletion">
+            <summary>
+            An object returned when the ADV game is fully completed.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.UnitADVCompletion">
+            <summary>
+            An empty implementation of <see cref="T:Suzunoya.ADV.IADVCompletion"/>.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.IExecutingADV">
+            <summary>
+            The process executing an ADV instance. This is subclassed for each game.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.IExecutingADV.Inst">
+            <inheritdoc cref="T:Suzunoya.ADV.ADVInstance"/>
+        </member>
+        <member name="P:Suzunoya.ADV.IExecutingADV.ADVData">
+            <inheritdoc cref="P:Suzunoya.ADV.ADVInstance.ADVData"/>
+        </member>
+        <member name="P:Suzunoya.ADV.IExecutingADV.Manager">
+            <inheritdoc cref="P:Suzunoya.ADV.ADVInstance.Manager"/>
+        </member>
+        <member name="P:Suzunoya.ADV.IExecutingADV.VN">
+            <inheritdoc cref="P:Suzunoya.ADV.ADVInstance.VN"/>
+        </member>
+        <member name="P:Suzunoya.ADV.IExecutingADV.MapStates">
+            <inheritdoc cref="T:Suzunoya.ADV.MapStateManager`2"/>
+        </member>
+        <member name="M:Suzunoya.ADV.IExecutingADV.Run">
+            <summary>
+            Run the ADV. Returns an <see cref="T:Suzunoya.ADV.IADVCompletion"/> when the entirety of the ADV is complete.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.IExecutingADV`2">
+            <summary>
+            See <see cref="T:Suzunoya.ADV.IExecutingADV"/>
+            </summary>
+            <typeparam name="I">Type of idealized state container</typeparam>
+            <typeparam name="D">Type of save data</typeparam>
+        </member>
+        <member name="P:Suzunoya.ADV.IExecutingADV`2.MapStates">
+            <inheritdoc cref="T:Suzunoya.ADV.MapStateManager`2"/>
+        </member>
+        <member name="P:Suzunoya.ADV.IExecutingADV`2.Suzunoya#ADV#IExecutingADV#MapStates">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.ADV.BarebonesExecutingADV`1">
+            <summary>
+            Baseline implementation of <see cref="T:Suzunoya.ADV.IExecutingADV"/>
+            that can be used for pure VN games with no actual ADV functionality.
+            <br/>This handles load functionality if setup in <see cref="P:Suzunoya.ADV.IADVInstanceRequest.LoadProxyData"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BarebonesExecutingADV`1.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ADV.BarebonesExecutingADV`1.Inst">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ADV.BarebonesExecutingADV`1.MapStates">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ADV.BarebonesExecutingADV`1.#ctor(Suzunoya.ADV.ADVInstance,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BarebonesExecutingADV`1.Run">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.ADV.MapStateTransitionSettings`1">
+            <summary>
+            Settings that control an individual map transition when game data updates.
+            </summary>
+            <typeparam name="I">Subtype of <see cref="T:Suzunoya.ADV.ADVIdealizedState"/></typeparam>
+        </member>
+        <member name="P:Suzunoya.ADV.MapStateTransitionSettings`1.ExtraAssertions">
+            <summary>
+            Action making extra assertions on <see cref="T:Suzunoya.ADV.ADVIdealizedState"/> for the map described by the string
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.MapStateTransitionSettings`1.SimultaneousActualization">
+            <summary>
+            Whether or not previous state deactualization should occur at the same time as next state actualization
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.IMapStateManager">
+            <summary>
+            Manages the idealized and actualized states for many concurrent maps.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.IMapStateManager.CurrentMapState">
+            <summary>
+            The idealized state of the current map.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.GenericAssert">
+            <summary>
+            A callback provided to consumers that calls Assert on the map with the associated key.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.MapStateManager`2">
+            <summary>
+            Manages the idealized and actualized states for many concurrent maps.
+            <br/>At most one map may be actualized at a time (see <see cref="P:Suzunoya.ADV.MapStateManager`2.CurrentMap"/>).
+            </summary>
+            <typeparam name="I">Type of idealized state</typeparam>
+            <typeparam name="D">Type of game data</typeparam>
+        </member>
+        <member name="M:Suzunoya.ADV.MapStateManager`2.#ctor(Suzunoya.ADV.IExecutingADV,System.Func{`0})">
+            <summary>
+            Manages the idealized and actualized states for many concurrent maps.
+            <br/>At most one map may be actualized at a time (see <see cref="P:Suzunoya.ADV.MapStateManager`2.CurrentMap"/>).
+            </summary>
+            <typeparam name="I">Type of idealized state</typeparam>
+            <typeparam name="D">Type of game data</typeparam>
+        </member>
+        <member name="P:Suzunoya.ADV.MapStateManager`2.CurrentMap">
+            <summary>
+            The identifier of the current map.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.MapStateManager`2.MapEndStateDeactualized">
+            <summary>
+            Triggered right after a map is end-state deactualized because <see cref="P:Suzunoya.ADV.MapStateManager`2.CurrentMap"/> changed.
+            <br/>With default handling in <see cref="T:Suzunoya.ADV.ADVIdealizedState"/>, the screen will be faded out at this time.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.MapStateManager`2.CurrentMapState">
+            <inheritdoc cref="P:Suzunoya.ADV.IMapStateManager.CurrentMapState"/>
+        </member>
+        <member name="M:Suzunoya.ADV.MapStateManager`2.ConfigureMap(System.String,System.Action{`0,`1})">
+            <summary>
+            Configure a map definition. This should be done for all maps before the game code is run.
+            </summary>
+            <param name="mapKey">Key to associate with the map</param>
+            <param name="stateConstructor">Process that creates assertions for the map depending on game data</param>
+            <exception cref="T:System.Exception">Thrown if the key is already configured.</exception>
+        </member>
+        <member name="M:Suzunoya.ADV.MapStateManager`2.ConfigureGeneric(System.Action{Suzunoya.ADV.GenericAssert,`1})">
+            <summary>
+            Configure map definitions for all maps. This should be done before the game code is run.
+            </summary>
+            <param name="stateConstructor">Process that creates assertions for all maps depending on game data</param>
+        </member>
+        <member name="M:Suzunoya.ADV.MapStateManager`2.UpdateMaps(`1,System.String,Suzunoya.ADV.MapStateTransitionSettings{`0})">
+            <summary>
+            Update all map definitions with a new game data object.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.MapStateManager`2.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.ADV.MapStateTransition`2">
+            <summary>
+            Safely manages transitions between data states operated over by <see cref="T:Suzunoya.ADV.MapStateManager`2"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.MapStateTransition`2.MapStates">
+            <summary>
+            Handler for maps and assertions.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.MapStateTransition`2.ExecutingTransition">
+            <summary>
+            True when the map state is changing.
+            <br/>Consumers may want to disable certain functionalities while this is true.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.MapStateTransition`2.MapUpdateTask">
+            <summary>
+            The task describing the current map update, if a map update is occuring.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.SelectionRequest`1">
+            <summary>
+            An object that allows consumers to request that the player select one of several options.
+            </summary>
+            <param name="VN">VN process on which this is running.</param>
+            <typeparam name="C">Type of option. In the simplest case, this may be a string.</typeparam>
+        </member>
+        <member name="M:Suzunoya.ADV.SelectionRequest`1.#ctor(Suzunoya.ControlFlow.IVNState)">
+            <summary>
+            An object that allows consumers to request that the player select one of several options.
+            </summary>
+            <param name="VN">VN process on which this is running.</param>
+            <typeparam name="C">Type of option. In the simplest case, this may be a string.</typeparam>
+        </member>
+        <member name="P:Suzunoya.ADV.SelectionRequest`1.VN">
+            <summary>VN process on which this is running.</summary>
+        </member>
+        <member name="P:Suzunoya.ADV.SelectionRequest`1.CanSelect">
+            <summary>
+            Whether or not there exists a consumer to which a selection can be provided.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.SelectionRequest`1.RequestChanged">
+            <summary>
+            Event called when there is a new selection request, in which case it contains the selection options,
+             or when a selection request is complete, in which case it contains null.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.SelectionRequest`1.MakeSelection(`0)">
+            <summary>
+            Make a selection that has been requested via <see cref="M:Suzunoya.ADV.SelectionRequest`1.WaitForSelection(System.String,`0[])"/>.
+            <br/>Note that this requires equality operators to be well-defined.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.SelectionRequest`1.MakeSelection(System.Int32)">
+            <summary>
+            Make a selection that has been requested via <see cref="M:Suzunoya.ADV.SelectionRequest`1.WaitForSelection(System.String,`0[])"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.SelectionRequest`1.WaitForSelection(System.String,`0[])">
+            <summary>
+            Return an unskippable task that waits until a selection is made.
+            <br/>This is constructed as a BCTX and therefore can be nested within a saveable BCTX.
+            </summary>
+            <param name="key">Key used to identify this BCTX.</param>
+            <param name="options">Non-empty array of options. Do not modify the array after passing it to this function.</param>
+        </member>
         <member name="T:Suzunoya.Assertions.EntityAssertion">
             <summary>
             Base class for assertions that operate over Suzunoya entity objects
@@ -79,7 +738,7 @@
         </member>
         <member name="P:Suzunoya.Assertions.EntityAssertion`1.OnActualize">
             <summary>
-            Callback to invoke when an actualized object is first create (not during inheritance).
+            Callback to invoke when an actualized object is first created (not during inheritance).
             </summary>
         </member>
         <member name="P:Suzunoya.Assertions.EntityAssertion`1.DynamicEntryAllowed">
@@ -160,33 +819,123 @@
         <member name="M:Suzunoya.Assertions.EntityAssertion`1._Inherit(Suzunoya.Assertions.EntityAssertion{`0})">
             <inheritdoc />
         </member>
-        <member name="T:Suzunoya.ControlFlow.BoundedContext">
+        <member name="T:Suzunoya.Assertions.RunOnEntryAssertion">
             <summary>
-            Non-generic base class for BoundedContext&lt;T&gt;.
+            An assertion that runs a task on entry (new state/no preceding only). Throws on inherit.
             </summary>
         </member>
-        <member name="P:Suzunoya.ControlFlow.BoundedContext.VN">
+        <member name="M:Suzunoya.Assertions.RunOnEntryAssertion.#ctor(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            An assertion that runs a task on entry (new state/no preceding only). Throws on inherit.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.RunOnEntryAssertion.Priority">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Assertions.RunOnEntryAssertion.ActualizeOnNewState">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Assertions.RunOnEntryAssertion.ActualizeOnNoPreceding">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Assertions.RunOnEntryAssertion.DeactualizeOnEndState">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Assertions.RunOnEntryAssertion.DeactualizeOnNoSucceeding">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Assertions.RunOnEntryAssertion.Inherit(BagoumLib.Assertions.IAssertion)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Assertions.RunOnEntryAssertion._Inherit(Suzunoya.Assertions.RunOnEntryAssertion)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.IBoundedContext">
+            <summary>
+            Non-generic base class for <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/>
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IBoundedContext.VN">
             <summary>
             The <see cref="T:Suzunoya.ControlFlow.IVNState"/> within which the bounded context is executing.
             </summary>
         </member>
-        <member name="P:Suzunoya.ControlFlow.BoundedContext.ID">
+        <member name="P:Suzunoya.ControlFlow.IBoundedContext.ID">
             <summary>
             An identifier for the bounded context.
             If this is empty, then the context will be considered unidentifiable,
              and features such as save/load will be disabled.
             </summary>
         </member>
-        <member name="P:Suzunoya.ControlFlow.BoundedContext.Identifiable">
+        <member name="P:Suzunoya.ControlFlow.IBoundedContext.Identifiable">
             <summary>
             Whether this bounded context has an identifier that allows it to be identified for save/load and persistent
              data storage in BCTXData.
             </summary>
         </member>
-        <member name="M:Suzunoya.ControlFlow.BoundedContext.#ctor(Suzunoya.ControlFlow.VNState,System.String)">
+        <member name="T:Suzunoya.ControlFlow.IStrongBoundedContext">
             <summary>
-            Create a bounded context.
+            Non-generic base class for <see cref="T:Suzunoya.ControlFlow.StrongBoundedContext`1"/>
             </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IStrongBoundedContext.LoadSafe">
+            <summary>
+            Whether or not it is safe to save/load inside this BCTX. This may be false in cases where the BCTX
+             contains nondeterministic code.
+            <br/>This should be consumed by game logic handlers to call <see cref="M:Suzunoya.ADV.ADVData.LockContext(Suzunoya.ControlFlow.OpenedContext)"/>.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.BoundedContext`1">
+            <summary>
+            A representation of a (possibly nested) task run on a VNState.
+            <br/>The return value of the contained task is automatically saved in the VNState when this runs to completion.
+            </summary>
+            <param name="VN">VN on which to run the task</param>
+            <param name="ID">Identifier for the data produced by running the task</param>
+            <param name="InnerTask">Task to run</param>
+            <typeparam name="T">Type of the return value of the contained task</typeparam>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.#ctor(Suzunoya.ControlFlow.IVNState,System.String,System.Func{System.Threading.Tasks.Task{`0}})">
+            <summary>
+            A representation of a (possibly nested) task run on a VNState.
+            <br/>The return value of the contained task is automatically saved in the VNState when this runs to completion.
+            </summary>
+            <param name="VN">VN on which to run the task</param>
+            <param name="ID">Identifier for the data produced by running the task</param>
+            <param name="InnerTask">Task to run</param>
+            <typeparam name="T">Type of the return value of the contained task</typeparam>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.BoundedContext`1.VN">
+            <summary>VN on which to run the task</summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.BoundedContext`1.ID">
+            <summary>Identifier for the data produced by running the task</summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.BoundedContext`1.InnerTask">
+            <summary>
+            Task to run
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.BoundedContext`1.Identifiable">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.IsCompletedInContexts(System.String[])">
+            <summary>
+            Return true if the context has been executed and completed in the given parentage path.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.Execute">
+            <summary>
+            Run the contents of this bounded context on the VN.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.GetAwaiter">
+            <summary>
+            Syntactic sugar for `await ctx.Execute()`.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.ToString">
+            <inheritdoc/>
         </member>
         <member name="T:Suzunoya.ControlFlow.StrongBoundedContext`1">
             <summary>
@@ -200,19 +949,43 @@
             <br/>When skipping the game state to various points for usages such as loading or backlogging,
              the engine may skip the entirety of a StrongBoundedContext.
             </summary>
-            <typeparam name="T"></typeparam>
+            <param name="VN">VN on which to run the task</param>
+            <param name="ID">Identifier for the data produced by running the task</param>
+            <param name="InnerTask">Task to run</param>
+            <param name="ShortCircuit">Code to run if the BCTX is short-circuit that should mimic any nontransient
+             changes to the world state.</param>
+            <param name="OnFinish">Code to run at the end of the BCTX execution. Also run if short-circuit.
+             Useful for encoding state changes without duplicating them in <see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.ShortCircuit"/>.</param>
+            <typeparam name="T">Type of the return value of the contained task</typeparam>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.StrongBoundedContext`1.#ctor(Suzunoya.ControlFlow.IVNState,System.String,System.Func{System.Threading.Tasks.Task{`0}},System.Action,System.Action)">
+            <summary>
+            A <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> with the guarantee that any lasting effects on game state
+             produced by running this task are duplicated in <see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.ShortCircuit"/>.
+            <br/><see cref="M:Suzunoya.ControlFlow.VNState.SaveLocalValue``1(System.String,``0)"/> does NOT need to be duplicated in ShortCircuit,
+             as it can be automatically handled in <see cref="T:Suzunoya.Data.BoundedContextData"/>. However, any other modifications
+             to instance data must be duplicated in ShortCircuit.
+            <br/>Note that if these are nested, then the outer SBC must also execute the short-circuit code
+             in all of its nested children in its own short-circuit.
+            <br/>When skipping the game state to various points for usages such as loading or backlogging,
+             the engine may skip the entirety of a StrongBoundedContext.
+            </summary>
+            <param name="VN">VN on which to run the task</param>
+            <param name="ID">Identifier for the data produced by running the task</param>
+            <param name="InnerTask">Task to run</param>
+            <param name="ShortCircuit">Code to run if the BCTX is short-circuit that should mimic any nontransient
+             changes to the world state.</param>
+            <param name="OnFinish">Code to run at the end of the BCTX execution. Also run if short-circuit.
+             Useful for encoding state changes without duplicating them in <see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.ShortCircuit"/>.</param>
+            <typeparam name="T">Type of the return value of the contained task</typeparam>
         </member>
         <member name="P:Suzunoya.ControlFlow.StrongBoundedContext`1.ShortCircuit">
-            <summary>
-            Code to run if the BCTX is short-circuit that should mimic any nontransient
-             changes to the world state.
-            </summary>
+            <summary>Code to run if the BCTX is short-circuit that should mimic any nontransient
+             changes to the world state.</summary>
         </member>
         <member name="P:Suzunoya.ControlFlow.StrongBoundedContext`1.OnFinish">
-            <summary>
-            Code to run at the end of the BCTX execution. Also run if short-circuit.
-             Useful for encoding state changes without duplicating them in <see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.ShortCircuit"/>.
-            </summary>
+            <summary>Code to run at the end of the BCTX execution. Also run if short-circuit.
+             Useful for encoding state changes without duplicating them in <see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.ShortCircuit"/>.</summary>
         </member>
         <member name="P:Suzunoya.ControlFlow.StrongBoundedContext`1.LoadingDefault">
             <summary>
@@ -222,35 +995,10 @@
              without a ComputeFlag guard, or if an update was made to the game.
             </summary>
         </member>
-        <member name="M:Suzunoya.ControlFlow.StrongBoundedContext`1.#ctor(Suzunoya.ControlFlow.VNState,System.String,System.Func{System.Threading.Tasks.Task{`0}},System.Action,System.Action)">
-            <summary>
-            Create a <see cref="T:Suzunoya.ControlFlow.StrongBoundedContext`1"/>
-            </summary>
+        <member name="P:Suzunoya.ControlFlow.StrongBoundedContext`1.LoadSafe">
+            <inheritdoc/>
         </member>
-        <member name="T:Suzunoya.ControlFlow.BoundedContext`1">
-            <summary>
-            A representation of a (possibly nested) task run on a VNState.
-            <br/>The return value of the contained task is automatically saved in the VNState when this runs to completion.
-            <br/>All external awaited tasks should be wrapped in BoundedContext (see <see cref="!:VNState.Bound&lt;T&gt;"/>)
-            </summary>
-            <typeparam name="T">Type of the return value of the contained task</typeparam>
-        </member>
-        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.IsCompletedInContexts(System.String[])">
-            <summary>
-            Return true if the context has been executed and completed in the given parentage path.
-            </summary>
-        </member>
-        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.#ctor(Suzunoya.ControlFlow.VNState,System.String,System.Func{System.Threading.Tasks.Task{`0}})">
-            <summary>
-            Create a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/>
-            </summary>
-        </member>
-        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.GetAwaiter">
-            <summary>
-            Syntactic sugar for `await ctx.Execute()`.
-            </summary>
-        </member>
-        <member name="M:Suzunoya.ControlFlow.BoundedContext`1.ToString">
+        <member name="M:Suzunoya.ControlFlow.StrongBoundedContext`1.ToString">
             <inheritdoc/>
         </member>
         <member name="T:Suzunoya.ControlFlow.OpenedContext">
@@ -269,7 +1017,7 @@
             </summary>
         </member>
         <member name="P:Suzunoya.ControlFlow.OpenedContext.ID">
-            <inheritdoc cref="P:Suzunoya.ControlFlow.BoundedContext.ID"/>
+            <inheritdoc cref="P:Suzunoya.ControlFlow.IBoundedContext.ID"/>
         </member>
         <member name="M:Suzunoya.ControlFlow.OpenedContext.RemapData(Suzunoya.Data.IInstanceData)">
             <summary>
@@ -285,7 +1033,7 @@
         <member name="P:Suzunoya.ControlFlow.OpenedContext`1.Data">
             <inheritdoc cref="P:Suzunoya.ControlFlow.OpenedContext.Data"/>
         </member>
-        <member name="M:Suzunoya.ControlFlow.OpenedContext`1.#ctor(Suzunoya.ControlFlow.IVNState,Suzunoya.ControlFlow.BoundedContext{`0})">
+        <member name="M:Suzunoya.ControlFlow.OpenedContext`1.#ctor(Suzunoya.ControlFlow.BoundedContext{`0})">
             <summary>
             Open a bounded context in the executing VN state,
             </summary>
@@ -394,7 +1142,17 @@
             A class describing a saveable position within a VN. 
             <br/>A position is a script line ID contextualized by the (non-empty) lists of contexts.
             <br/>By default, positions are associated with script lines, but
-            can be manually established via the vn.RecordPosition(VNLocation) function.
+            can be manually established via vn.OperationID.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNLocation.Contexts">
+            <summary>
+            The hierarchically-nested bounded context keys for the current position.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNLocation.LastOperationID">
+            <summary>
+            The last operation ID (per <see cref="P:Suzunoya.ControlFlow.IVNState.OperationID"/>) executed.
             </summary>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNLocation.#ctor">
@@ -402,30 +1160,65 @@
             Json constructor-- do not use.
             </summary>
         </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.GetContexts(Suzunoya.ControlFlow.IVNState)">
+            <summary>
+            Get the currently executing nested context list, but only if all of them are identifiable.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.Make(Suzunoya.ControlFlow.IVNState)">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNLocation"/> from the current state of the VN if its current location is identifiable.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.ToString">
+            <inheritdoc/>
+        </member>
         <member name="M:Suzunoya.ControlFlow.VNLocation.ContextsMatchPrefix(System.Collections.Generic.List{Suzunoya.ControlFlow.OpenedContext})">
             <summary>
             Return true iff the provided contexts are a nonstrict prefix of this object's contexts.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.ContextsMatch(System.Collections.Generic.List{Suzunoya.ControlFlow.OpenedContext})">
+            <summary>
+            Whether or not <see cref="P:Suzunoya.ControlFlow.VNLocation.Contexts"/> matches the provided contexts list.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.ContextsMatch(System.Collections.Generic.List{System.String})">
+            <summary>
+            Whether or not <see cref="P:Suzunoya.ControlFlow.VNLocation.Contexts"/> matches the provided contexts list.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.op_Equality(Suzunoya.ControlFlow.VNLocation,Suzunoya.ControlFlow.VNLocation)">
+            <summary>
+            Equality operator.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNLocation.op_Inequality(Suzunoya.ControlFlow.VNLocation,Suzunoya.ControlFlow.VNLocation)">
+            <summary>
+            Inequality operator.
             </summary>
         </member>
         <member name="T:Suzunoya.ControlFlow.VNCancellee">
             <summary>
             A wrapper around a cancellation token that also links to the containing VN.
             </summary>
-            <param name="vn"></param>
-            <param name="cT"></param>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNCancellee.#ctor(Suzunoya.ControlFlow.IVNState,BagoumLib.Cancellation.ICancellee)">
             <summary>
             A wrapper around a cancellation token that also links to the containing VN.
             </summary>
-            <param name="vn"></param>
-            <param name="cT"></param>
         </member>
-        <member name="P:Suzunoya.ControlFlow.VNCancellee.vn">
-            <summary></summary>
+        <member name="P:Suzunoya.ControlFlow.VNCancellee.CancelLevel">
+            <inheritdoc/>
         </member>
-        <member name="P:Suzunoya.ControlFlow.VNCancellee.cT">
-            <summary></summary>
+        <member name="P:Suzunoya.ControlFlow.VNCancellee.Root">
+            <inheritdoc/>
         </member>
         <member name="T:Suzunoya.ControlFlow.ILazyAwaitable">
             <summary>
@@ -470,12 +1263,51 @@
             </summary>
         </member>
         <member name="P:Suzunoya.ControlFlow.LazyFunc`1.Task">
-            <inheritdoc cref="P:Suzunoya.ControlFlow.ILazyAwaitable.Task"/>
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.LazyFunc`1.GetAwaiter">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.LazyFunc`1.op_Implicit(System.Func{`0})~Suzunoya.ControlFlow.LazyFunc{`0}">
+            <summary>
+            Implicit constructor for <see cref="T:Suzunoya.ControlFlow.LazyFunc`1"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.LazyFunc`1.AsVnOp(Suzunoya.ControlFlow.IVNState)">
+            <summary>
+            Convert this to a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> so it can be sequenced with VNOperation functions.
+            </summary>
         </member>
         <member name="T:Suzunoya.ControlFlow.LazyAction">
             <summary>
             An action predenting to be a task.
             </summary>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.ParallelLazyAwaitable">
+            <summary>
+            A set of lazily-computed tasks run in parallel.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.ParallelLazyAwaitable.#ctor(Suzunoya.ControlFlow.ILazyAwaitable[])">
+            <summary>
+            A set of lazily-computed tasks run in parallel.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.ParallelLazyAwaitable.Task">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.ControlFlow.SequentialLazyAwaitable">
+            <summary>
+            A set of lazily-computed tasks run in sequence.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.SequentialLazyAwaitable.#ctor(Suzunoya.ControlFlow.ILazyAwaitable[])">
+            <summary>
+            A set of lazily-computed tasks run in sequence.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.SequentialLazyAwaitable.Task">
+            <inheritdoc/>
         </member>
         <member name="T:Suzunoya.ControlFlow.VNProcessGroup">
             <summary>
@@ -514,11 +1346,39 @@
             The cancellation token bounding execution of this process group.
             </summary>
         </member>
+        <member name="P:Suzunoya.ControlFlow.VNProcessGroup.ConfirmToken">
+            The canceller governing when a confirm input is provided by the player.
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNProcessGroup.ConfirmReceiver">
+            <summary>
+            The object receiving confirmation.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNProcessGroup.OperationCTokenDependencies">
+            <summary>
+            The number of <see cref="T:Suzunoya.ControlFlow.VNOperation"/>s dependent on this process group.
+            </summary>
+        </member>
         <member name="P:Suzunoya.ControlFlow.VNProcessGroup.CancelLevel">
             <inheritdoc/>
         </member>
         <member name="P:Suzunoya.ControlFlow.VNProcessGroup.Root">
             <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNProcessGroup.AwaitConfirm">
+            <summary>
+            Indicate that a user-confirmation is required for at least one of the operations in this process group.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNProcessGroup.DoConfirm">
+            <summary>
+            Send a user-confirmation to all operations dependent on this process group.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNProcessGroup.CreateOpTracker">
+            <summary>
+            Get a token that indicates that a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> is dependent on confirmation from this process group.
+            </summary>
         </member>
         <member name="T:Suzunoya.ControlFlow.VNConfirmTask">
             <summary>
@@ -532,6 +1392,12 @@
             This is similar to VNOperation, but cannot be soft-skipped except by interruption.
             </summary>
         </member>
+        <member name="P:Suzunoya.ControlFlow.VNConfirmTask.Task">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNConfirmTask.GetAwaiter">
+            <inheritdoc/>
+        </member>
         <member name="T:Suzunoya.ControlFlow.VNOperation">
             <summary>
             A VNOperation is a sequential sequence of tasks bounded by a common cancellation/interruption interface.
@@ -539,6 +1405,88 @@
             If multiple VNOperations are run at the same time, they may end up sharing the same <see cref="T:Suzunoya.ControlFlow.VNProcessGroup"/>.
             <br/>Tasks batched under a VNOperation do not need to check cancellation at their start or end.
             </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.#ctor(Suzunoya.ControlFlow.IVNState,System.Func{Suzunoya.ControlFlow.VNCancellee,System.Threading.Tasks.Task}[])">
+            <summary>
+            A VNOperation is a sequential sequence of tasks bounded by a common cancellation/interruption interface.
+            <br/>The cancellation/interruption is provided through <see cref="T:Suzunoya.ControlFlow.VNProcessGroup"/>.
+            If multiple VNOperations are run at the same time, they may end up sharing the same <see cref="T:Suzunoya.ControlFlow.VNProcessGroup"/>.
+            <br/>Tasks batched under a VNOperation do not need to check cancellation at their start or end.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNOperation.VN">
+            <summary>
+            The VN on which this operation is running.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNOperation.Suboperations">
+            <summary>
+            The (sequential) tasks that compose this operation.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNOperation.AllowUserSkip">
+            <summary>
+            Whether or not this operation can be soft-skipped by user input.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNOperation.Task">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.TaskInGroup(Suzunoya.ControlFlow.VNProcessGroup)">
+            <summary>
+            Create a task for running this operation on a specific <see cref="T:Suzunoya.ControlFlow.VNProcessGroup"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.TaskWithCT(BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Create a task for running this operation with an extra cancellation token.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNOperation.C">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNConfirmTask"/> that runs this task, and then wait for user confirmation.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.Then(System.Action)">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> that first runs this task, and then the provided actions.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.Then(System.Func{BagoumLib.Cancellation.ICancellee,System.Threading.Tasks.Task}[])">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> that first runs this task, and then the provided tasks in sequence.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.And(Suzunoya.ControlFlow.VNOperation[])">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> that runs this task and the provided tasks in parallel.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.Then(Suzunoya.ControlFlow.VNOperation[])">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> that first runs this task, and then the provided tasks in sequence.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.Parallel(Suzunoya.ControlFlow.VNOperation[])">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> that runs the provided tasks in parallel.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.Parallel``1(System.Collections.Generic.IEnumerable{System.Func{``0,System.Threading.Tasks.Task}})">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> that runs the provided tasks in parallel.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.Sequential``1(System.Collections.Generic.IEnumerable{System.Func{``0,System.Threading.Tasks.Task}})">
+            <summary>
+            Create a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> that runs the provided tasks in sequence.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNOperation.GetAwaiter">
+            <inheritdoc/>
         </member>
         <member name="T:Suzunoya.ControlFlow.IVNState">
             <summary>
@@ -575,6 +1523,20 @@
             Get the main dialogue box or throw an exception.
             </summary>
         </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.LoadToLocation(Suzunoya.ControlFlow.VNLocation,Suzunoya.Data.IInstanceData,System.Action)">
+            <summary>
+            Before loading, the <see cref="T:Suzunoya.ControlFlow.VNState"/> should be initialized with the
+             save data that it had *before* running the BCtx being loaded into.
+            <br/>The instance data at the time of save, with the BCtx partially executed,
+             should be passed as <see cref="!:replayer"/> here.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.ResetInterruptStatus">
+            <summary>
+            Reset the interruption status on the current process layer.
+            <br/>Call this after a BCTX is finished running in an ADV context to avoid cross-pollution of interruption.
+            </summary>
+        </member>
         <member name="P:Suzunoya.ControlFlow.IVNState.Contexts">
             <summary>
             A list of currently-executing nested <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/>s.
@@ -582,12 +1544,12 @@
         </member>
         <member name="P:Suzunoya.ControlFlow.IVNState.ContextStarted">
             <summary>
-            An event called when a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> begins.
+            An event called when a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> begins, before it is added to <see cref="P:Suzunoya.ControlFlow.IVNState.Contexts"/>.
             </summary>
         </member>
         <member name="P:Suzunoya.ControlFlow.IVNState.ContextFinished">
             <summary>
-            An event called when a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> ends.
+            An event called when a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> ends, after it is removed from <see cref="P:Suzunoya.ControlFlow.IVNState.Contexts"/>.
             </summary>
         </member>
         <member name="P:Suzunoya.ControlFlow.IVNState.LowestContext">
@@ -655,6 +1617,11 @@
             This is called within the RenderGroup constructor. You do not need to call it explicitly.
             </summary>
         </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.Flush">
+            <summary>
+            Update with a timestep of zero to flush any cancelled coroutines.
+            </summary>
+        </member>
         <member name="M:Suzunoya.ControlFlow.IVNState.Update(System.Single)">
             <summary>
             Update all entities controlled by the VNState.
@@ -664,6 +1631,24 @@
         <member name="M:Suzunoya.ControlFlow.IVNState.Run(System.Collections.IEnumerator)">
             <summary>
             Run a coroutine.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.Interrupt">
+            <summary>
+            Add a new interruption layer. This hangs the VNOperations on the current layer
+             until it is resumed.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.WrapExternal``1(System.Threading.Tasks.Task{``0})">
+            <summary>
+            Wrap an external task (that does not respect skip/cancel semantics) in a cancellable VNOperation.
+            <br/>Note that this cannot be skipped. It will loop. (It can be cancelled.)
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.IVNState.WrapExternal``1(System.String,System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Wrap an external task (that does not respect skip/cancel semantics) in a <see cref="T:Suzunoya.ControlFlow.StrongBoundedContext`1"/>.
+            <br/>Note that this cannot be skipped. It will loop. (It can be cancelled.)
             </summary>
         </member>
         <member name="M:Suzunoya.ControlFlow.IVNState.SpinUntilConfirm(Suzunoya.ControlFlow.VNOperation)">
@@ -788,12 +1773,7 @@
             </summary>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNState.LoadToLocation(Suzunoya.ControlFlow.VNLocation,Suzunoya.Data.IInstanceData,System.Action)">
-            <summary>
-            Before loading, the <see cref="T:Suzunoya.ControlFlow.VNState"/> should be initialized with the
-             save data that it had *before* running the BCtx being loaded into.
-            <br/>The instance data at the time of save, with the BCtx partially executed,
-             should be passed as <see cref="!:replayer"/> here.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Suzunoya.ControlFlow.VNState.IsLoadSkipping">
             <summary>
@@ -856,10 +1836,7 @@
             </summary>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNState.ResetInterruptStatus">
-            <summary>
-            Reset the interruption status on the current process layer.
-            <br/>Call this after a BCTX is finished running in an ADV context to avoid cross-pollution of interruption.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:Suzunoya.ControlFlow.VNState.InterruptionStarted">
             <summary>
@@ -960,7 +1937,7 @@
         </member>
         <member name="M:Suzunoya.ControlFlow.VNState.GetContextData(System.String[])">
             <summary>
-            Get the local data for the <see cref="T:Suzunoya.ControlFlow.BoundedContext"/> with the provided parentage path,
+            Get the local data for the <see cref="T:Suzunoya.ControlFlow.IBoundedContext"/> with the provided parentage path,
             or throw an exception if it is not found.
             </summary>
         </member>
@@ -1026,9 +2003,7 @@
             </summary>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNState.Flush">
-            <summary>
-            Update with a timestep of zero to flush any cancelled coroutines.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNState.Update(System.Single)">
             <inheritdoc/>
@@ -1069,11 +2044,8 @@
             Create a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> that waits until the condition is satisfied.
             </summary>
         </member>
-        <member name="M:Suzunoya.ControlFlow.VNState.WaitExternal``1(System.Threading.Tasks.Task{``0})">
-            <summary>
-            Wrap an external task (that does not respect skip/cancel semantics) in a cancellable VNOperation.
-            <br/>Note that this cannot be skipped. It will loop.
-            </summary>
+        <member name="M:Suzunoya.ControlFlow.VNState.WrapExternal``1(System.Threading.Tasks.Task{``0})">
+            <inheritdoc/>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNState.Run(System.Collections.IEnumerator)">
             <inheritdoc/>
@@ -1089,10 +2061,7 @@
             </summary>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNState.Interrupt">
-            <summary>
-            Add a new interruption layer. This hangs the VNOperations on the current layer
-             until it is resumed.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNState.SpinUntilConfirm(Suzunoya.ControlFlow.VNOperation)">
             <inheritdoc/>
@@ -1634,6 +2603,14 @@
             The default rendering layer for this class.
             <br/>NB: this should be "effectively static" as it is called in the constructor.
             </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Rendered.#ctor(System.Nullable{System.Numerics.Vector3},System.Nullable{System.Numerics.Vector3},System.Nullable{System.Numerics.Vector3},System.Boolean,System.Nullable{BagoumLib.DataStructures.FColor})">
+            <summary>
+            Constructor for <see cref="T:Suzunoya.Entities.Rendered"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Rendered.AddToRenderGroup(Suzunoya.Display.RenderGroup,System.Nullable{System.Int32})">
+            <inheritdoc />
         </member>
         <member name="M:Suzunoya.Entities.Rendered.BindParent(Suzunoya.Entities.ITransform)">
             <inheritdoc />
