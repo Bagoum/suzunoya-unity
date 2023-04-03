@@ -10,7 +10,6 @@ using Suzunoya.Entities;
 using SuzunoyaUnity.Mimics;
 using SuzunoyaUnity.Rendering;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace SuzunoyaUnity.Derived {
 
@@ -19,10 +18,14 @@ public class SZYUCharacter : Character {
     public virtual Color UIColor => new Color(0.6f, 0.6f, 0.6f);
     public virtual Sprite? ADVSpeakerIcon => Mimic == null ? null : Mimic.ADVSpeakerIcon;
 
-    public override SpeechSettings SpeechCfg => new(90, SpeechSettings.DefaultOpsPerChar, 8,
-        SpeechSettings.DefaultRollEventAllowed, Container.SkipGuard(RollEvent));
+    public override SpeechSettings SpeechCfg { get; }
 
     public CharacterMimic? Mimic { get; private set; }
+
+    public SZYUCharacter() {
+        SpeechCfg = new(90, SpeechSettings.DefaultOpsPerChar, 8,
+            SpeechSettings.DefaultRollEventAllowed, RollEventIfNotSkip);
+    }
 
     public void Bind(CharacterMimic mimic) {
         Mimic = mimic;
@@ -41,7 +44,11 @@ public class SZYUCharacter : Character {
 
     public VNConfirmTask ESayC(string emote, LString content, SpeakFlags flags = SpeakFlags.Default) =>
         EmoteSayC(emote, content, flags);
-    
+
+    private void RollEventIfNotSkip() {
+        if (!Container.SkippingMode.SkipsOperations())
+            RollEvent();
+    }
 
     /// <summary>
     /// When a character is speaking dialogue, this function is called every few frames to allow

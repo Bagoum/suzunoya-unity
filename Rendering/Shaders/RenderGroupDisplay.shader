@@ -48,16 +48,22 @@ Shader "SZYU/RenderGroupDisplay" {
                 return f;
             }
         
+            sampler2D _MainTex;
             sampler2D _RGTex;
             sampler2D _RGTex2;
             sampler2D _MaskTex;
 			float _T;
 
+			float4 premult(float4 c) {
+				c.rgb *= c.a;
+				return c;
+			}
+
 			float4 frag(fragment f) : SV_Target {
 				float4 c1 = tex2D(_RGTex, f.uv);
-				float mask = tex2D(_MaskTex, f.uv).a;
+				float4 mask = tex2D(_MaskTex, f.uv).a * f.c;
 			#ifdef MIX_NONE
-				return c1 * mask;
+				return premult(mask * c1);
 			#endif
 				float fill = 1;
 			#ifdef MIX_FADE
@@ -69,7 +75,7 @@ Shader "SZYU/RenderGroupDisplay" {
 					c2 = float4(0,0,0,0);
 				float4 c = c1 * (1 - fill) + c2 * fill;
 				//return float4(c.r, 0, 0, 1);
-				return c * mask;
+				return premult(mask * c);
 			}
 			ENDCG
 		}

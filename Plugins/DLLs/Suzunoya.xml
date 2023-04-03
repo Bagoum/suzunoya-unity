@@ -32,6 +32,11 @@
              put the save data at that point in time in this field.
             </summary>
         </member>
+        <member name="P:Suzunoya.ADV.ADVData.IsLocked">
+            <summary>
+            True iff the VN is currently executing a context where save/load is not allowed.
+            </summary>
+        </member>
         <member name="M:Suzunoya.ADV.ADVData.GetLoadProxyInfo">
             <summary>
             If this data was saved while in a VN segment (ie. UnmodifiedSaveData is not null),
@@ -63,6 +68,50 @@
             <summary>
             When leaving a bounded context that is not safe for save/load (<see cref="P:Suzunoya.ControlFlow.StrongBoundedContext`1.LoadSafe"/>),
             call this method to remove the handling from <see cref="M:Suzunoya.ADV.ADVData.LockContext(Suzunoya.ControlFlow.OpenedContext)"/>.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.ADV.ADVEvidenceRequest`1">
+            <summary>
+            An <see cref="T:Suzunoya.ADV.EvidenceRequest`1"/> that supports top-level evidence presentation in an ADV.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVEvidenceRequest`1.#ctor(Suzunoya.ADV.ADVManager,Suzunoya.ControlFlow.IVNState)">
+            <summary>
+            An <see cref="T:Suzunoya.ADV.EvidenceRequest`1"/> that supports top-level evidence presentation in an ADV.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVEvidenceRequest`1.TopLevelRequest">
+            <summary>
+            Request handling for evidence presentation at the top level.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVEvidenceRequest`1.CanPresentTopLevel">
+            <summary>
+            True iff there exists a top-level consumer for evidence and the ADV can currently accept a top-level
+             context execution.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVEvidenceRequest`1.CanPresentAny">
+            <summary>
+            True iff there exists a top-level consumer for evidence and the ADV can currently accept a top-level
+             context execution, or there is an interruptable context currently executing.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVEvidenceRequest`1.PresentTopLevel(`0)">
+            <summary>
+            Present evidence that has been requested, and run a top-level <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> on the ADV.
+            <br/>Make sure <see cref="P:Suzunoya.ADV.ADVEvidenceRequest`1.CanPresentTopLevel"/> is true before calling this.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVEvidenceRequest`1.PresentAnyLevel(`0)">
+            <summary>
+            Present evidence that has been requested, either in an interruptable context or at the top-level ADV.
+            <br/>Make sure <see cref="P:Suzunoya.ADV.ADVEvidenceRequest`1.CanPresentAny"/> is true before calling this.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.ADVEvidenceRequest`1.RequestTopLevel``1(System.Func{`0,Suzunoya.ControlFlow.BoundedContext{``0}})">
+            <summary>
+            Provide a handler that handles evidence presented at the top level.
             </summary>
         </member>
         <member name="T:Suzunoya.ADV.RunOnEntryVNPriority">
@@ -98,7 +147,7 @@
         </member>
         <member name="M:Suzunoya.ADV.ADVIdealizedState.SetEntryVN(Suzunoya.ControlFlow.BoundedContext{System.Reactive.Unit},Suzunoya.ADV.RunOnEntryVNPriority)">
             <summary>
-            Set a visual novel segment to be run when this idealized state is actualized.
+            Set a visual novel segment to be run when this idealized state is first actualized (doesn't work on inherit).
             </summary>
         </member>
         <member name="M:Suzunoya.ADV.ADVIdealizedState.ActualizeOnNewState">
@@ -216,12 +265,22 @@
         </member>
         <member name="F:Suzunoya.ADV.ADVManager.State.Dialogue">
             <summary>
-            Dialogue state: the VN is executing dialogue.
+            Dialogue state: the VN is executing dialogue. Generally corresponds with <see cref="P:Suzunoya.ADV.ADVManager.VNIsExecuting"/>.
             </summary>
         </member>
         <member name="F:Suzunoya.ADV.ADVManager.State.Waiting">
             <summary>
             Waiting state: Some loading process is occurring that disables player interaction.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.ADV.ADVManager.AllStates">
+            <summary>
+            All valid values of <see cref="T:Suzunoya.ADV.ADVManager.State"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ADV.ADVManager.VNIsExecuting">
+            <summary>
+            True if a VN segment is currently playing. 
             </summary>
         </member>
         <member name="P:Suzunoya.ADV.ADVManager.ADVData">
@@ -271,6 +330,11 @@
             Execute a top-level VN segment. May fail with null if a VN segment is already executing.
             </summary>
         </member>
+        <member name="M:Suzunoya.ADV.ADVManager.TryOrDelayExecuteVN``1(Suzunoya.ControlFlow.BoundedContext{``0},System.Boolean)">
+            <summary>
+            Execute a top-level VN segment. If one is already executing, then execute this after the previous one is complete.
+            </summary>
+        </member>
         <member name="M:Suzunoya.ADV.ADVManager.ExecuteVN``1(Suzunoya.ControlFlow.BoundedContext{``0},System.Boolean)">
             <summary>
             Execute a top-level VN segment.
@@ -279,7 +343,8 @@
         <member name="T:Suzunoya.ADV.BaseExecutingADV`2">
             <summary>
             Base implementation of <see cref="T:Suzunoya.ADV.IExecutingADV"/> for ADV games requiring assertion logic and map controls.
-            <br/>Almost all game configuration is done in abstract method <see cref="M:Suzunoya.ADV.BaseExecutingADV`2.ConfigureMapStates"/>.
+            <br/>Almost all game configuration is done in abstract method <see cref="M:Suzunoya.ADV.BaseExecutingADV`2.ConfigureMapStates"/>. Implementations
+                must implement <see cref="M:Suzunoya.ADV.BaseExecutingADV`2.ConfigureMapStates"/> and also call <see cref="M:Suzunoya.ADV.BaseExecutingADV`2.SetupMapStates"/> in their constructor.
             </summary>
         </member>
         <member name="P:Suzunoya.ADV.BaseExecutingADV`2.Inst">
@@ -355,6 +420,7 @@
             <summary>
             Update the game data and recompute map assertions. This returns nothing; use <see cref="M:Suzunoya.ADV.BaseExecutingADV`2.UpdateData(System.Action{`1},Suzunoya.ADV.MapStateTransitionSettings{`0})"/> if you
              want to await the update task.
+            <br/>This uses SimultaneousActualization by default.
             </summary>
         </member>
         <member name="M:Suzunoya.ADV.BaseExecutingADV`2.UpdateData(System.Action{`1},Suzunoya.ADV.MapStateTransitionSettings{`0})">
@@ -362,16 +428,28 @@
             Update the game data and recompute map assertions.
             </summary>
         </member>
-        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.Context(System.String,System.Func{System.Threading.Tasks.Task})">
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.Context(System.String,System.Func{System.Threading.Tasks.Task},System.Boolean)">
             <summary>
             Use this proxy function to register BCTXs so they can be inspected and run on load.
             Top-level contexts should always be {Unit}.
             If you provide an unidentifiable id (eg. empty string), it won't be loadable.
             </summary>
+            <param name="id">ID by which teh inner context is identified.</param>
+            <param name="innerTask">Inner executed content for the bounded context.</param>
+            <param name="isTrivialTask">See <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/>.<see cref="P:Suzunoya.ControlFlow.BoundedContext`1.Trivial"/></param>
         </member>
         <member name="M:Suzunoya.ADV.BaseExecutingADV`2.Run">
             <summary>
             Boilerplate code for running an ADV-based game. 
+            </summary>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.ADVDataFinalized">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ADV.BaseExecutingADV`2.SetupMapStates">
+            <summary>
+            Function that runs <see cref="M:Suzunoya.ADV.BaseExecutingADV`2.ConfigureMapStates"/> and related map setup. This must be called by
+            subclass constructors, or after the constructor is run.
             </summary>
         </member>
         <member name="M:Suzunoya.ADV.BaseExecutingADV`2.ConfigureMapStates">
@@ -399,7 +477,7 @@
             <param name="VN">VN process on which this is running.</param>
             <typeparam name="E">Type of evidence object.</typeparam>
         </member>
-        <member name="M:Suzunoya.ADV.EvidenceRequest`1.#ctor(Suzunoya.ControlFlow.IVNState)">
+        <member name="M:Suzunoya.ADV.EvidenceRequest`1.#ctor(Suzunoya.ControlFlow.IVNState,Suzunoya.ADV.ADVManager)">
             <summary>
             An object that allows consumers to request "evidence", which, when provided,
              interrupts VN execution and runs a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> on top.
@@ -413,6 +491,7 @@
         <member name="P:Suzunoya.ADV.EvidenceRequest`1.CanPresent">
             <summary>
             Whether or not there exists a consumer to which evidence can be presented.
+            <br/>This does not account for top-level consumers in <see cref="T:Suzunoya.ADV.ADVEvidenceRequest`1"/>.
             </summary>
         </member>
         <member name="P:Suzunoya.ADV.EvidenceRequest`1.RequestsChanged">
@@ -421,10 +500,18 @@
              may examine <see cref="P:Suzunoya.ADV.EvidenceRequest`1.CurrentRequest"/>/<see cref="P:Suzunoya.ADV.EvidenceRequest`1.CanPresent"/> to see the top of the stack.
             </summary>
         </member>
+        <member name="M:Suzunoya.ADV.EvidenceRequest`1.AssertInterruptionSafe``1(Suzunoya.ControlFlow.BoundedContext{``0})">
+            <summary>
+            Assert that a bounded context is safe to be used as an interruption at the current moment.
+            <br/>This is always true if the VN execution stack is already locked.
+            <br/>Either the bounded context must be non-identifiable, or it must have LoadSafe set to false.
+            </summary>
+        </member>
         <member name="M:Suzunoya.ADV.EvidenceRequest`1.Present(`0)">
             <summary>
             Present evidence that has been requested, and run a continuation based on how the request has been configured
              via <see cref="M:Suzunoya.ADV.EvidenceRequest`1.Request(System.Func{`0,Suzunoya.ControlFlow.BoundedContext{BagoumLib.InterruptionStatus}})"/> or <see cref="M:Suzunoya.ADV.EvidenceRequest`1.WaitForEvidence(System.String)"/>.
+            <br/>This does not account for top-level consumers in <see cref="T:Suzunoya.ADV.ADVEvidenceRequest`1"/>.
             </summary>
         </member>
         <member name="M:Suzunoya.ADV.EvidenceRequest`1.Request(System.Func{`0,Suzunoya.ControlFlow.BoundedContext{BagoumLib.InterruptionStatus}})">
@@ -476,6 +563,12 @@
             Run the ADV. Returns an <see cref="T:Suzunoya.ADV.IADVCompletion"/> when the entirety of the ADV is complete.
             </summary>
         </member>
+        <member name="M:Suzunoya.ADV.IExecutingADV.ADVDataFinalized">
+            <summary>
+            Called when <see cref="P:Suzunoya.ADV.IExecutingADV.ADVData"/> is finalized; ie. after the proxy-loading process is complete.
+            <br/>Any dependencies on fields on <see cref="P:Suzunoya.ADV.IExecutingADV.ADVData"/> should be set up in this function.
+            </summary>
+        </member>
         <member name="T:Suzunoya.ADV.IExecutingADV`2">
             <summary>
             See <see cref="T:Suzunoya.ADV.IExecutingADV"/>
@@ -510,6 +603,9 @@
             </summary>
         </member>
         <member name="M:Suzunoya.ADV.BarebonesExecutingADV`1.Run">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ADV.BarebonesExecutingADV`1.ADVDataFinalized">
             <inheritdoc/>
         </member>
         <member name="T:Suzunoya.ADV.MapStateTransitionSettings`1">
@@ -663,6 +759,33 @@
             <param name="key">Key used to identify this BCTX.</param>
             <param name="options">Non-empty array of options. Do not modify the array after passing it to this function.</param>
         </member>
+        <member name="T:Suzunoya.Assertions.CharacterAssertion`1">
+            <summary>
+            Assertions that run over Suzunoya <see cref="T:Suzunoya.Entities.ICharacter"/> objects.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.CharacterAssertion`1.#ctor(Suzunoya.ControlFlow.IVNState)">
+            <summary>
+            Assertions that run over Suzunoya <see cref="T:Suzunoya.Entities.ICharacter"/> objects.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.CharacterAssertion`1.Emote">
+            <summary>
+            Bound to <see cref="P:Suzunoya.Entities.ICharacter.Emote"/>
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.CharacterAssertion`1.DefaultDynamicEntryHandler(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Assertions.CharacterAssertion`1.DefaultDynamicExitHandler(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Assertions.CharacterAssertion`1.Bind(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Assertions.CharacterAssertion`1._Inherit(Suzunoya.Assertions.CharacterAssertion{`0})">
+            <inheritdoc/>
+        </member>
         <member name="T:Suzunoya.Assertions.EntityAssertion">
             <summary>
             Base class for assertions that operate over Suzunoya entity objects
@@ -691,7 +814,7 @@
         </member>
         <member name="P:Suzunoya.Assertions.EntityAssertion.Location">
             <summary>
-            Bound to <see cref="P:Suzunoya.Entities.ITransform.Location"/>
+            Bound to <see cref="P:Suzunoya.Entities.ITransform.LocalLocation"/>
             </summary>
         </member>
         <member name="P:Suzunoya.Assertions.EntityAssertion.EulerAnglesD">
@@ -829,6 +952,9 @@
             An assertion that runs a task on entry (new state/no preceding only). Throws on inherit.
             </summary>
         </member>
+        <member name="M:Suzunoya.Assertions.RunOnEntryAssertion.#ctor(System.Action)">
+            <inheritdoc/>
+        </member>
         <member name="P:Suzunoya.Assertions.RunOnEntryAssertion.Priority">
             <inheritdoc/>
         </member>
@@ -849,6 +975,44 @@
         </member>
         <member name="M:Suzunoya.Assertions.RunOnEntryAssertion._Inherit(Suzunoya.Assertions.RunOnEntryAssertion)">
             <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.Assertions.TokenizedAssertion">
+            <summary>
+            Base class for assertions that have tokens bound to their lifetime.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Assertions.TokenizedAssertion.Tokens">
+            <summary>
+            Set of tokens bound to the assertion lifetime.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.TokenizedAssertion.DeactualizeOnEndState">
+            <inheritdoc cref="M:BagoumLib.Assertions.IAssertion.DeactualizeOnEndState"/>
+        </member>
+        <member name="M:Suzunoya.Assertions.TokenizedAssertion.DeactualizeOnNoSucceeding">
+            <inheritdoc cref="M:BagoumLib.Assertions.IAssertion.DeactualizeOnNoSucceeding"/>
+        </member>
+        <member name="M:Suzunoya.Assertions.TokenizedAssertion._Inherit(Suzunoya.Assertions.TokenizedAssertion)">
+            <inheritdoc cref="M:BagoumLib.Assertions.IAssertion`1._Inherit(`0)"/>
+        </member>
+        <member name="T:Suzunoya.Assertions.TopLevelEvidenceAssertion`2">
+            <summary>
+            An assertion that provides a top-level evidence handler (ie. one that can receive evidence while no dialogue is running) for <see cref="T:Suzunoya.ADV.ADVEvidenceRequest`1"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.TopLevelEvidenceAssertion`2.#ctor(Suzunoya.ADV.ADVEvidenceRequest{`0},System.Func{`0,Suzunoya.ControlFlow.BoundedContext{`1}})">
+            <summary>
+            An assertion that provides a top-level evidence handler (ie. one that can receive evidence while no dialogue is running) for <see cref="T:Suzunoya.ADV.ADVEvidenceRequest`1"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Assertions.TopLevelEvidenceAssertion`2.ActualizeOnNewState">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Assertions.TopLevelEvidenceAssertion`2.ActualizeOnNoPreceding">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Assertions.TopLevelEvidenceAssertion`2._Inherit(Suzunoya.Assertions.TopLevelEvidenceAssertion{`0,`1})">
+            <inheritdoc />
         </member>
         <member name="T:Suzunoya.ControlFlow.IBoundedContext">
             <summary>
@@ -918,6 +1082,12 @@
         </member>
         <member name="P:Suzunoya.ControlFlow.BoundedContext`1.Identifiable">
             <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.BoundedContext`1.Trivial">
+            <summary>
+            True iff there are no save-data changes in the body of the bounded context.
+            <br/>This allows speed optimizations during ADV execution.
+            </summary>
         </member>
         <member name="M:Suzunoya.ControlFlow.BoundedContext`1.IsCompletedInContexts(System.String[])">
             <summary>
@@ -1046,6 +1216,13 @@
         </member>
         <member name="M:Suzunoya.ControlFlow.OpenedContext`1.ToString">
             <inheritdoc />
+        </member>
+        <member name="T:Suzunoya.ControlFlow.SkipMode">
+            <summary>
+            An enum describing skip modes in Suzunoya VN control flow.
+            Note that "skipping not active" is not a member of this enum;
+             use SkipMode? if that is required.
+            </summary>
         </member>
         <member name="F:Suzunoya.ControlFlow.SkipMode.LOADING">
             <summary>
@@ -1283,6 +1460,12 @@
             An action predenting to be a task.
             </summary>
         </member>
+        <member name="M:Suzunoya.ControlFlow.LazyAction.#ctor(System.Action)">
+            <inheritdoc cref="T:Suzunoya.ControlFlow.LazyAction"/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.LazyAction.op_Implicit(System.Action)~Suzunoya.ControlFlow.LazyAction">
+            <inheritdoc cref="T:Suzunoya.ControlFlow.LazyAction"/>
+        </member>
         <member name="T:Suzunoya.ControlFlow.ParallelLazyAwaitable">
             <summary>
             A set of lazily-computed tasks run in parallel.
@@ -1364,6 +1547,9 @@
         </member>
         <member name="P:Suzunoya.ControlFlow.VNProcessGroup.Root">
             <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.ControlFlow.VNProcessGroup.#ctor(Suzunoya.ControlFlow.VNInterruptionLayer,System.Boolean)">
+            <inheritdoc cref="T:Suzunoya.ControlFlow.VNProcessGroup"/>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNProcessGroup.AwaitConfirm">
             <summary>
@@ -1528,7 +1714,7 @@
             Before loading, the <see cref="T:Suzunoya.ControlFlow.VNState"/> should be initialized with the
              save data that it had *before* running the BCtx being loaded into.
             <br/>The instance data at the time of save, with the BCtx partially executed,
-             should be passed as <see cref="!:replayer"/> here.
+             should be passed as `replayer` here.
             </summary>
         </member>
         <member name="M:Suzunoya.ControlFlow.IVNState.ResetInterruptStatus">
@@ -1549,12 +1735,19 @@
         </member>
         <member name="P:Suzunoya.ControlFlow.IVNState.ContextFinished">
             <summary>
-            An event called when a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> ends, after it is removed from <see cref="P:Suzunoya.ControlFlow.IVNState.Contexts"/>.
+            An event called when a <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/> ends, after its data is saved and
+             after it is removed from <see cref="P:Suzunoya.ControlFlow.IVNState.Contexts"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.ContextExecuting">
+            <summary>
+            True iff any <see cref="T:Suzunoya.ControlFlow.BoundedContext`1"/>s are currently executing on the VN.
             </summary>
         </member>
         <member name="P:Suzunoya.ControlFlow.IVNState.LowestContext">
             <summary>
             The most recently opened bounded context (<see cref="P:Suzunoya.ControlFlow.IVNState.Contexts"/>[^1]).
+            <br/>Throws an exception if <see cref="P:Suzunoya.ControlFlow.IVNState.ContextExecuting"/> is false.
             </summary>
         </member>
         <member name="P:Suzunoya.ControlFlow.IVNState.SkippingMode">
@@ -1610,11 +1803,6 @@
         <member name="M:Suzunoya.ControlFlow.IVNState.Add``1(``0,Suzunoya.Display.RenderGroup,System.Nullable{System.Int32})">
             <summary>
             Add an entity to the VNState.
-            </summary>
-        </member>
-        <member name="M:Suzunoya.ControlFlow.IVNState._AddRenderGroup(Suzunoya.Display.RenderGroup)">
-            <summary>
-            This is called within the RenderGroup constructor. You do not need to call it explicitly.
             </summary>
         </member>
         <member name="M:Suzunoya.ControlFlow.IVNState.Flush">
@@ -1705,7 +1893,7 @@
         </member>
         <member name="M:Suzunoya.ControlFlow.IVNState.DeleteAll">
             <summary>
-            Cascade destroy all currently running enumerators, then destroy all objects.
+            Run Predelete on all objects, then cascade destroy all currently running enumerators, then destroy all objects.
             </summary>
         </member>
         <member name="P:Suzunoya.ControlFlow.IVNState.DialogueLog">
@@ -2029,9 +2217,6 @@
             </summary>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNState.Add``1(``0,Suzunoya.Display.RenderGroup,System.Nullable{System.Int32})">
-            <inheritdoc/>
-        </member>
-        <member name="M:Suzunoya.ControlFlow.VNState._AddRenderGroup(Suzunoya.Display.RenderGroup)">
             <inheritdoc/>
         </member>
         <member name="M:Suzunoya.ControlFlow.VNState.Wait(System.Single)">
@@ -2447,11 +2632,6 @@
             An event that is fired whenever a new element is added to this rendering group.
             </summary>
         </member>
-        <member name="M:Suzunoya.Display.RenderGroup.AddToVNState(Suzunoya.ControlFlow.IVNState,System.IDisposable)">
-            <summary>
-            DO NOT CALL THIS. VNState should be provided in the constructor of <see cref="T:Suzunoya.Display.RenderGroup"/>.
-            </summary>
-        </member>
         <member name="M:Suzunoya.Display.RenderGroup.Add(Suzunoya.Entities.IRendered)">
             <summary>
             Add a new element to this rendering group.
@@ -2465,10 +2645,74 @@
         <member name="M:Suzunoya.Display.RenderGroup.Delete">
             <inheritdoc/>
         </member>
+        <member name="M:Suzunoya.Display.RenderGroup.ClearEvents">
+            <inheritdoc />
+        </member>
+        <member name="T:Suzunoya.Entities.ICharacter">
+            <summary>
+            Interface for entities that are VN characters. Characters can speak in dialogue boxes.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ICharacter.Emote">
+            <summary>
+            Emote assigned to the character.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ICharacter.SpeechCfg">
+            <summary>
+            Speech settings for the character.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ICharacter.Name">
+            <summary>
+            Name of the character.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Entities.Character">
+            A character entity.
+        </member>
+        <member name="P:Suzunoya.Entities.Character.SpeechCfg">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Entities.Character.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Entities.Character.Emote">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Entities.Character.Say(BagoumLib.Culture.LString,Suzunoya.Entities.IDialogueBox,Suzunoya.Entities.SpeakFlags)">
+            <inheritdoc cref="M:Suzunoya.Entities.IDialogueBox.Say(BagoumLib.Culture.LString,Suzunoya.Entities.ICharacter,Suzunoya.Entities.SpeakFlags)"/>
+        </member>
+        <member name="M:Suzunoya.Entities.Character.SayC(BagoumLib.Culture.LString,Suzunoya.Entities.IDialogueBox,Suzunoya.Entities.SpeakFlags)">
+            <summary>
+            Have the character speak into the dialogue box, then wait for user confirmation.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Character.AlsoSay(BagoumLib.Culture.LString,Suzunoya.Entities.IDialogueBox,Suzunoya.Entities.SpeakFlags)">
+            <summary>
+            Have the character speak into the dialogue box without clearing the existing text.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Character.AlsoSayN(BagoumLib.Culture.LString,Suzunoya.Entities.IDialogueBox,Suzunoya.Entities.SpeakFlags)">
+            <summary>
+            Have the character speak into the dialogue box without clearing the existing text
+             but adding a newline before printing the new text.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Entities.SpeakFlags">
+            <summary>
+            Flags describing features for dialogue execution.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.Entities.SpeakFlags.None">
+            <summary>
+            No special features required.
+            </summary>
+        </member>
         <member name="F:Suzunoya.Entities.SpeakFlags.DontClearText">
             <summary>
             By default, every text command will reset all visible text and the speaker. To avoid this,
-            use this flag (or call AlsoSay).
+            use this flag (or call <see cref="M:Suzunoya.Helpers.AlsoSay(Suzunoya.Entities.IDialogueBox,BagoumLib.Culture.LString,Suzunoya.Entities.ICharacter,Suzunoya.Entities.SpeakFlags)"/>).
             </summary>
         </member>
         <member name="F:Suzunoya.Entities.SpeakFlags.Anonymous">
@@ -2477,13 +2721,134 @@
             utilized by the mimic class.
             </summary>
         </member>
-        <member name="P:Suzunoya.Entities.DialogueBox.DialogueStarted">
+        <member name="F:Suzunoya.Entities.SpeakFlags.Default">
+            <summary>
+            Default value- <see cref="F:Suzunoya.Entities.SpeakFlags.None"/>
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Entities.IDialogueBox">
+            <summary>
+            Interface for dialogue boxes.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IDialogueBox.DialogueStarted">
             <summary>
             A dialogue request starts with a DialogueStarted proc containing all information of the dialogue request.
-            It then unrolls the text one character at a time over many Dialogue procs.
-            Finally, it procs DialogueFinished.
-            Note: DialogueStarted and Dialogue are accumulated until a clear command is issued (which also procs DialogueCleared and nullifies Speaker). AllDialogue is never cleared.
-            Note: the VNContainer should be listening to DialogueStarted to accumulate the dialogue log.
+            It then unrolls the text one character at a time into <see cref="P:Suzunoya.Entities.IDialogueBox.Dialogue"/>.
+            Finally, it procs <see cref="P:Suzunoya.Entities.IDialogueBox.DialogueFinished"/>.
+            <br/>Note: the VNContainer should be listening to this event to accumulate the dialogue log.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IDialogueBox.Dialogue">
+            <summary>
+            All text fragments currently visible in the dialogue box. Cleared when <see cref="M:Suzunoya.Entities.IDialogueBox.Clear(System.Nullable{Suzunoya.Entities.SpeakFlags})"/> is called.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IDialogueBox.DialogueFinished">
+            <summary>
+            Event procced when a line of dialogue is finished unrolling.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IDialogueBox.DialogueCleared">
+            <summary>
+            Event procced when <see cref="M:Suzunoya.Entities.IDialogueBox.Clear(System.Nullable{Suzunoya.Entities.SpeakFlags})"/> is called.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IDialogueBox.Speaker">
+            <summary>
+            The current character speaking in the dialogue box.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.IDialogueBox.Clear(System.Nullable{Suzunoya.Entities.SpeakFlags})">
+            <summary>
+            Clear the dialogue box.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.IDialogueBox.Say(BagoumLib.Culture.LString,Suzunoya.Entities.ICharacter,Suzunoya.Entities.SpeakFlags)">
+            <summary>
+            Have a character speak into the dialogue box.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Entities.DialogueOp">
+            <summary>
+            A line of dialogue to be printed into the dialogue box.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.DialogueOp.Line">
+            <summary>
+            Dialogue text.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.DialogueOp.Speaker">
+            <summary>
+            The character that is speaking.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.DialogueOp.Flags">
+            <inheritdoc cref="T:Suzunoya.Entities.SpeakFlags"/>
+        </member>
+        <member name="P:Suzunoya.Entities.DialogueOp.Location">
+            <summary>
+            The <see cref="T:Suzunoya.ControlFlow.VNLocation"/> produced by the dialogue operation.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.DialogueOp.#ctor(BagoumLib.Culture.LString,Suzunoya.Entities.ICharacter,Suzunoya.Entities.SpeakFlags,Suzunoya.ControlFlow.VNLocation)">
+            <summary>
+            Create a new <see cref="T:Suzunoya.Entities.DialogueOp"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.DialogueOp.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.Entities.DialogueBox">
+            <summary>
+            An entity representing a dialogue box.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.DialogueBox.DialogueStarted">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Entities.DialogueBox.Dialogue">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Entities.DialogueBox.DialogueFinished">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Entities.DialogueBox.DialogueCleared">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Entities.DialogueBox.Speaker">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Entities.DialogueBox.Clear(System.Nullable{Suzunoya.Entities.SpeakFlags})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Entities.DialogueBox.Say(BagoumLib.Culture.LString,Suzunoya.Entities.ICharacter,Suzunoya.Entities.SpeakFlags)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Suzunoya.Entities.EntityState">
+            <summary>
+            The state of the entity in its lifetime.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.Entities.EntityState.Active">
+            <summary>
+            The entity is currently active.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.Entities.EntityState.Predeletion">
+            <summary>
+            The entity is in the predeletion stage, when its events are cleared.
+            </summary>
+        </member>
+        <member name="F:Suzunoya.Entities.EntityState.Deleted">
+            <summary>
+            The entity is dead.
+            </summary>
+        </member>
+        <member name="T:Suzunoya.Entities.IEntity">
+            <summary>
+            Interface representing top-level entities that can be added under <see cref="T:Suzunoya.ControlFlow.IVNState"/>.
             </summary>
         </member>
         <member name="P:Suzunoya.Entities.IEntity.MimicRequested">
@@ -2492,9 +2857,38 @@
             However, some entities may not desire mimics (such as unsprited characters).
             </summary>
         </member>
+        <member name="P:Suzunoya.Entities.IEntity.LifetimeToken">
+            <summary>
+            Token representing the life of this entity. When cancelled, the entity is destroyed.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.IEntity.Tween(BagoumLib.Transitions.ITransition)">
+            <summary>
+            Run a tweening function on the entity.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.IEntity.Container">
+            <summary>
+            VN to which this entity is attached.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.IEntity.Update(System.Single)">
+            <summary>
+            Update the entity.
+            </summary>
+            <param name="deltaTime">Time since last update</param>
+        </member>
         <member name="P:Suzunoya.Entities.IEntity.OnUpdate">
             <summary>
-            Called after Update is complete. Mimics may listen to this.
+            Evented procced after Update is complete. Mimics may listen to this.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.IEntity.PreDelete">
+            <summary>
+            Clear events and other linked data on the object (but not the <see cref="P:Suzunoya.Entities.IEntity.EntityActive"/> event).
+            <br/>Run within <see cref="M:Suzunoya.Entities.IEntity.Delete"/>, but can be manually run earlier.
+            <br/>When calling <see cref="M:Suzunoya.ControlFlow.IVNState.DeleteAll"/>,
+             PreDelete is run on all entities before Delete is run on any.
             </summary>
         </member>
         <member name="M:Suzunoya.Entities.IEntity.Delete">
@@ -2510,10 +2904,70 @@
             <br/>Do not modify this externally. To destroy the object, run Delete().
             </summary>
         </member>
+        <member name="T:Suzunoya.Entities.Entity">
+            <summary>
+            A top-level entity that can be added under <see cref="T:Suzunoya.ControlFlow.VNState"/>.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.Entity.MimicRequested">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Entities.Entity.Container">
+            <inheritdoc/>
+        </member>
+        <member name="F:Suzunoya.Entities.Entity.tokens">
+            <summary>
+            Disposable tokens bounded by the lifetime of this entity.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.Entity.LifetimeToken">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Entities.Entity.OnUpdate">
+            <inheritdoc/>
+        </member>
+        <member name="P:Suzunoya.Entities.Entity.EntityActive">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Entities.Entity.Update(System.Single)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Entities.Entity.Run(System.Collections.IEnumerator,BagoumLib.DataStructures.CoroutineOptions)">
+            <summary>
+            Run a corountine on this entity.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Entity.AddToken(System.IDisposable)">
+            <summary>
+            Add a token to <see cref="F:Suzunoya.Entities.Entity.tokens"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Entity.Listen``1(System.IObservable{``0},System.Action{``0})">
+            <summary>
+            Subscribe to an event.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Entity.Tween(BagoumLib.Transitions.ITransition)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Entities.Entity.PreDelete">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Entities.Entity.ClearEvents">
+            <summary>
+            Run Event.OnCompleted for data events on this entity.
+            </summary>
+        </member>
         <member name="M:Suzunoya.Entities.Entity.SoftDelete">
             <summary>
             SoftSkip all coroutines before deleting.
             </summary>
+        </member>
+        <member name="M:Suzunoya.Entities.Entity.Delete">
+            <inheritdoc/>
+        </member>
+        <member name="M:Suzunoya.Entities.Entity.ToString">
+            <inheritdoc/>
         </member>
         <member name="T:Suzunoya.Entities.ITinted">
             <summary>
@@ -2537,7 +2991,8 @@
         </member>
         <member name="P:Suzunoya.Entities.IRendered.RenderGroup">
             <summary>
-            A basic plugin setup would be to associate a RenderGroup  with an engine camera and game-object layer,
+            The render group under which this object renders.
+            <br/>A basic plugin setup would be to associate a RenderGroup with an engine camera and game-object layer,
              then treat RenderLayer and SortingID as equivalent to engine "sorting layer" / "order in layer".
             </summary>
         </member>
@@ -2563,7 +3018,8 @@
         </member>
         <member name="M:Suzunoya.Entities.IRendered.AddToRenderGroup(Suzunoya.Display.RenderGroup,System.Nullable{System.Int32})">
             <summary>
-            If the object is already associated with a render group,
+            Set that this object should be rendered under the provided rendering group.
+            <br/>If the object is already associated with a render group,
             then it should deattach from the existing render group.
             </summary>
         </member>
@@ -2628,19 +3084,27 @@
             Short for Visible.Value = true
             </summary>
         </member>
+        <member name="M:Suzunoya.Entities.Rendered.ClearEvents">
+            <inheritdoc />
+        </member>
         <member name="T:Suzunoya.Entities.ITransform">
             <summary>
             Interface for entities that have transforms.
             </summary>
         </member>
-        <member name="P:Suzunoya.Entities.ITransform.Location">
+        <member name="P:Suzunoya.Entities.ITransform.LocalLocation">
             <summary>
             Base location of the entity.
             </summary>
         </member>
-        <member name="P:Suzunoya.Entities.ITransform.ComputedLocation">
+        <member name="P:Suzunoya.Entities.ITransform.ComputedLocalLocation">
             <summary>
             Location with disturbance effects such as screenshake or displacement applied.
+            </summary>
+        </member>
+        <member name="P:Suzunoya.Entities.ITransform.ComputedLocation">
+            <summary>
+            Location including offset of any parent objects.
             </summary>
         </member>
         <member name="P:Suzunoya.Entities.ITransform.EulerAnglesD">
@@ -2685,7 +3149,10 @@
             An entity with a transform.
             </summary>
         </member>
-        <member name="P:Suzunoya.Entities.Transform.Location">
+        <member name="P:Suzunoya.Entities.Transform.LocalLocation">
+            <inheritdoc />
+        </member>
+        <member name="P:Suzunoya.Entities.Transform.ComputedLocalLocation">
             <inheritdoc />
         </member>
         <member name="P:Suzunoya.Entities.Transform.ComputedLocation">
@@ -2728,11 +3195,121 @@
         <member name="M:Suzunoya.Entities.Transform.NotifyChildCreated(Suzunoya.Entities.ITransform)">
             <inheritdoc />
         </member>
+        <member name="M:Suzunoya.Entities.Transform.ClearEvents">
+            <inheritdoc />
+        </member>
+        <member name="M:Suzunoya.Entities.Transform.Delete">
+            <inheritdoc />
+        </member>
+        <member name="T:Suzunoya.Helpers">
+            <summary>
+            Various helper extensions for Suzunoya code.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.AssertActive``1(``0)">
+            <summary>
+            Check that a VN is active before returning it. If it is inactive, throw <see cref="T:Suzunoya.ControlFlow.DestroyedObjectException"/>.
+            </summary>
+        </member>
         <member name="M:Suzunoya.Helpers.BindLifetime(Suzunoya.Entities.IEntity,BagoumLib.Cancellation.ICancellee)">
             <summary>
             Makes a derived cancellee that is cancelled by both the entity lifetime token and the given cT.
             <br/>Coroutines run on entities should pass their given tokens through this function.
             </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.MakeVNOp(Suzunoya.Entities.IEntity,System.Func{Suzunoya.ControlFlow.VNCancellee,System.Threading.Tasks.Task},System.Boolean)">
+            <summary>
+            Construct a <see cref="T:Suzunoya.ControlFlow.VNOperation"/> from a task running on an entity.
+            </summary>
+            <param name="e">Entity on which a task is run.</param>
+            <param name="task">Task to be run.</param>
+            <param name="allowUserSkip">True iff the task can be soft-skipped by user input (<see cref="P:Suzunoya.ControlFlow.VNOperation.AllowUserSkip"/>)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Suzunoya.Helpers.MoveTo(Suzunoya.Entities.ITransform,System.Numerics.Vector3,System.Single,BagoumLib.Mathematics.Easer)">
+            <summary>
+            Create a tweener for moving an entity to a target position.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.MoveBy(Suzunoya.Entities.ITransform,System.Numerics.Vector3,System.Single,BagoumLib.Mathematics.Easer)">
+            <summary>
+            Create a tweener for moving an entity by a delta.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.RotateTo(Suzunoya.Entities.ITransform,System.Numerics.Vector3,System.Single,BagoumLib.Mathematics.Easer)">
+            <summary>
+            Create a tweener for rotating an entity to a target eulers.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.RotateToClosest(Suzunoya.Entities.ITransform,System.Numerics.Vector3,System.Single,BagoumLib.Mathematics.Easer)">
+            <summary>
+            Create a tweener for rotating an entity to a target eulers, ignoring any multiples of 360 and moving in the closest direction.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.RotateToClosestQ(Suzunoya.Entities.ITransform,System.Numerics.Vector3,System.Single,BagoumLib.Mathematics.Easer)">
+            <summary>
+            Create a tweener for rotating an entity to a target eulers, ignoring any multiples of 360 and moving in the closest direction. Uses quaternions internally.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.ScaleTo(Suzunoya.Entities.ITransform,System.Numerics.Vector3,System.Single,BagoumLib.Mathematics.Easer)">
+            <summary>
+            Create a tweener for scaling an entity up to a target.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.FadeTo(Suzunoya.Entities.ITinted,System.Single,System.Single,BagoumLib.Mathematics.Easer)">
+            <summary>
+            Create a tweener for the alpha value of an entity's tint.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.TintTo(Suzunoya.Entities.ITinted,BagoumLib.DataStructures.FColor,System.Single,BagoumLib.Mathematics.Easer)">
+            <summary>
+            Create a tweener for changing the tint of an entity.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.ZoomTo(Suzunoya.Display.RenderGroup,System.Single,System.Single,BagoumLib.Mathematics.Easer)">
+            <summary>
+            Create a tweener for changing the zoom of a render group.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.AlsoSay(Suzunoya.Entities.IDialogueBox,BagoumLib.Culture.LString,Suzunoya.Entities.ICharacter,Suzunoya.Entities.SpeakFlags)">
+            <summary>
+            <see cref="M:Suzunoya.Entities.IDialogueBox.Say(BagoumLib.Culture.LString,Suzunoya.Entities.ICharacter,Suzunoya.Entities.SpeakFlags)"/> with <see cref="F:Suzunoya.Entities.SpeakFlags.DontClearText"/>.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.AlsoSayN(Suzunoya.Entities.IDialogueBox,BagoumLib.Culture.LString,Suzunoya.Entities.ICharacter,Suzunoya.Entities.SpeakFlags)">
+            <summary>
+            <see cref="M:Suzunoya.Entities.IDialogueBox.Say(BagoumLib.Culture.LString,Suzunoya.Entities.ICharacter,Suzunoya.Entities.SpeakFlags)"/> with <see cref="F:Suzunoya.Entities.SpeakFlags.DontClearText"/> and a newline at the beginning.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.TryGetData``1(Suzunoya.Data.IKeyValueRepository,System.String,``0@)">
+            <summary>
+            Run <see cref="M:Suzunoya.Data.IKeyValueRepository.GetData``1(System.String)"/> if a key exists in the repository.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.SkipsOperations(System.Nullable{Suzunoya.ControlFlow.SkipMode})">
+            <summary>
+            Returns true if the mode automatically skips lines (loading or fastforward).
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.IsPlayerControlled(System.Nullable{Suzunoya.ControlFlow.SkipMode})">
+            <summary>
+            Returns true if the skip mode can be changed by the player (autoplay or fastforward).
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.SkipGuard(Suzunoya.ControlFlow.IVNState,System.Action)">
+            <summary>
+            Run an action only if the skip mode does not automatically skip lines.
+            </summary>
+        </member>
+        <member name="M:Suzunoya.Helpers.Disturb``1(Suzunoya.Entities.Entity,BagoumLib.Events.DisturbedEvented{``0},System.Func{System.Single,``0},System.Single,System.Boolean)">
+            <summary>
+            Add a disturbance effect over time to a <see cref="T:BagoumLib.Events.DisturbedEvented`1"/>.
+            </summary>
+            <param name="ent">Entity on which the coroutine for the disturbance effect should be run.</param>
+            <param name="dist">Base value to which to add the effect.</param>
+            <param name="valuer">Function that produces the value of the disturbance.</param>
+            <param name="time">Amount of time for which to run the disturbance effect.</param>
+            <param name="timeTo01">True iff `valuer` operates over the range [0, 1], false iff over [0, time].</param>
         </member>
     </members>
 </doc>

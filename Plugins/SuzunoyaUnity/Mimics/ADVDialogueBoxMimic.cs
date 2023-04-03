@@ -50,18 +50,22 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
             }
         }
     }*/
-    private record LoadingChar2(List<byte> writeOpacityTo, int index, float overTime) {
-        private float t = 0;
+    private struct LoadingChar2 {
+        public float overTime { get; }
+        private float t;
+        public LoadingChar2(float overTime) {
+            this.overTime = overTime;
+            this.t = 0;
+        }
 
         /// <summary>
         /// </summary>
         /// <param name="dT"></param>
-        /// <returns>True if the opacity changed.</returns>
-        public bool DoUpdate(float dT) {
-            if (t > overTime) return false;
+        /// <returns>True if the opacity changed, and if it did change, a byte indicating the new opacity.</returns>
+        public (bool, byte) DoUpdate(float dT) {
+            if (t > overTime) return (false, default);
             t += dT;
-            writeOpacityTo[index] = (t / overTime).ToByte();
-            return true;
+            return (true, (t / overTime).ToByte());
         }
     }
     
@@ -113,7 +117,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         speaker.color = mainText.color = c;
         //Assigning mainText.color resets the alpha vertex overrides and triggers a lazy mesh redraw,
         // so we have to reapply alphas like this...
-        mainText.onRebuild.Add(UpdateAlphas);
+        mainText.onRebuild.Add(() => UpdateAlphas());
     }
 
     private void ClearText() {
@@ -136,8 +140,15 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         nextOkAlpha.Update(dT);
         for (int ii = 0; ii < buttons.Length; ++ii)
             buttons[ii].DoUpdate(dT);
-        for (int ii = 0; ii < loadingChars2.Count; ++ii)
-            didOpacityUpdate |= loadingChars2[ii].DoUpdate(dT);
+        for (int ii = 0; ii < loadingChars2.Count; ++ii) {
+            var c = loadingChars2[ii];
+            var (upd, byt) = c.DoUpdate(dT);
+            loadingChars2[ii] = c;
+            if (upd) {
+                didOpacityUpdate = true;
+                charOpacity[ii] = byt;
+            }
+        }
         elapsedScrollWait += dT;
     }
 
@@ -203,7 +214,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         Listen(db.Dialogue, obj => {
             void AddC() {
                 charOpacity.Add(0);
-                loadingChars2.Add(new(charOpacity, loadingChars2.Count, charLoadTime));
+                loadingChars2.Add(new(charLoadTime));
             }
             if (obj.frag is SpeechFragment.Char c)
                 AddC();
@@ -218,9 +229,10 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         //dialogue finished effect?
         Listen(db.Container.AwaitingConfirm, icr => {
             if (icr == null)
-                nextOkAlpha.Push(NextOkDisable, 0.1f);
+                //https://github.com/dotnet/roslyn/issues/5835
+                nextOkAlpha.Push(x => NextOkDisable(x), 0.1f);
             else
-                nextOkAlpha.Push(NextOkEnable);
+                nextOkAlpha.Push(x => NextOkEnable(x));
         });
 
         Listen(nextOkAlpha, f => nextOkIcon.color = nextOkIcon.color.WithA(f));

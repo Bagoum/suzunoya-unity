@@ -9,14 +9,15 @@ namespace SZYU.Examples {
 public class ExampleVNUpdater : MonoBehaviour {
     public VNWrapper wrapper = null!;
     private readonly List<IDisposable> tokens = new();
+    
     private void Awake() {
         //Redirect logs from the libraries to Debug.Log
-        tokens.Add(Logging.Logs.Subscribe(lm => {
+        tokens.Add(Logging.Logs.RegisterListener(new TrivialLogListener(lm => {
             if (lm.Exception != null)
                 Debug.LogException(lm.Exception);
             else
                 Debug.Log(lm.Message);
-        }));
+        })));
         //Make VNWrapper accessible to other scripts
         tokens.Add(ServiceLocator.Register<IVNWrapper>(wrapper));
     }

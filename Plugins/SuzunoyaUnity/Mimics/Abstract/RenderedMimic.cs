@@ -19,7 +19,7 @@ public abstract class RenderedMimic : BaseMimic {
     public void Initialize(Rendered rd) {
         Listen(rd.OnUpdate, DoUpdate);
         Listen(rd.EntityActive, b => {
-            if (!b)
+            if (b == EntityState.Deleted)
                 EntityDestroyed();
         });
         

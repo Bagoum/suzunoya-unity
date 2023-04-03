@@ -47,7 +47,7 @@ public class ExampleVNScript : MonoBehaviour {
 
     private BoundedContext<Unit> RunSomeCode() => new(vn, "exampleContent", async () => {
         using var alice = vn.Add(new ExampleCharacter());
-        alice.Location.Value = new(-2, 0, 0);
+        alice.LocalLocation.Value = new(-2, 0, 0);
         alice.Tint.Value = new(1f, 0.8f, 0.8f);
         using var dialogueBox = vn.Add(new ADVDialogueBox());
         await alice.Say("Hello world").C;
@@ -57,7 +57,7 @@ public class ExampleVNScript : MonoBehaviour {
         await alice.EmoteSay("happy", "Foo bar").C;
         await alice.MoveBy(new(5, 0, 0), 2f, Easers.EOutSine);
         using var bob = vn.Add(new ExampleCharacter2());
-        bob.Location.Value = new(-2, 0, 0);
+        bob.LocalLocation.Value = new(-2, 0, 0);
         bob.Tint.Value = new(0.8f, 0.8f, 1f, 0f);
         await bob.FadeTo(1f, 1f).And(bob.Say("Lorem ipsum dolor sit amet")).C;
         return default;
@@ -67,10 +67,12 @@ public class ExampleVNScript : MonoBehaviour {
         tokens.DisposeAll();
     }
 
+#if UNITY_EDITOR
     [ContextMenu("Save")]
     public void Save() {
         File.WriteAllText(AssetDatabase.GetAssetPath(saveTo), Serialization.SerializeJson(vn.UpdateInstanceData()));
     }
+#endif
 
 }
 }

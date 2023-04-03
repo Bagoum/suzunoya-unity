@@ -39,17 +39,15 @@ public class RenderGroupMimic : Tokenized {
         //Don't need ZoomTarget
         Listen(rg.ZoomTransformOffset, _ => SetCameraLocation());
         
+        Listen(capturer.RenderUpdated, _ => rg.UpdatePB());
         
         //Don't need RendererAdded
         Listen(rg.EntityActive, b => {
-            if (!b) {
+            if (b == EntityState.Deleted) {
                 capturer.Kill();
                 Destroy(gameObject);
             }
         });
-    }
-    private void Update() {
-        rg.UpdatePB();
     }
     
     private void SetCameraLocation() =>

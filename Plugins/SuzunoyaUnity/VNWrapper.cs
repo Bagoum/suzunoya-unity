@@ -114,7 +114,7 @@ public class VNWrapper : MonoBehaviour, IVNWrapper {
         evn.tokens.Add(vn.EntityCreated.Subscribe(NewEntity));
         evn.tokens.Add(vn.DialogueLog.Subscribe(evn.Log));
         //TODO AwaitingConfirm
-        evn.tokens.Add(vn.Logs.Subscribe(Logging.Log));
+        evn.tokens.Add(vn.Logs.RegisterListener(Logging.Logs));
         evn.tokens.Add(vn.VNStateActive.Subscribe(b => {
             if (!b)
                 evn.Destroy();
@@ -144,7 +144,7 @@ public class VNWrapper : MonoBehaviour, IVNWrapper {
     }
 
     private void NewRenderGroup(RenderGroup rg) {
-        Logging.Log($"New render group {rg.Key}");
+        Logging.Logs.Log("New render group {0}", rg.Key, LogLevel.DEBUG1);
         if (rg is UnityRenderGroup urg)
             Instantiate(renderGroupMimic, tr, false).GetComponent<RenderGroupMimic>().Initialize(urg);
         else
@@ -153,7 +153,7 @@ public class VNWrapper : MonoBehaviour, IVNWrapper {
     }
     
     private void NewEntity(IEntity ent) {
-        Logging.Log($"VNWrapper is handling a new VN entity of type {ent}.");
+        Logging.Logs.Log("VNWrapper is handling a new VN entity of type {0}.", ent, LogLevel.DEBUG1);
         if (mimicTypeMap.TryGetValue(ent.GetType(), out var mimic))
             Instantiate(mimic, tr, false).GetComponent<BaseMimic>()._Initialize(ent);
         else
@@ -162,7 +162,9 @@ public class VNWrapper : MonoBehaviour, IVNWrapper {
 
     private void NoHandling(IEntity ent) {
         if (ent.MimicRequested)
-            Logging.Log(LogMessage.Error(new Exception($"Couldn't handle entity {ent} of type {ent.GetType()}")));
+            Logging.Logs.Error(new Exception(
+                $"There is no mimic prefab defined for entity {ent} of type {ent.GetType()}.\n" +
+                $"You may need to add a mimic in the SuzunoyaReferences of the GameUniqueReferences."));
     }
 
     public void UpdateAllVNSaves() {
@@ -181,7 +183,7 @@ public class VNWrapper : MonoBehaviour, IVNWrapper {
     [ContextMenu("Print location")]
     public void PrintLocation() {
         foreach (var evn in vns) {
-            Logging.Log($"VN {evn.vn} is at location {VNLocation.Make(evn.vn)}");
+            Logging.Logs.Log($"VN {evn.vn} is at location {VNLocation.Make(evn.vn)}");
         }
     }
 }

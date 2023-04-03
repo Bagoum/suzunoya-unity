@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SuzunoyaUnity;
 using SuzunoyaUnity.Components;
 using SuzunoyaUnity.Mimics;
@@ -68,5 +69,26 @@ public class PiecewiseCharacterMimic : SpriteIconCharacterMimic {
             pieces[ii].SetTint(c);
         }
     }
+
+
+    [ContextMenu("Copy values from existing script")]
+    private void CopyValuesFromExisting() {
+        foreach (var c in GetComponents<PiecewiseCharacterMimic>()) {
+            if (c != this) {
+                m_ADVSpeakerIcon = c.m_ADVSpeakerIcon;
+                advIcons = c.advIcons.ToArray();
+                pieces = c.pieces.ToArray();
+                defaultPiece = c.defaultPiece;
+                break;
+            }
+        }
+    }
+    
+    [ContextMenu("Copy icons into default piece")]
+    private void CopyIconsIntoDefault() {
+        (defaultPiece as PiecewiseSpriteRender).emotes = advIcons.ToArray();
+    }
+
+    
 }
 }

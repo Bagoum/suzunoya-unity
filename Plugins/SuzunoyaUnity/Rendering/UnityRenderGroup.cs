@@ -36,7 +36,7 @@ public class UnityRenderGroupMask {
     public void Done() {
         if (destroyOnDone && !destroyed) {
             Object.Destroy(mask);
-            Logging.Log("Destroyed render group mask due to out-of-scope");
+            Logging.Logs.Log("Destroyed render group mask due to out-of-scope");
         }
         destroyed = true;
     }
@@ -77,8 +77,8 @@ public class UnityRenderGroup : RenderGroup {
 
     
 
-    public UnityRenderGroup(IVNState container, string key = "$default", int priority = 0, 
-        bool visible = false) : base(container, key, priority, visible) {
+    public UnityRenderGroup(string key = "$default", int priority = 0, 
+        bool visible = false) : base(key, priority, visible) {
         AddToken(allRGs.Add(this));
     }
 

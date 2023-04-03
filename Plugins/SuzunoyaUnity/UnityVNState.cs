@@ -11,7 +11,7 @@ namespace SuzunoyaUnity {
 public class UnityVNState : VNState {
     public UnityVNState(ICancellee extCToken, IInstanceData save) : base(extCToken, save) { }
     
-    protected override RenderGroup MakeDefaultRenderGroup() => new UnityRenderGroup(this, visible: true);
+    protected override RenderGroup MakeDefaultRenderGroup() => Add(new UnityRenderGroup(visible: true));
 
     public virtual bool ClickConfirmOrSkip() => 
         AwaitingConfirm.Value != null ? UserConfirm() : RequestSkipOperation();
