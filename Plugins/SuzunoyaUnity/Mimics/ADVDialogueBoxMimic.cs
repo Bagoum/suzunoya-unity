@@ -83,6 +83,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
     public Image nextOkIcon = null!;
     public DialogueBoxButton[] buttons = null!;
 
+    public DialogueBoxButton? pauseButton;
     public DialogueBoxButton? autoplayButton;
     public DialogueBoxButton? skipButton;
 

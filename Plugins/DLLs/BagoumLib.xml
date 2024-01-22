@@ -1016,7 +1016,7 @@
             <inheritdoc cref="!:DMCompactingArray&lt;T&gt;.Item"/>
         </member>
         <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)">
-            <inheritdoc cref="M:BagoumLib.DataStructures.DMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)"/>
+            <inheritdoc cref="M:BagoumLib.DataStructures.IReadOnlyDMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)"/>
         </member>
         <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.GetEnumerator">
             <inheritdoc/>
@@ -1449,6 +1449,11 @@
             <br/>Deletion is O(1) amortized, assuming that <see cref="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Compact"/> is called at a reasonable frequency.
             </summary>
         </member>
+        <member name="P:BagoumLib.DataStructures.DMCompactingArray`1.EmptyArray">
+            <summary>
+            A statically-shared empty array.
+            </summary>
+        </member>
         <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.#ctor(System.Int32)">
             <summary>
             Create a new compacting array with the provided initial capacity.
@@ -1475,9 +1480,7 @@
             </summary>
         </member>
         <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)">
-            <summary>
-            Get the index'th element in the array if it has not been deleted.
-            </summary>
+            <inheritdoc cref="M:BagoumLib.DataStructures.IReadOnlyDMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)"/>
         </member>
         <member name="M:BagoumLib.DataStructures.DMCompactingArray`1.GetEnumerator">
             <inheritdoc/>
@@ -1620,6 +1623,26 @@
         <member name="M:BagoumLib.DataStructures.FColor.Equals(BagoumLib.DataStructures.FColor)">
             <inheritdoc/>
         </member>
+        <member name="T:BagoumLib.DataStructures.IReadOnlyDMCompactingArray`1">
+            <summary>
+            Interface for reading from a <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/> or <see cref="T:BagoumLib.DataStructures.AbstractDMCompactingArray`1"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.IReadOnlyDMCompactingArray`1.Count">
+            <summary>
+            Number of elements present in the array.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.IReadOnlyDMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)">
+            <summary>
+            Get the index'th element in the array if it has not been deleted.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.IReadOnlyDMCompactingArray`1.NumberAlive">
+            <summary>
+            Returns the number of non-deleted elements in the array.
+            </summary>
+        </member>
         <member name="T:BagoumLib.DataStructures.JointDisposable">
             <summary>
             A disposable token that, when disposed, disposes multiple other tokens and then calls a function.
@@ -1632,6 +1655,19 @@
             <param name="disps">Linked tokens to dispose when this token is disposed</param>
         </member>
         <member name="M:BagoumLib.DataStructures.JointDisposable.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.DataStructures.SinglyLinkedList`1">
+            <summary>
+            A data structure containing a value and a nullable pointer to a continuation.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.SinglyLinkedList`1.#ctor(`0,BagoumLib.DataStructures.SinglyLinkedList{`0})">
+            <summary>
+            A data structure containing a value and a nullable pointer to a continuation.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.SinglyLinkedList`1.GetEnumerator">
             <inheritdoc/>
         </member>
         <member name="M:BagoumLib.DataStructures.ListDisposable.Dispose">
@@ -1728,7 +1764,7 @@
             Create a trie from a set of strings.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.Trie.Add(System.ReadOnlySpan{System.Char})">
+        <member name="M:BagoumLib.DataStructures.Trie.Add(System.String,System.Int32)">
             <summary>
             Add a string to this trie.
             <br/>If this is not the root trie, then this is equivalent to adding the string made of this trie's
@@ -1736,12 +1772,12 @@
              then "abcdef" is added to the root trie.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.Trie.Contains(System.ReadOnlySpan{System.Char})">
+        <member name="M:BagoumLib.DataStructures.Trie.Contains(System.String,System.Int32)">
             <summary>
             Check whether a string exists in this trie.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.Trie.FindLongestSubstring(System.ReadOnlySpan{System.Char})">
+        <member name="M:BagoumLib.DataStructures.Trie.FindLongestSubstring(System.String)">
             <summary>
             Find the longest substring (starting at index zero) of a string that exists within this trie.
             Eg. If this trie contains "abc" and "ape", then
@@ -2690,14 +2726,14 @@
              use more temporary variables to ensure the correct order of exception throwing.
             </summary>
         </member>
-        <member name="M:BagoumLib.Expressions.ExpressionPrinter.LinearizePrint(System.Linq.Expressions.Expression)">
-            <summary>
-            Linearizes an expression and then converts it into C# source code.
-            </summary>
-        </member>
         <member name="M:BagoumLib.Expressions.ExpressionPrinter.Linearize(System.Linq.Expressions.Expression)">
             <summary>
             Linearizes an expression using LinearizeVisitor.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.ExpressionPrinter.LinearizePrint(System.Linq.Expressions.Expression)">
+            <summary>
+            Linearizes an expression and then converts it into C# source code.
             </summary>
         </member>
         <member name="M:BagoumLib.Expressions.ExpressionPrinter.Print(System.Linq.Expressions.Expression)">
@@ -3151,6 +3187,23 @@
         </member>
         <member name="M:BagoumLib.Expressions.PrintVisitor.VisitUnary(System.Linq.Expressions.UnaryExpression)">
             <inheritdoc />
+        </member>
+        <member name="T:BagoumLib.Expressions.ReplaceParameterVisitor">
+            <summary>
+            An expression visitor that replaces a parameter with an arbitrary expression.
+            <br/>The resulting tree may not be sound if the expression is of a different type
+             or the parameter is written to and the expression is not writeable.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.ReplaceParameterVisitor.#ctor(System.Linq.Expressions.ParameterExpression,System.Linq.Expressions.Expression)">
+            <summary>
+            An expression visitor that replaces a parameter with an arbitrary expression.
+            <br/>The resulting tree may not be sound if the expression is of a different type
+             or the parameter is written to and the expression is not writeable.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.ReplaceParameterVisitor.VisitParameter(System.Linq.Expressions.ParameterExpression)">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Expressions.ITypePrinter">
             <summary>
@@ -3771,6 +3824,22 @@
             If the Either is a value (left), return it. If the Either is a delayed value (right), resolve it.
             </summary>
         </member>
+        <member name="M:BagoumLib.Functional.Helpers.ValueOrSNull``1(BagoumLib.Functional.Maybe{``0})">
+            <summary>
+            Get the value if it is present, otherwise get null.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.Helpers.ValueOrNull``1(BagoumLib.Functional.Maybe{``0})">
+            <summary>
+            Get the value if it is present, otherwise get null.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.Helpers.SequenceL``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,BagoumLib.Functional.Either{``1,``2}})">
+            <summary>
+            Accumulate many results of a selection over a failable function together.
+            If at least one Either is Right, then the result will short-circuit and return that Right.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Functional.Helpers.SequenceL``2(System.Collections.Generic.IEnumerable{BagoumLib.Functional.Either{``0,``1}})">
             <summary>
             Accumulate many Eithers together.
@@ -3804,11 +3873,6 @@
         <member name="P:BagoumLib.Functional.Maybe`1.Value">
             <summary>
             The underlying value. Undefined if <see cref="P:BagoumLib.Functional.Maybe`1.Valid"/> is false.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Functional.Maybe`1.ValueOrNull">
-            <summary>
-            Get the value if it is present, otherwise get default(T).
             </summary>
         </member>
         <member name="M:BagoumLib.Functional.Maybe`1.#ctor(System.Boolean,`0)">
@@ -4237,6 +4301,20 @@
             Helpers for reflection and type handling.
             </summary>
         </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.GetFuncType(System.Int32)">
+            <summary>
+            Get the func type typeof(Func&lt;,,,,...&gt;), where arity is the number of generic arguments.
+            </summary>
+            <param name="arity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.GetTupleType(System.Int32)">
+            <summary>
+            Get the func type typeof(ValueTuple&lt;,,,,...&gt;), where arity is the number of generic arguments.
+            </summary>
+            <param name="arity"></param>
+            <returns></returns>
+        </member>
         <member name="M:BagoumLib.Reflection.ReflectionUtils.RName(System.Type)">
             <summary>
             Alias for CSharpTypePrinter.Default.Print(t), which prints the type as close to the native
@@ -4289,7 +4367,22 @@
             A store that allows registering and locating services at runtime.
             </summary>
         </member>
-        <member name="M:BagoumLib.ServiceLocator.Register``1(``0,BagoumLib.ServiceLocator.ServiceOptions)">
+        <member name="T:BagoumLib.ServiceLocator.ServiceOptions">
+            <summary>
+            Options configuring the usage of a specific service type that may be realized by multiple providers.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ServiceLocator.ServiceOptions.#ctor">
+            <summary>
+            Options configuring the usage of a specific service type that may be realized by multiple providers.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.ServiceLocator.ServiceOptions.Unique">
+            <summary>
+            True iff at most one provider can realize the service at a time. Default false.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ServiceLocator.Register``1(``0,System.Nullable{BagoumLib.ServiceLocator.ServiceOptions})">
             <summary>
             Register a service that can be reached globally via service location.
             <br/>The caller must dispose the disposable when the registered service is no longer available
@@ -4430,6 +4523,11 @@
         <member name="M:BagoumLib.Tasks.Utilities.Pipe(System.Threading.Tasks.Task,System.Threading.Tasks.TaskCompletionSource{System.Reactive.Unit})">
             <summary>
             Put the result of this task into a <see cref="T:System.Threading.Tasks.TaskCompletionSource`1"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.WaitingUtils.GetAwaiter(System.Threading.Tasks.Task@)">
+            <summary>
+            Get an action that completes a task.
             </summary>
         </member>
         <member name="M:BagoumLib.Tasks.WaitingUtils.WaitFor(System.Single,System.Action{BagoumLib.Completion},BagoumLib.Cancellation.ICancellee,System.Func{System.Single})">
@@ -4575,6 +4673,20 @@
             <param name="reverseEase">True if the easing function should be reversed for the reverse section.</param>
             <param name="times">Number of times to repeat the joined transition; null for indefinite.</param>
         </member>
+        <member name="T:BagoumLib.Transitions.NoopTweener">
+            <summary>
+            A tweener that does nothing for the provided amount of time.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.NoopTweener.ApplyStart">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Transitions.NoopTweener.ApplyStep(System.Reactive.Unit,System.Single)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Transitions.NoopTweener.ApplyEnd(System.Reactive.Unit)">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.Transitions.ScaleInTweener`1">
             <summary>
             A transition that scales in a value using scalar multiplication.
@@ -4651,12 +4763,13 @@
             An AST representing a program that can be used for two-pass type unification with overloading and implicit cast support.
             </summary>
         </member>
-        <member name="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)">
+        <member name="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)">
             <summary>
             First pass, bottom-up: recursively determine all possible types for all operands,
             then return the return types of all overloadings that satisfy at least one of the entries
              in the Cartesian product of possible operand sets.
             <br/>Implicit casts should be investigated at the *method* level, not the parameter level.
+            <br/>By default, a method may only check its parameters for implicit casts if required, unless alwaysCheckImplicitCasts is set.
             <br/>Note that it is possible to have some outputs that do not actually work, as this may skip some
               parent-child alignment checks for efficiency.
             </summary>
@@ -4696,7 +4809,12 @@
         </member>
         <member name="M:BagoumLib.Unification.ITypeTree.UnresolvedVariables">
             <summary>
-            Yields all the unbound variables in the return types selected by <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>.
+            Yields all the unbound variables in the selected overload.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Unification.ITypeTree.UnresolvedVariablesInReturnType(BagoumLib.Unification.ITypeTree)">
+            <summary>
+            Yields all the unbound variables in the return type of the selected overload.
             </summary>
         </member>
         <member name="T:BagoumLib.Unification.IMethodDesignation">
@@ -4724,10 +4842,10 @@
             <summary>
             The set of method overloads. All overloads must have the same number of arguments.
             <br/>This may be dependent on argument types (such as in the case of member access),
-             in which case it can be filled out in <see cref="M:BagoumLib.Unification.IMethodTypeTree`1.GenerateOverloads(System.Collections.Generic.List{System.Collections.Generic.List{System.ValueTuple{BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.Unifier}}})"/>.
+             in which case it can be filled out in <see cref="M:BagoumLib.Unification.IMethodTypeTree`1.GenerateOverloads(System.Collections.Generic.List{System.ValueTuple{BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.Unifier}}[])"/>.
             </summary>
         </member>
-        <member name="M:BagoumLib.Unification.IMethodTypeTree`1.GenerateOverloads(System.Collections.Generic.List{System.Collections.Generic.List{System.ValueTuple{BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.Unifier}}})">
+        <member name="M:BagoumLib.Unification.IMethodTypeTree`1.GenerateOverloads(System.Collections.Generic.List{System.ValueTuple{BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.Unifier}}[])">
             <summary>
             If this method's overloads are dependent on argument types (such as in the case of member access),
              set <see cref="P:BagoumLib.Unification.IMethodTypeTree`1.Overloads"/> based on the possible argument types.
@@ -4738,22 +4856,24 @@
             Whether or not the parameter at `index` can receive implicit casts.
             </summary>
         </member>
-        <member name="P:BagoumLib.Unification.IMethodTypeTree`1.PreferFirstOverload">
+        <member name="P:BagoumLib.Unification.IMethodTypeTree`1.OverloadsAreInterchangeable">
             <summary>
-            If this is set to true and multiple overloads can resolve a function in the
-            <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> stage, then instead of throwing an error,
-            use the first one that succeeds.
+            Set this to true when overlapping overloads all do the same thing.
+             For example, the overloads for multiplication are { (float, T)->T, (T, float)->T }.
+             These two overloads overlap when T=float, in which case the overloads are equivalent.
+            <br/>This will cause typechecking in <see cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> and 
+             <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> to complete as soon as a single valid overload is found.
             </summary>
         </member>
         <member name="P:BagoumLib.Unification.IMethodTypeTree`1.RealizableOverloads">
             <summary>
             The subset of <see cref="P:BagoumLib.Unification.IMethodTypeTree`1.Overloads"/> that can be realized given an initial parse of the provided arguments (ignoring the return type).
-            Set in <see cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)"/>.
+            Set in <see cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>.
             </summary>
         </member>
         <member name="P:BagoumLib.Unification.IMethodTypeTree`1.Arguments">
             <summary>
-            The set of arguments to the method, whichever of the overload is selected.
+            The set of arguments to the method, whichever of the overloads is selected.
             </summary>
         </member>
         <member name="P:BagoumLib.Unification.IMethodTypeTree`1.SelectedOverload">
@@ -4769,8 +4889,8 @@
              variable declarations.
             </summary>
         </member>
-        <member name="M:BagoumLib.Unification.IMethodTypeTree`1._PossibleUnifiers(BagoumLib.Unification.IMethodTypeTree{`0},BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)">
-            <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)"/>
+        <member name="M:BagoumLib.Unification.IMethodTypeTree`1._PossibleUnifiers(BagoumLib.Unification.IMethodTypeTree{`0},BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)">
+            <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>
         </member>
         <member name="M:BagoumLib.Unification.IMethodTypeTree`1._ResolveUnifiers(BagoumLib.Unification.IMethodTypeTree{`0},BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)">
             <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>
@@ -4793,8 +4913,15 @@
             The type overload selected after <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>.
             </summary>
         </member>
+        <member name="M:BagoumLib.Unification.IAtomicTypeTree.WillSelectOverload(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.IImplicitTypeConverterInstance,BagoumLib.Unification.Unifier)">
+            <summary>
+            Called in <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> when the overload is selected.
+            <br/>This generally requires no implementation, except when overloads or casts carry implicit
+             variable declarations.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Unification.IAtomicTypeTree._PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)">
-            <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)"/>
+            <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>
         </member>
         <member name="M:BagoumLib.Unification.IAtomicTypeTree._ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)">
             <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>
@@ -4828,7 +4955,7 @@
         <member name="P:BagoumLib.Unification.TypeTree.Method.RealizableOverloads">
             <inheritdoc/>
         </member>
-        <member name="P:BagoumLib.Unification.TypeTree.Method.PreferFirstOverload">
+        <member name="P:BagoumLib.Unification.TypeTree.Method.OverloadsAreInterchangeable">
             <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Unification.TypeTree.AtomicWithType">
@@ -4845,6 +4972,18 @@
             <inheritdoc/>
         </member>
         <member name="P:BagoumLib.Unification.TypeTree.AtomicWithType.ImplicitCast">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Unification.TypeTree.Arr.SelectedOverload">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Unification.TypeTree.Arr.ImplicitCast">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Unification.TypeTree.Arr.RealizableOverloads">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Unification.TypeTree.Arr.OverloadsAreInterchangeable">
             <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Unification.TypeUnifyErr">
@@ -4909,7 +5048,7 @@
             A variable type was never bound to a concrete type.
             </summary>
         </member>
-        <member name="M:BagoumLib.Unification.TypeUnifyErr.UnboundRestr.#ctor(BagoumLib.Unification.TypeDesignation.Variable)">
+        <member name="M:BagoumLib.Unification.TypeUnifyErr.UnboundRestr.#ctor(BagoumLib.Unification.TypeDesignation.Variable,BagoumLib.Unification.ITypeTree)">
             <summary>
             A variable type was never bound to a concrete type.
             </summary>
@@ -4926,13 +5065,13 @@
         </member>
         <member name="T:BagoumLib.Unification.TypeUnifyErr.NoPossibleOverload">
             <summary>
-            During the <see cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)"/> stage, no overload was found that could
+            During the <see cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> stage, no overload was found that could
              possibly match the parameters.
             </summary>
         </member>
-        <member name="M:BagoumLib.Unification.TypeUnifyErr.NoPossibleOverload.#ctor(BagoumLib.Unification.IMethodTypeTree,System.Collections.Generic.List{System.Collections.Generic.List{System.ValueTuple{BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.Unifier}}})">
+        <member name="M:BagoumLib.Unification.TypeUnifyErr.NoPossibleOverload.#ctor(BagoumLib.Unification.IMethodTypeTree,System.Collections.Generic.IList{System.Collections.Generic.List{System.ValueTuple{BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.Unifier}}})">
             <summary>
-            During the <see cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)"/> stage, no overload was found that could
+            During the <see cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> stage, no overload was found that could
              possibly match the parameters.
             </summary>
         </member>
@@ -4970,12 +5109,12 @@
         </member>
         <member name="T:BagoumLib.Unification.TypeUnifyErr.TooManyPossibleTypes">
             <summary>
-            <see cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)"/> returned more or less than 1 possible top-level type.
+            <see cref="!:ITypeTree.PossibleUnifiers(TypeResolver,Unifier)"/> returned more or less than 1 possible top-level type.
             </summary>
         </member>
         <member name="M:BagoumLib.Unification.TypeUnifyErr.TooManyPossibleTypes.#ctor(System.Collections.Generic.List{BagoumLib.Unification.TypeDesignation})">
             <summary>
-            <see cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)"/> returned more or less than 1 possible top-level type.
+            <see cref="!:ITypeTree.PossibleUnifiers(TypeResolver,Unifier)"/> returned more or less than 1 possible top-level type.
             </summary>
         </member>
         <member name="T:BagoumLib.Unification.TypeDesignation">
@@ -5035,6 +5174,11 @@
             Simplify this type using the unifier.
             </summary>
         </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.OccursInSimplification(BagoumLib.Unification.Unifier,BagoumLib.Unification.TypeDesignation.Variable)">
+            <summary>
+            Check if a variable would occur in this.Simplify(u).
+            </summary>
+        </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.GetVariables">
             <summary>
             Get all the unbound type variables (<see cref="T:BagoumLib.Unification.TypeDesignation.Variable"/>) in this definition.
@@ -5078,6 +5222,16 @@
             A known type.
             </summary>
         </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Known.MakeFuncType(BagoumLib.Unification.TypeDesignation[])">
+            <summary>
+            Create the type Func&lt;a,b,c,d,e...&gt;.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Known.MakeTupleType(BagoumLib.Unification.TypeDesignation[])">
+            <summary>
+            Create the type (a,b,c,d,e...).
+            </summary>
+        </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Known.Simplify(BagoumLib.Unification.Unifier)">
             <inheritdoc/>
         </member>
@@ -5085,6 +5239,12 @@
             <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Known.Resolve(BagoumLib.Unification.Unifier)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Known.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Known.GetHashCode">
             <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Known.ToString">
@@ -5122,6 +5282,13 @@
             <param name="returnTyp">Method return type</param>
             <param name="argTyps">Method parameter types, preceded by the instance type if this is an instance method</param>
         </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.PartialApplyToFunc(System.Int32)">
+            <summary>
+            For a method tree (a,b,c,d,e)->f, convert it to eg. (a,b)->Func&lt;c,d,e,f&gt; (for args=2).
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.Simplify(BagoumLib.Unification.Unifier)">
             <inheritdoc/>
         </member>
@@ -5139,6 +5306,12 @@
         </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.RecreateVariablesD">
             <inheritdoc cref="M:BagoumLib.Unification.TypeDesignation.Dummy.RecreateVariables(System.Collections.Generic.Dictionary{BagoumLib.Unification.TypeDesignation.Variable,BagoumLib.Unification.TypeDesignation.Variable})"/>
+        </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.GetHashCode">
+            <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.ToString">
             <inheritdoc/>
@@ -5197,6 +5370,9 @@
             <inheritdoc cref="M:BagoumLib.Unification.TypeDesignation.FromMethod(System.Reflection.MethodInfo)"/>
         </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.FromMethod(System.Type,System.Collections.Generic.IEnumerable{System.Type},System.Collections.Generic.Dictionary{System.Type,BagoumLib.Unification.TypeDesignation.Variable}@)">
+            <inheritdoc cref="M:BagoumLib.Unification.TypeDesignation.FromMethod(System.Reflection.MethodInfo)"/>
+        </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.FromMethod(System.Type,System.Collections.Generic.IEnumerable{System.Type},System.Collections.Generic.Dictionary{System.Type,BagoumLib.Unification.TypeDesignation.Variable})">
             <inheritdoc cref="M:BagoumLib.Unification.TypeDesignation.FromMethod(System.Reflection.MethodInfo)"/>
         </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.FromType(System.Type,System.Collections.Generic.Dictionary{System.Type,BagoumLib.Unification.TypeDesignation.Variable})">
@@ -5300,6 +5476,12 @@
             An instance of this type conversion which has not yet been consumed in a unifier.
             </summary>
         </member>
+        <member name="M:BagoumLib.Unification.IImplicitTypeConverter.SourceAllowed(BagoumLib.Unification.TypeDesignation)">
+            <summary>
+            If false, then the source type will not be converted by this converter, even if it
+             matches the converter's required form.
+            </summary>
+        </member>
         <member name="T:BagoumLib.Unification.IImplicitTypeConverterInstance">
             <summary>
             An instance of <see cref="T:BagoumLib.Unification.IImplicitTypeConverter"/> that does not share generic variables with other instances,
@@ -5384,6 +5566,9 @@
             <summary>
             Basic implementation for <see cref="T:BagoumLib.Unification.IImplicitTypeConverterInstance"/>.
             </summary>
+        </member>
+        <member name="P:BagoumLib.Unification.ImplicitTypeConverter.Instance.Converter">
+            <inheritdoc cref="P:BagoumLib.Unification.IImplicitTypeConverterInstance.Converter"/>
         </member>
         <member name="P:BagoumLib.Unification.ImplicitTypeConverter.Instance.Generic">
             <inheritdoc/>

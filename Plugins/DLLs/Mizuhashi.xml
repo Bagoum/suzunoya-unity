@@ -162,6 +162,12 @@
             Helper function to convert <see cref="T:Mizuhashi.Associativity"/> to 'left', 'right', or 'non'.
             </summary>
         </member>
+        <member name="M:Mizuhashi.Combinators.ParseOperatorsLegacy``3(System.Collections.Generic.IEnumerable{Mizuhashi.Operator{``0,``1,``2}},Mizuhashi.Parser{``0,``1})">
+            <summary>
+            Parse a set of operators according to precedence and associativity rules.
+            This causes stack overflow issues. <see cref="M:Mizuhashi.Combinators.ParseOperators``3(System.Collections.Generic.IEnumerable{Mizuhashi.Operator{``0,``1,``2}},Mizuhashi.Parser{``0,``1})"/> is preferred.
+            </summary>
+        </member>
         <member name="M:Mizuhashi.Combinators.ParseOperators``3(System.Collections.Generic.IEnumerable{Mizuhashi.Operator{``0,``1,``2}},Mizuhashi.Parser{``0,``1})">
             <summary>
             Parse a set of operators according to precedence and associativity rules.
@@ -390,9 +396,12 @@
             <br/>See <see cref="M:Mizuhashi.Combinators.SkipMany``2(Mizuhashi.Parser{``0,``1},System.Boolean)"/>.
             </summary>
         </member>
-        <member name="M:Mizuhashi.Combinators.SepBy``3(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``2},System.Boolean)">
+        <member name="M:Mizuhashi.Combinators.SepBy``3(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``2},System.Boolean,Mizuhashi.Parser{``0,``1})">
             <summary>
-            Parse `p (sep p)*`. If atleastOne is false, then allows parsing nothing. `sep` may be non-consuming.
+            Parse `p (sep p)*`.
+            <br/>If atleastOne is false, then allows parsing nothing.
+            <br/>`sep` may be non-consuming.
+            <br/>If `first` is nonnull, then it will be used to parse the first element.
             <br/>FParsec sepBy
             </summary>
         </member>
@@ -404,6 +413,11 @@
         <member name="M:Mizuhashi.Combinators.SepByAll``2(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``1},System.Int32)">
             <summary>
             Parse `p (sep p)*`. Both p and sep are included in the results list.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.GetStream``1">
+            <summary>
+            Return the input stream that is currently being parsed.
             </summary>
         </member>
         <member name="M:Mizuhashi.Combinators.GetState``2">
@@ -606,6 +620,11 @@
             Parses \t.
             </summary>
         </member>
+        <member name="M:Mizuhashi.Combinators.Regex(System.String,System.Text.RegularExpressions.RegexOptions)">
+            <summary>
+            Parses the provided regex. Automatically prepends a `\G` to the regex so it only matches from the start.
+            </summary>
+        </member>
         <member name="M:Mizuhashi.Combinators.IsAsciiLetter(System.Char)">
             <summary>
             True iff a character is [a-zA-Z].
@@ -721,7 +740,7 @@
             Error shown when operator parsing fails due to ambiguous associativity.
             </summary>
         </member>
-        <member name="M:Mizuhashi.AmbiguousAssociativity`3.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.AmbiguousAssociativity`3.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:Mizuhashi.Operator`3">
@@ -806,9 +825,20 @@
         <member name="M:Mizuhashi.Operator`3.Infix.#ctor(Mizuhashi.Parser{`0,`2},System.Func{`1,`2,`1,`1},Mizuhashi.Associativity,System.Int32)">
             <inheritdoc cref="T:Mizuhashi.Operator`3.Infix"/>
         </member>
+        <member name="T:Mizuhashi.Helpers">
+            <summary>
+            Helpers for calling parsers.
+            </summary>
+        </member>
         <member name="M:Mizuhashi.Helpers.ResultOrError``2(Mizuhashi.Parser{``0,``1},Mizuhashi.InputStream{``0})">
             <summary>
             Returns either the result of a parser, or its final failure.
+            <br/>Does not include backtracking information, but that is stored in s.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.Helpers.ResultOrError``1(Mizuhashi.Parser{System.Char,``0},System.String)">
+            <summary>
+            Returns either the result of a parser, or its final failure, for a basic string parser.
             <br/>Does not include backtracking information, but that is stored in s.
             </summary>
         </member>
@@ -884,20 +914,20 @@
             Create an <see cref="T:Mizuhashi.ParserError.EitherOf"/> error.
             </summary>
         </member>
-        <member name="M:Mizuhashi.ParserError.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <summary>
             Pretty-print the error contents.
             <br/>This does not print the position prelude, but nested errors may print their own prelude.
             </summary>
         </member>
-        <member name="M:Mizuhashi.ParserError.ShowTopLevel(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.ShowTopLevel(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <summary>
             Show a top-level error. This always prints the position prelude.
             </summary>
         </member>
-        <member name="M:Mizuhashi.ParserError.ShowNested(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.ShowNested(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <summary>
-            Show a nested error. This prints the position prelude iff <see cref="P:Mizuhashi.ParserError.StartingFrom"/> is nonempty.
+            Show a nested error.
             </summary>
         </member>
         <member name="T:Mizuhashi.ParserError.Failure">
@@ -910,7 +940,7 @@
             Error representing generic failure.
             </summary>
         </member>
-        <member name="M:Mizuhashi.ParserError.Failure.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.Failure.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:Mizuhashi.ParserError.ExpectedChar">
@@ -923,7 +953,7 @@
             Error representing a character that was expected but not found.
             </summary>
         </member>
-        <member name="M:Mizuhashi.ParserError.ExpectedChar.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.ExpectedChar.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:Mizuhashi.ParserError.Expected">
@@ -936,7 +966,7 @@
             Error representing a string that was expected but not found.
             </summary>
         </member>
-        <member name="M:Mizuhashi.ParserError.Expected.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.Expected.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:Mizuhashi.ParserError.IncorrectNumber">
@@ -949,7 +979,7 @@
             Error representing that the number of parsed objects was incorrect.
             </summary>
         </member>
-        <member name="M:Mizuhashi.ParserError.IncorrectNumber.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.IncorrectNumber.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:Mizuhashi.ParserError.UnexpectedChar">
@@ -962,7 +992,7 @@
             Error due to a character that was not expected.
             </summary>
         </member>
-        <member name="M:Mizuhashi.ParserError.UnexpectedChar.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.UnexpectedChar.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:Mizuhashi.ParserError.Unexpected">
@@ -975,7 +1005,7 @@
             Error due a string that was not expected.
             </summary>
         </member>
-        <member name="M:Mizuhashi.ParserError.Unexpected.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.Unexpected.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:Mizuhashi.ParserError.Labelled">
@@ -988,7 +1018,7 @@
             A wrapper around an error with a label that describes what it was supposed to parse.
             </summary>
         </member>
-        <member name="M:Mizuhashi.ParserError.Labelled.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.Labelled.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:Mizuhashi.ParserError.EitherOf">
@@ -1004,7 +1034,7 @@
         <member name="M:Mizuhashi.ParserError.EitherOf.Enumerated">
             <inheritdoc/>
         </member>
-        <member name="M:Mizuhashi.ParserError.EitherOf.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.EitherOf.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:Mizuhashi.ParserError.OneOf">
@@ -1023,7 +1053,7 @@
         <member name="M:Mizuhashi.ParserError.OneOf.JoinWith(Mizuhashi.ParserError)">
             <inheritdoc/>
         </member>
-        <member name="M:Mizuhashi.ParserError.OneOf.Show(Mizuhashi.IInputStream,System.Int32)">
+        <member name="M:Mizuhashi.ParserError.OneOf.Show(Mizuhashi.IInputStream,System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="M:Mizuhashi.ParserError.OneOf.Equals(Mizuhashi.ParserError.OneOf)">
@@ -1048,7 +1078,12 @@
         </member>
         <member name="F:Mizuhashi.LocatedParserError.Index">
             <summary>
-            The index in the source stream where the error occured.
+            The index in the source stream where the error started.
+            </summary>
+        </member>
+        <member name="F:Mizuhashi.LocatedParserError.End">
+            <summary>
+            The index in the source stream where the error ended.
             </summary>
         </member>
         <member name="F:Mizuhashi.LocatedParserError.Error">
@@ -1059,6 +1094,11 @@
         <member name="M:Mizuhashi.LocatedParserError.#ctor(System.Int32,Mizuhashi.ParserError)">
             <summary>
             Create a <see cref="T:Mizuhashi.LocatedParserError"/>.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.LocatedParserError.WithError(Mizuhashi.ParserError)">
+            <summary>
+            Change the <see cref="T:Mizuhashi.ParserError"/> attached to this struct.
             </summary>
         </member>
         <member name="M:Mizuhashi.LocatedParserError.Show(Mizuhashi.IInputStream)">
@@ -1240,6 +1280,11 @@
             Column of the next character (1-indexed). This does not handle tab width.
             </summary>
         </member>
+        <member name="M:Mizuhashi.Position.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a position struct provided the index in the source text, line, and index of line start.
+            </summary>
+        </member>
         <member name="M:Mizuhashi.Position.#ctor(System.String,System.Int32)">
             <summary>
             Find the position of the given index in the source string.
@@ -1259,7 +1304,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Mizuhashi.Position.Step(System.ReadOnlySpan{System.Char},System.Int32)">
+        <member name="M:Mizuhashi.Position.Step(System.String,System.Int32)">
             <summary>
             Advance `steps` characters, using `over` to determine the locations of newlines.
             <br/>Assumes that `over` is some substring Source[Index..].
@@ -1270,7 +1315,7 @@
             new PositionRange(this, this)
             </summary>
         </member>
-        <member name="M:Mizuhashi.Position.CreateRange(System.ReadOnlySpan{System.Char},System.Int32)">
+        <member name="M:Mizuhashi.Position.CreateRange(System.String,System.Int32)">
             <summary>
             Creates a position range between this position and `steps` characters ahead, using
             `over` to determine the locations of newlines.
@@ -1346,6 +1391,11 @@
             True iff the range contains no elements.
             </summary>
         </member>
+        <member name="M:Mizuhashi.PositionRange.#ctor(Mizuhashi.Position@,Mizuhashi.Position@)">
+            <summary>
+            Create a position range from two positions [start, end).
+            </summary>
+        </member>
         <member name="M:Mizuhashi.PositionRange.ToString">
             <inheritdoc/>
         </member>
@@ -1358,6 +1408,11 @@
         <member name="M:Mizuhashi.PositionRange.Merge(Mizuhashi.PositionRange@)">
             <summary>
             Create a new range that starts where this range starts and ends where the second range ends.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.PositionRange.Merge(System.Collections.Generic.IEnumerable{Mizuhashi.PositionRange})">
+            <summary>
+            Merge several position ranges.
             </summary>
         </member>
         <member name="M:Mizuhashi.PositionRange.Contains(Mizuhashi.Position@)">
@@ -1390,6 +1445,11 @@
             </summary>
         </member>
         <member name="T:Mizuhashi.InputStreamState">
+            <summary>
+            A small struct representing the current state of an input stream.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.InputStreamState.#ctor(System.Int32,Mizuhashi.Position,System.Object)">
             <summary>
             A small struct representing the current state of an input stream.
             </summary>
@@ -1429,6 +1489,11 @@
         <member name="P:Mizuhashi.InputStream`1.TokenWitness">
             <inheritdoc/>
         </member>
+        <member name="P:Mizuhashi.InputStream`1.SourceAsString">
+            <summary>
+            The source stream as a string (if Token = char).
+            </summary>
+        </member>
         <member name="P:Mizuhashi.InputStream`1.Source">
             <summary>
             Source stream.
@@ -1446,6 +1511,67 @@
             but that's more expensive.
             </summary>
         </member>
+        <member name="P:Mizuhashi.InputStream`1.Rollbacks">
+            <summary>
+            A list of explicit rollbacks created by "Attempt" and "Try" parsers.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.InputStream`1.Index">
+            <inheritdoc cref="P:Mizuhashi.InputStreamState.Index"/>
+        </member>
+        <member name="P:Mizuhashi.InputStream`1.Remaining">
+            <summary>
+            Number of remaining tokens in the input stream.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.InputStream`1.Empty">
+            <summary>
+            True iff the input stream is empty (no tokens are remaining).
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.InputStream`1.Next">
+            <summary>
+            Next token in the input stream. Throws if the stream is empty.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.InputStream`1.MaybeNext">
+            <summary>
+            Next token in the input stream. Returns null if the stream is empty.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.InputStream`1.CharAt(System.Int32)">
+            <summary>
+            Returns the token that is `lookahead` tokens ahead in the input stream.
+            Throws if this goes beyond the stream range.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.InputStream`1.TryCharAt(System.Int32,`0@)">
+            <summary>
+            Retrieve the token that is `lookahead` tokens ahead in the input stream, iff it is within the stream range.
+            </summary>
+        </member>
+        <member name="P:Mizuhashi.InputStream`1.AsSpan">
+            <summary>
+            Get a span describing the unparsed section of the stream.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.InputStream`1.#ctor(`0[],System.String,System.Object,Mizuhashi.ITokenWitnessCreator{`0})">
+            <summary>
+            Create an input stream from an array of tokens.
+            <br/>A token witness must be provided, except in the default string-parsing case (Token = <see cref="T:System.Char"/>)
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.InputStream`1.#ctor(System.String,System.String,System.Object,Mizuhashi.ITokenWitnessCreator{`0})">
+            <summary>
+            Create an input stream from a string (only if Token == char).
+            <br/>A token witness is optional; <see cref="T:Mizuhashi.CharTokenWitnessCreator"/> will be used by default.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.InputStream`1.UpdateState(System.Object)">
+            <summary>
+            Update the state object of the input stream.
+            </summary>
+        </member>
         <member name="M:Mizuhashi.InputStream`1.Rollback(Mizuhashi.InputStreamState@,System.Nullable{Mizuhashi.LocatedParserError}@)">
             <summary>
             Rollback the position of the stream, storing the error that caused the rollback.
@@ -1454,6 +1580,16 @@
         <member name="M:Mizuhashi.InputStream`1.RollbackFast(Mizuhashi.InputStreamState@)">
             <summary>
             Rollback the position of the stream.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.InputStream`1.Step(System.Int32)">
+            <summary>
+            Advance in the input stream by the provided number of tokens.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.InputStream`1.MakeError(Mizuhashi.ParserError)">
+            <summary>
+            Pair the provided parser error with the current stream location.
             </summary>
         </member>
         <member name="M:Mizuhashi.InputStream`1.ShowAllFailures(Mizuhashi.LocatedParserError)">
@@ -1483,7 +1619,13 @@
         </member>
         <member name="T:Mizuhashi.ParseResult`1">
             <summary>
-            The result of running a parser on a string.
+            The result of running a parser on an input stream.
+            </summary>
+            <typeparam name="R">Type of parser return value.</typeparam>
+        </member>
+        <member name="M:Mizuhashi.ParseResult`1.#ctor(BagoumLib.Functional.Maybe{`0},System.Nullable{Mizuhashi.LocatedParserError},System.Int32,System.Int32)">
+            <summary>
+            The result of running a parser on an input stream.
             </summary>
             <typeparam name="R">Type of parser return value.</typeparam>
         </member>
@@ -1527,15 +1669,34 @@
             Result status of parsing.
             </summary>
         </member>
+        <member name="M:Mizuhashi.ParseResult`1.#ctor(Mizuhashi.ParserError,System.Int32,System.Nullable{System.Int32})">
+            <inheritdoc cref="T:Mizuhashi.ParseResult`1"/>
+        </member>
+        <member name="M:Mizuhashi.ParseResult`1.#ctor(System.Nullable{Mizuhashi.LocatedParserError},System.Int32,System.Nullable{System.Int32})">
+            <inheritdoc cref="T:Mizuhashi.ParseResult`1"/>
+        </member>
+        <member name="M:Mizuhashi.ParseResult`1.MergeErrors``1(Mizuhashi.ParseResult{``0}@)">
+            <summary>
+            Combine the errors from two sequential parse results.
+            </summary>
+        </member>
         <member name="M:Mizuhashi.ParseResult`1.WithPreceding``1(Mizuhashi.ParseResult{``0}@)">
             <summary>
             Join the errors and consumption range of this parse result with a preceding parse result.
             <br/>Use this whenever parsers are run in sequence.
             </summary>
         </member>
+        <member name="M:Mizuhashi.ParseResult`1.WithPrecedingNullable``1(System.Nullable{Mizuhashi.ParseResult{``0}}@)">
+            <inheritdoc cref="M:Mizuhashi.ParseResult`1.WithPreceding``1(Mizuhashi.ParseResult{``0}@)"/>
+        </member>
         <member name="M:Mizuhashi.ParseResult`1.FMap``1(System.Func{`0,``0})">
             <summary>
             Map over the value of a parse result.
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.ParseResult`1.Erase">
+            <summary>
+            Map the type of a parse result to unit.
             </summary>
         </member>
         <member name="M:Mizuhashi.ParseResult`1.WithResult``1(``0)">
@@ -1549,6 +1710,9 @@
             </summary>
         </member>
         <member name="M:Mizuhashi.ParseResult`1.AsError``1(Mizuhashi.ParserError,System.Boolean)">
+            <inheritdoc cref="M:Mizuhashi.ParseResult`1.AsError``1(Mizuhashi.LocatedParserError,System.Boolean)"/>
+        </member>
+        <member name="M:Mizuhashi.ParseResult`1.AsSameError(Mizuhashi.ParserError,System.Boolean)">
             <inheritdoc cref="M:Mizuhashi.ParseResult`1.AsError``1(Mizuhashi.LocatedParserError,System.Boolean)"/>
         </member>
         <member name="M:Mizuhashi.ParseResult`1.CastFailure``1">
@@ -1575,6 +1739,11 @@
             <br/>Error at Line 1, Col 5:
             <br/>  foo bar
             <br/>  foo | &lt;- at this location
+            </summary>
+        </member>
+        <member name="M:Mizuhashi.ITokenWitness.ShowErrorPositionInSource(Mizuhashi.PositionRange,System.String)">
+            <summary>
+            Return a user-readable string explaining the position of an error in the source input stream.
             </summary>
         </member>
         <member name="M:Mizuhashi.ITokenWitness.Unexpected(System.Int32)">

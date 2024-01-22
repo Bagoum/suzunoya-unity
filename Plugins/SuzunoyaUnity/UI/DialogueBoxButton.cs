@@ -26,6 +26,7 @@ public class DialogueBoxButton : Tokenized, IPointerEnterHandler, IPointerExitHa
     public TextMeshProUGUI text = null!;
     
     public UnityEvent onClicked = null!;
+    public UnityEvent<bool> onEnableDisable = null!;
     protected Evented<ButtonState> State { get; } = new(ButtonState.Normal); 
 
     protected void FastSetState(ButtonState state) {
@@ -41,7 +42,10 @@ public class DialogueBoxButton : Tokenized, IPointerEnterHandler, IPointerExitHa
 
     protected override void BindListeners() {
         base.BindListeners();
-        AddToken(State.Subscribe(s => color.Push(new Color(1, 1, 1, StateToColor(s)))));
+        AddToken(State.Subscribe(s => {
+            onEnableDisable.Invoke(!s.HasFlag(ButtonState.Disabled));
+            color.Push(new Color(1, 1, 1, StateToColor(s)));
+        }));
         AddToken(color.Subscribe(c => {
             for (int ii = 0; ii < sprites.Length; ++ii)
                 sprites[ii].color = c;
