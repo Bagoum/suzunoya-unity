@@ -20,41 +20,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollHandler {/*
-    private readonly struct CharOrString {
-        public readonly char? c;
-        public readonly string? s;
-        public CharOrString(char? c, string? s) {
-            this.c = c;
-            this.s = s;
-        }
-
-        public static CharOrString Char(char c) => new CharOrString(c, null);
-        public static CharOrString Str(string s) => new CharOrString(null, s);
-        public static CharOrString? MaybeStr(string? s) => s == null ? null : (CharOrString?)new CharOrString(null, s);
-    }
-    private class LoadingChar {
-        public readonly CharOrString cs;
-        public float t;
-        public LoadingChar(CharOrString cs, float t = 0) {
-            this.cs = cs;
-            this.t = t;
-        }
-
-        public string Rendered(float maxTime) {
-            float ratio = Easers.EOutSine(t / maxTime);
-            if (cs.c.Try(out var c_)) {
-                return t >= maxTime ? $"{c_}" : $"<alpha=#{ratio.ToByte():X2}>{c_}</color>";
-            } else {
-                return t >= maxTime ? cs.s! : $"<alpha=#{ratio.ToByte():X2}>{cs.s}</color>";
-            }
-        }
-    }*/
-    private struct LoadingChar2 {
-        public float overTime { get; }
+public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollHandler {
+    private struct LoadingChar {
+        public float maxTime { get; }
         private float t;
-        public LoadingChar2(float overTime) {
-            this.overTime = overTime;
+        public LoadingChar(float maxTime) {
+            this.maxTime = maxTime;
             this.t = 0;
         }
 
@@ -62,10 +33,16 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         /// </summary>
         /// <param name="dT"></param>
         /// <returns>True if the opacity changed, and if it did change, a byte indicating the new opacity.</returns>
-        public (bool, byte) DoUpdate(float dT) {
-            if (t > overTime) return (false, default);
+        public (bool, byte) DoUpdateAsByte(float dT) {
+            if (t > maxTime) return (false, default);
             t += dT;
-            return (true, (t / overTime).ToByte());
+            return (true, (t / maxTime).ToByte());
+        }
+
+        public (bool, float) DoUpdate(float dT) {
+            if (t > maxTime) return (false, default);
+            t += dT;
+            return (true, Mathf.Clamp01(t / maxTime));
         }
     }
     
@@ -94,6 +71,8 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
     private readonly DisturbedAnd raycastable = new();
 
     public float charLoadTime = 0.15f;
+    public float charScaleInTime = 0.3f;
+    public float charScaleInFrom = 1.2f;
     /// <summary>
     /// Time that must pass between successive scroll events being read.
     /// </summary>
@@ -101,16 +80,23 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         
     protected ADVDialogueBox bound = null!;
     private readonly List<byte> charOpacity = new();
-    private readonly List<LoadingChar2> loadingChars2 = new();
+    private readonly List<LoadingChar> loadingOpacity = new();
+    private readonly List<TMPAlphaController.Vertices> initialVertexPositions = new();
+    private readonly List<float> charScaleIn = new();
+    private readonly List<LoadingChar> loadingScaleIn = new();
 
     private float elapsedScrollWait = 0f;
-
 
     public override string SortingLayerFromPrefab => canvas.sortingLayerName;
 
     public override void _Initialize(IEntity ent) => Initialize((ent as ADVDialogueBox)!);
 
-    private void UpdateAlphas() {
+    private void UpdateCharProps(bool initial) {
+        if (initial) {
+            TMPAlphaController.GetVertices(mainText, initialVertexPositions);
+        } else {
+            TMPAlphaController.UpdateVertices(mainText, initialVertexPositions, charScaleIn, charScaleInFrom);
+        }
         TMPAlphaController.ModifyAlphas(mainText, charOpacity, 0);
     }
 
@@ -118,43 +104,54 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         speaker.color = mainText.color = c;
         //Assigning mainText.color resets the alpha vertex overrides and triggers a lazy mesh redraw,
         // so we have to reapply alphas like this...
-        mainText.onRebuild.Add(() => UpdateAlphas());
+        mainText.onRebuild.Add(() => UpdateCharProps(false));
     }
 
     private void ClearText() {
         charOpacity.Clear();
-        loadingChars2.Clear();
+        loadingOpacity.Clear();
+        charScaleIn.Clear();
+        loadingScaleIn.Clear();
         mainText.UnditedText = "";
-        didOpacityUpdate = false;
-        TMPAlphaController.SetAlphasZero(mainText);
+        TMPAlphaController.ModifyAlphas(mainText, charOpacity, 0);
+        didCharPropUpdate = false;
     }
 
-    private void CheckOpacity() {
-        if (didOpacityUpdate)
-            UpdateAlphas();
-        didOpacityUpdate = false;
+    private void CheckCharProps() {
+        if (didCharPropUpdate)
+            UpdateCharProps(false);
+        didCharPropUpdate = false;
     }
 
-    private bool didOpacityUpdate = false;
+    private bool didCharPropUpdate = false;
     protected override void DoUpdate(float dT) {
         textColor.Update(dT);
         nextOkAlpha.Update(dT);
         for (int ii = 0; ii < buttons.Length; ++ii)
             buttons[ii].DoUpdate(dT);
-        for (int ii = 0; ii < loadingChars2.Count; ++ii) {
-            var c = loadingChars2[ii];
-            var (upd, byt) = c.DoUpdate(dT);
-            loadingChars2[ii] = c;
+        for (int ii = 0; ii < loadingOpacity.Count; ++ii) {
+            var c = loadingOpacity[ii];
+            var (upd, byt) = c.DoUpdateAsByte(dT);
+            loadingOpacity[ii] = c;
             if (upd) {
-                didOpacityUpdate = true;
+                didCharPropUpdate = true;
                 charOpacity[ii] = byt;
+            }
+        }
+        for (int ii = 0; ii < loadingScaleIn.Count; ++ii) {
+            var c = loadingScaleIn[ii];
+            var (upd, fl) = c.DoUpdate(dT);
+            loadingScaleIn[ii] = c;
+            if (upd) {
+                didCharPropUpdate = true;
+                charScaleIn[ii] = fl;
             }
         }
         elapsedScrollWait += dT;
     }
 
     private void Update() {
-        CheckOpacity();
+        CheckCharProps();
     }
 
     private IDisposable? rgToken;
@@ -209,13 +206,15 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
                 });
             }
             mainText.UnditedText += sb.ToString();
-            UpdateAlphas();
-            didOpacityUpdate = true;
+            UpdateCharProps(true);
+            didCharPropUpdate = true;
         });
         Listen(db.Dialogue, obj => {
             void AddC() {
                 charOpacity.Add(0);
-                loadingChars2.Add(new(charLoadTime));
+                loadingOpacity.Add(new(charLoadTime));
+                charScaleIn.Add(0);
+                loadingScaleIn.Add(new(charScaleInTime));
             }
             if (obj.frag is SpeechFragment.Char c)
                 AddC();

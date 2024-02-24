@@ -45,6 +45,11 @@ public class ExampleVNScript : MonoBehaviour {
         _ = RunSomeCode().Execute().ContinueWithSync();
     }
 
+    [ContextMenu("Run Script")]
+    public void RunScript() {
+        _ = RunSomeCode().Execute().ContinueWithSync();
+    }
+    
     private BoundedContext<Unit> RunSomeCode() => new(vn, "exampleContent", async () => {
         using var alice = vn.Add(new ExampleCharacter());
         alice.LocalLocation.Value = new(-2, 0, 0);
