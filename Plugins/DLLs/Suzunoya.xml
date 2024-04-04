@@ -3301,9 +3301,9 @@
             Run an action only if the skip mode does not automatically skip lines.
             </summary>
         </member>
-        <member name="M:Suzunoya.Helpers.Disturb``1(Suzunoya.Entities.Entity,BagoumLib.Events.DisturbedEvented{``0},System.Func{System.Single,``0},System.Single,System.Boolean)">
+        <member name="M:Suzunoya.Helpers.Disturb``1(Suzunoya.Entities.Entity,BagoumLib.Events.IDisturbable{``0},System.Func{System.Single,``0},System.Single,System.Boolean)">
             <summary>
-            Add a disturbance effect over time to a <see cref="T:BagoumLib.Events.DisturbedEvented`1"/>.
+            Add a disturbance effect over time to a <see cref="T:BagoumLib.Events.IDisturbable`1"/>.
             </summary>
             <param name="ent">Entity on which the coroutine for the disturbance effect should be run.</param>
             <param name="dist">Base value to which to add the effect.</param>

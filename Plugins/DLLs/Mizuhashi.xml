@@ -99,6 +99,11 @@
             Sequentially parses objects of type A, B, C, D, E, F, then combines them using the project function.
             </summary>
         </member>
+        <member name="M:Mizuhashi.Combinators.Pipe7``9(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``2},Mizuhashi.Parser{``0,``3},Mizuhashi.Parser{``0,``4},Mizuhashi.Parser{``0,``5},Mizuhashi.Parser{``0,``6},Mizuhashi.Parser{``0,``7},System.Func{``1,``2,``3,``4,``5,``6,``7,``8})">
+            <summary>
+            Sequentially parses objects of type A, B, C, D, E, F, G, then combines them using the project function.
+            </summary>
+        </member>
         <member name="M:Mizuhashi.Combinators.Sequential``4(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``2},System.Func{``1,``2,``3})">
             <summary>
             Allocation-efficient syntax for SelectMany when parsers do not depend on the return value of previous parsers.
@@ -115,6 +120,9 @@
             <inheritdoc cref="M:Mizuhashi.Combinators.Sequential``4(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``2},System.Func{``1,``2,``3})"/>
         </member>
         <member name="M:Mizuhashi.Combinators.Sequential``8(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``2},Mizuhashi.Parser{``0,``3},Mizuhashi.Parser{``0,``4},Mizuhashi.Parser{``0,``5},Mizuhashi.Parser{``0,``6},System.Func{``1,``2,``3,``4,``5,``6,``7})">
+            <inheritdoc cref="M:Mizuhashi.Combinators.Sequential``4(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``2},System.Func{``1,``2,``3})"/>
+        </member>
+        <member name="M:Mizuhashi.Combinators.Sequential``9(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``2},Mizuhashi.Parser{``0,``3},Mizuhashi.Parser{``0,``4},Mizuhashi.Parser{``0,``5},Mizuhashi.Parser{``0,``6},Mizuhashi.Parser{``0,``7},System.Func{``1,``2,``3,``4,``5,``6,``7,``8})">
             <inheritdoc cref="M:Mizuhashi.Combinators.Sequential``4(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``2},System.Func{``1,``2,``3})"/>
         </member>
         <member name="M:Mizuhashi.Combinators.Attempt``2(Mizuhashi.Parser{``0,``1})">
@@ -269,6 +277,12 @@
              indicating which was used and its result.
             </summary>
         </member>
+        <member name="M:Mizuhashi.Combinators.OneOf``4(Mizuhashi.Parser{``0,``1},Mizuhashi.Parser{``0,``2},Mizuhashi.Parser{``0,``3})">
+            <summary>
+            Parse one of the three provided parsers, returning an <see cref="T:BagoumLib.Functional.OneOf`3"/>
+             indicating which was used and its result.
+            </summary>
+        </member>
         <member name="M:Mizuhashi.Combinators.Choice``2(Mizuhashi.Parser{``0,``1}[])">
             <summary>
             Parse any of the provided parsers. If no parsers are provided, always fails.
@@ -326,6 +340,9 @@
             <br/>Try to parse an object of type R, and return it as type Maybe&lt;R&gt;.
             If it fails (non-catastrophically), then succeed with Maybe.None.
             </summary>
+        </member>
+        <member name="M:Mizuhashi.Combinators.OptN``2(Mizuhashi.Parser{``0,``1})">
+            <inheritdoc cref="M:Mizuhashi.Combinators.Opt``2(Mizuhashi.Parser{``0,``1})"/>
         </member>
         <member name="M:Mizuhashi.Combinators.Optional``2(Mizuhashi.Parser{``0,``1})">
             <summary>

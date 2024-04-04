@@ -55,6 +55,14 @@
           }
         }
       },
+      "System.Linq.Async/6.0.1": {
+        "runtime": {
+          "lib/netstandard2.1/System.Linq.Async.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.1.35981"
+          }
+        }
+      },
       "System.Memory/4.5.5": {
         "dependencies": {
           "System.Buffers": "4.5.1",
@@ -129,6 +137,7 @@
           "JetBrains.Annotations": "2021.1.0",
           "Newtonsoft.Json": "13.0.1",
           "System.Collections.Immutable": "7.0.0",
+          "System.Linq.Async": "6.0.1",
           "System.Reactive": "5.0.0"
         },
         "runtime": {
@@ -200,6 +209,13 @@
       "sha512": "sha512-dQPcs0U1IKnBdRDBkrCTi1FoajSTBzLcVTpjO4MBCMC7f4pDOIPzgBoX8JjG7X6uZRJ8EBxsi8+DR1JuwjnzOQ==",
       "path": "system.collections.immutable/7.0.0",
       "hashPath": "system.collections.immutable.7.0.0.nupkg.sha512"
+    },
+    "System.Linq.Async/6.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0YhHcaroWpQ9UCot3Pizah7ryAzQhNvobLMSxeDIGmnXfkQn8u5owvpOH0K6EVB+z9L7u6Cc4W17Br/+jyttEQ==",
+      "path": "system.linq.async/6.0.1",
+      "hashPath": "system.linq.async.6.0.1.nupkg.sha512"
     },
     "System.Memory/4.5.5": {
       "type": "package",

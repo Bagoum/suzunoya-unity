@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reactive.Linq;
+using BagoumLib;
 using BagoumLib.Events;
 using BagoumLib.Mathematics;
 using TMPro;
@@ -12,7 +10,7 @@ using UnityEngine.UI;
 
 namespace SuzunoyaUnity.UI {
 [Flags]
-public enum ButtonState {
+public enum ButtonState : int {
     Normal = 0,
     Hover = 1 << 0,
     Active = 1 << 1,
@@ -26,14 +24,19 @@ public class DialogueBoxButton : Tokenized, IPointerEnterHandler, IPointerExitHa
     public TextMeshProUGUI text = null!;
     
     public UnityEvent onClicked = null!;
-    public UnityEvent<bool> onEnableDisable = null!;
-    protected Evented<ButtonState> State { get; } = new(ButtonState.Normal); 
+    protected Evented<ButtonState> State { get; } = new(ButtonState.Normal);
+    
+    /// <summary>
+    /// By default, a button is interactable if <see cref="ButtonState"/> does not contain DISABLED or HIDE.
+    /// <br/>However, there may be other conditions in subclasses that cause buttons to be non-interactable.
+    /// <br/>Such other conditions can be bound to this event.
+    /// </summary>
+    protected DisturbedAnd IsInteractable { get; } = new(true);
 
     protected void FastSetState(ButtonState state) {
         color.Unset();
         State.Value = state;
     }
-    
     public void DisableButton() => State.Value |= ButtonState.Disabled;
     public void EnableButton() => State.Value &= ButtonState.All ^ ButtonState.Disabled;
 
@@ -42,10 +45,8 @@ public class DialogueBoxButton : Tokenized, IPointerEnterHandler, IPointerExitHa
 
     protected override void BindListeners() {
         base.BindListeners();
-        AddToken(State.Subscribe(s => {
-            onEnableDisable.Invoke(!s.HasFlag(ButtonState.Disabled));
-            color.Push(new Color(1, 1, 1, StateToColor(s)));
-        }));
+        AddToken(IsInteractable.AddDisturbance(State.Select(s => (s & (ButtonState.Disabled|ButtonState.Hide)) is 0)));
+        AddToken(State.Subscribe(s => color.Push(new Color(1, 1, 1, StateToColor(s)))));
         AddToken(color.Subscribe(c => {
             for (int ii = 0; ii < sprites.Length; ++ii)
                 sprites[ii].color = c;

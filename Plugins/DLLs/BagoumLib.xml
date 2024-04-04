@@ -332,6 +332,16 @@
             Lerp between a and b, but do not clamp t, so the result can be outside the range [a, b].
             </summary>
         </member>
+        <member name="M:BagoumLib.Mathematics.BMath.Lerp(System.Double,System.Double,System.Double)">
+            <summary>
+            Lerp between a and b with t as a controller (clamped to [0, 1]).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.BMath.Lerp(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Lerp between `a` and `b` (clamped) based on `controller` being between `low` and `high`.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Mathematics.BMath.Lerp(System.Single,System.Single,System.Single)">
             <summary>
             Lerp between a and b with t as a controller (clamped to [0, 1]).
@@ -340,6 +350,37 @@
         <member name="M:BagoumLib.Mathematics.BMath.Mod(System.Single,System.Numerics.Vector3)">
             <summary>
             Element-wise <see cref="M:BagoumLib.Mathematics.BMath.Mod(System.Single,System.Single)"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.BMath.Smoothstep(System.Single,System.Single,System.Single)">
+            <summary>
+            HLSL smoothstep. Return a smoothed value of Ratio.
+            WARNING: Unity's Mathf.Smoothstep returns something different.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.BMath.Ratio(System.Double,System.Double,System.Double)">
+            <summary>
+            Returns (x - a) / (b - a); ie. t such that LerpUnclamped(a, b, t) = x.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.BMath.RatioC(System.Single,System.Single,System.Single)">
+            <summary>
+            Returns (x - a) / (b - a) clamped to (0, 1).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.BMath.Sinc(System.Double)">
+            <summary>
+            =sin(pi*x)/(pi*x)
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.BMath.Cis(System.Double)">
+            <summary>
+            =e^ix
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.BMath.Cis(System.Double,System.Double,System.Double)">
+            <summary>
+            =amp * e^2ipi*freq*x
             </summary>
         </member>
         <member name="M:BagoumLib.Mathematics.BMath.GetClosestAroundBound(System.Single,System.Single,System.Single)">
@@ -423,6 +464,11 @@
         <member name="M:BagoumLib.Mathematics.Easers.EIOSine(System.Single)">
             <summary>
             Sine easer (slow at beginning and end).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.DEOutSine(System.Single)">
+            <summary>
+            Derivative of <see cref="M:BagoumLib.Mathematics.Easers.EOutSine(System.Single)"/>.
             </summary>
         </member>
         <member name="M:BagoumLib.Mathematics.Easers.EInQuad(System.Single)">
@@ -688,6 +734,11 @@
         <member name="P:BagoumLib.Cancellation.Cancellable.Token">
             <inheritdoc/>
         </member>
+        <member name="M:BagoumLib.Cancellation.Cancellable.Replace(BagoumLib.Cancellation.Cancellable@)">
+            <summary>
+            Cancel a token, and then replace it with a new one.
+            </summary>
+        </member>
         <member name="T:BagoumLib.Cancellation.JointCancellable">
             <summary>
             A cancellable token that is cancelled when its parent is cancelled or it is locally cancelled (via <see cref="M:BagoumLib.Cancellation.JointCancellable.Cancel(System.Int32)"/>).
@@ -757,6 +808,24 @@
             Create a cancellee from two parents. If either is null, the other will be directly returned.
             </summary>
         </member>
+        <member name="T:BagoumLib.Cancellation.MinCancellee">
+            <summary>
+            A cancel token that is cancelled when both of its parents are cancelled.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Cancellation.MinCancellee.#ctor(BagoumLib.Cancellation.ICancellee,BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            A cancel token that is cancelled when both of its parents are cancelled.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Cancellation.MinCancellee.CancelLevel">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.MinCancellee.From(BagoumLib.Cancellation.ICancellee,BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Create a cancellee from two parents. If either is null, the other will be directly returned.
+            </summary>
+        </member>
         <member name="T:BagoumLib.Cancellation.StrongCancellee">
             <summary>
             A cancellee that proxies a source by treating soft cancellations as no-cancellation.
@@ -814,6 +883,11 @@
         <member name="P:BagoumLib.Cancellation.ITokenized.Tokens">
             <summary>
             Set of disposable tokens to be disposed when <see cref="M:System.IDisposable.Dispose"/> is called.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Cancellation.ITokenized.AddToken(System.IDisposable)">
+            <summary>
+            Add a token to <see cref="P:BagoumLib.Cancellation.ITokenized.Tokens"/>.
             </summary>
         </member>
         <member name="T:BagoumLib.Culture.LocalizationRendering">
@@ -1143,6 +1217,12 @@
             Number of elements in the list. Note that this is bounded by the initialized size.
             </summary>
         </member>
+        <member name="P:BagoumLib.DataStructures.CircularList`1.TotalAdds">
+            <summary>
+            The total number of items that were added to the list. Since old items are overwritten,
+             only the items in the range [TotalAdds-Count,TotalAdds) are accessible.
+            </summary>
+        </member>
         <member name="M:BagoumLib.DataStructures.CircularList`1.#ctor(System.Int32)">
             <summary>
             Create a circular list.
@@ -1161,14 +1241,24 @@
             <param name="ii">Index from end of container. Note this should be 1 to get the last element in the container.</param>
             <returns></returns>
         </member>
+        <member name="M:BagoumLib.DataStructures.CircularList`1.TrueIndex(System.Int32)">
+            <summary>
+            Get the ii'th added element. If the ii'th added element has not been overwritten,
+             then this is equivalent to indexing into an unbounded array holding the added values at index ii.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.CircularList`1.System#Collections#Generic#IReadOnlyList{T}#Item(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CircularList`1.RelativeIndex(System.Int32)">
+            <summary>
+            Retrieve the (size-index)'th most recently added element.
+            <br/>Eg. ii=0 is the oldest element still in the list; ii=Count-1 is the newest element.
+            </summary>
+        </member>
         <member name="M:BagoumLib.DataStructures.CircularList`1.Clear">
             <summary>
             Clear all emenets in the container.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.DataStructures.CircularList`1.Item(System.Int32)">
-            <summary>
-            Retrieve the (size-index)'th most recently added element.
             </summary>
         </member>
         <member name="M:BagoumLib.DataStructures.CircularList`1.GetEnumerator">
@@ -1216,6 +1306,31 @@
         </member>
         <member name="M:BagoumLib.DataStructures.CompactingArray`1.Empty">
             <inheritdoc cref="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Empty"/>
+        </member>
+        <member name="T:BagoumLib.DataStructures.Continuation`2">
+            <summary>
+            An object of some type paired with a function that converts it to a known type.
+            </summary>
+            <typeparam name="B">A base type for the underlying object.</typeparam>
+            <typeparam name="U">The known type that is the result of the continuation.</typeparam>
+        </member>
+        <member name="M:BagoumLib.DataStructures.Continuation`2.Realize">
+            <summary>
+            Run the continuation on the underlying object.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.Continuation`2.Extract">
+            <summary>
+            Get the underlying value in a base type.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.Continuation`2.Typed`1.Realize">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.Continuation`2.Of``1(``0,System.Func{``0,`1})">
+            <summary>
+            Create a <see cref="T:BagoumLib.DataStructures.Continuation`2"/> for some data.
+            </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.CoroutineType">
             <summary>
@@ -1657,6 +1772,11 @@
         <member name="M:BagoumLib.DataStructures.JointDisposable.Dispose">
             <inheritdoc/>
         </member>
+        <member name="M:BagoumLib.DataStructures.JointDisposable.MaybeJoint(System.IDisposable,System.IDisposable)">
+            <summary>
+            Create a <see cref="T:BagoumLib.DataStructures.JointDisposable"/> if `b` is nonnull. Otherwise, return `a`.
+            </summary>
+        </member>
         <member name="T:BagoumLib.DataStructures.SinglyLinkedList`1">
             <summary>
             A data structure containing a value and a nullable pointer to a continuation.
@@ -1837,6 +1957,74 @@
              or if the interrupting process itself was cancelled.
             </summary>
         </member>
+        <member name="T:BagoumLib.Events.ArrayOverlapperEvent`1">
+            <summary>
+            An event that receives arrays of a fixed size, and outputs overlapping arrays of that same size.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.ArrayOverlapperEvent`1.BlockSize">
+            <summary>
+            The number of elements that will be aggregated in each chunk of data.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.ArrayOverlapperEvent`1.EvictionIndices">
+            <summary>
+            The number of indices that will be evicted every time the event yields a new value.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.ArrayOverlapperEvent`1.EvictionRate">
+            <summary>
+            The percentage of the block that will be evicted every time the event yields a new value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.ArrayOverlapperEvent`1.OnNext(`0[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.ArrayOverlapperEvent`1.OnCompleted">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.ArrayOverlapperEvent`1.OnError(System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.ArrayOverlapperEvent`1.Subscribe(System.IObserver{`0[]})">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Events.ChunkerEvent`1">
+            <summary>
+            An event that receives items and outputs them in non-overlapping arrays of length <see cref="P:BagoumLib.Events.ChunkerEvent`1.BlockSize"/>.
+            <br/>Note that the final partial chunk will not be output when <see cref="M:BagoumLib.Events.ChunkerEvent`1.OnCompleted"/> is called, unless
+            <see cref="F:BagoumLib.Events.ChunkerEvent`1.pushOnCompletion"/> is set to true, in which case it will be output with the rest of the array
+             set to `default`.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.ChunkerEvent`1.NextChunk">
+            <summary>
+            The in-process chunk of data that will be issued to observers
+             when <see cref="P:BagoumLib.Events.ChunkerEvent`1.AllotedIndicies"/> equals <see cref="P:BagoumLib.Events.ChunkerEvent`1.BlockSize"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.ChunkerEvent`1.BlockSize">
+            <summary>
+            The number of elements that will be aggregated in each chunk of data.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.ChunkerEvent`1.AllotedIndicies">
+            <summary>
+            The number of indices that have been set in <see cref="P:BagoumLib.Events.ChunkerEvent`1.NextChunk"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.ChunkerEvent`1.OnNext(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.ChunkerEvent`1.OnCompleted">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.ChunkerEvent`1.OnError(System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.ChunkerEvent`1.Subscribe(System.IObserver{`0[]})">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.Events.ConstantObservable`1">
             <summary>
             An observable with an unchanging value.
@@ -1854,38 +2042,57 @@
         <member name="M:BagoumLib.Events.ConstantObservable`1.Subscribe(System.IObserver{`0})">
             <inheritdoc/>
         </member>
-        <member name="T:BagoumLib.Events.DisturbedEvented`1">
+        <member name="T:BagoumLib.Events.IDisturbable`1">
+            <summary>
+            <see cref="T:BagoumLib.Events.DisturbedEvented`2"/> with only the first type parameter (type of disturbance effect).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.IDisturbable`1.AddDisturbance(BagoumLib.Events.IBObservable{`0})">
+            <summary>
+            Add a disturbance.
+            Whenver the disturbance receives a new value, this aggregate will update as well.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.IDisturbable`1.AddConst(`0)">
+            <summary>
+            Add a constant value disturbance.
+            This aggregate will also update immediately.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.Events.DisturbedEvented`2">
             <summary>
             DisturbedEvented is a wrapper around a core value (eg. a location) that can be modified by any number
              of disturbance effects (eg. shake effects) that all use the same aggregation function (eg. addition).
-            <br/>Note that <see cref="M:BagoumLib.Events.DisturbedEvented`1.get_Value"/> and the event listeners
-             will return the total value, whereas <see cref="M:BagoumLib.Events.DisturbedEvented`1.set_Value(`0)"/> will set the core value.
-            <br/>Use <see cref="M:BagoumLib.Events.DisturbedEvented`1.get_BaseValue"/> to get the core value. <see cref="M:BagoumLib.Events.DisturbedEvented`1.set_BaseValue(`0)"/>
+            <br/>Note that <see cref="M:BagoumLib.Events.DisturbedEvented`2.get_Value"/> and the event listeners
+             will return the total value, whereas <see cref="M:BagoumLib.Events.DisturbedEvented`2.set_Value(`1)"/> will set the core value.
+            <br/>Use <see cref="M:BagoumLib.Events.DisturbedEvented`2.get_BaseValue"/> to get the core value. <see cref="M:BagoumLib.Events.DisturbedEvented`2.set_BaseValue(`1)"/>
              will also set the core value.
             <br/>Note that, like <see cref="T:BagoumLib.Events.Evented`1"/>, new subscribers will be sent the current value immediately.
             </summary>
+            <typeparam name="D">Type of disturbance effect.</typeparam>
+            <typeparam name="V">Type of output value.</typeparam>
         </member>
-        <member name="P:BagoumLib.Events.DisturbedEvented`1.BaseValue">
+        <member name="P:BagoumLib.Events.DisturbedEvented`2.BaseValue">
             <summary>
             Initial (aggregation seed) value.
             </summary>
         </member>
-        <member name="P:BagoumLib.Events.DisturbedEvented`1.Value">
+        <member name="P:BagoumLib.Events.DisturbedEvented`2.Value">
             <summary>
-            Aggregate value. Note that the set operator modifies <see cref="P:BagoumLib.Events.DisturbedEvented`1.BaseValue"/>.
+            Aggregate value. Note that the set operator modifies <see cref="P:BagoumLib.Events.DisturbedEvented`2.BaseValue"/>.
             </summary>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.#ctor(`0)">
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.#ctor(`1)">
             <summary>
             The initial value is published to onSet.
             </summary>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.op_Implicit(BagoumLib.Events.DisturbedEvented{`0})~`0">
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.op_Implicit(BagoumLib.Events.DisturbedEvented{`0,`1})~`1">
             <summary>
             Get the aggregate value.
             </summary>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.Fold(`0,`0)">
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.Fold(`1,`0)">
             <summary>
             Function that aggregates values.
             </summary>
@@ -1893,53 +2100,102 @@
             <param name="next">Next value to fold into acc</param>
             <returns></returns>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.AddDisturbance(BagoumLib.Events.IBObservable{`0})">
-            <summary>
-            Add a disturbance.
-            Whenver the disturbance receives a new value, this aggregate will update as well.
-            </summary>
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.AddDisturbance(BagoumLib.Events.IBObservable{`0})">
+            <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.AddConst(`0)">
-            <summary>
-            Add a constant value disturbance.
-            This aggregate will also update immediately.
-            </summary>
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.AddConst(`0)">
+            <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.CopyDisturbances(BagoumLib.Events.DisturbedEvented{`0})">
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.CopyDisturbances(BagoumLib.Events.DisturbedEvented{`0,`1})">
             <summary>
-            Copy the disturbances from another <see cref="T:BagoumLib.Events.DisturbedEvented`1"/>.
+            Copy the disturbances from another <see cref="T:BagoumLib.Events.DisturbedEvented`2"/>.
             The copied disturbances will be bound by the same <see cref="T:System.IDisposable"/>s as the original.
             </summary>
             <param name="src"></param>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.ClearDisturbances">
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.ClearDisturbances">
             <summary>
             Remove all additional provided values. 
             </summary>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.Subscribe(System.IObserver{`0})">
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.Subscribe(System.IObserver{`1})">
             <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.OnNext(`0)">
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.OnNext(`1)">
             <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.OnError(System.Exception)">
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.OnError(System.Exception)">
             <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Events.DisturbedEvented`1.OnCompleted">
+        <member name="M:BagoumLib.Events.DisturbedEvented`2.OnCompleted">
             <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Events.DisturbedFold`1">
             <summary>
             An aggregator that does a fold (reduction) over all values using the provided monoidal addition function.
             </summary>
-            <typeparam name="T"></typeparam>
         </member>
         <member name="M:BagoumLib.Events.DisturbedFold`1.#ctor(`0,System.Func{`0,`0,`0})">
             <summary>
             </summary>
         </member>
         <member name="M:BagoumLib.Events.DisturbedFold`1.Fold(`0,`0)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Events.DisturbedFold`2">
+            <summary>
+            An aggregator that does a fold (reduction) over all values using the provided combination function.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedFold`2.#ctor(`1,System.Func{`1,`0,`1})">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedFold`2.Fold(`1,`0)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Events.IAggregator`1">
+            <summary>
+            Interface for elements that can be combined in <see cref="T:BagoumLib.Events.DisturbedAggregation`1"/>.
+            </summary>
+            <typeparam name="D"></typeparam>
+        </member>
+        <member name="M:BagoumLib.Events.IAggregator`1.FoldOnto(`0)">
+            <summary>
+            Fold this value onto the accumulated value.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.Events.Aggregator`2">
+            <summary>
+            An element that can be combined in <see cref="T:BagoumLib.Events.DisturbedAggregation`1"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.Aggregator`2.Data">
+            <summary>
+            Data contained in this element.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.Aggregator`2.Folder">
+            <summary>
+            Method for combining this element's data with the accumulator.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.Aggregator`2.#ctor(`1,System.Func{`0,`1,`0})">
+            <inheritdoc cref="T:BagoumLib.Events.Aggregator`2"/>
+        </member>
+        <member name="M:BagoumLib.Events.Aggregator`2.FoldOnto(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Events.DisturbedAggregation`1">
+            <summary>
+            An aggregator that folds functions of type T->T onto a base value of type T.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedAggregation`1.#ctor(`0)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.DisturbedAggregation`1.Fold(`0,BagoumLib.Events.IAggregator{`0})">
             <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Events.OverrideEvented`1">
@@ -2031,19 +2287,20 @@
             An observable that tracks its last published value.
             </summary>
         </member>
-        <member name="P:BagoumLib.Events.IBObservable`1.LastPublished">
+        <member name="P:BagoumLib.Events.IBObservable`1.HasValue">
             <summary>
-            The last value published by this observable.
+            Whether or not this observable has ever published a vlaue.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.IBObservable`1.Value">
+            <summary>
+            The last published value of this observable.
+            <br/>Undefined behavior if <see cref="P:BagoumLib.Events.IBObservable`1.HasValue"/> is false.
             </summary>
         </member>
         <member name="T:BagoumLib.Events.ICObservable`1">
             <summary>
             An observable that has a "current" value.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Events.ICObservable`1.Value">
-            <summary>
-            The current value of this observable. <see cref="P:BagoumLib.Events.IBObservable`1.LastPublished"/> always points to this.
             </summary>
         </member>
         <member name="T:BagoumLib.Events.IBSubject`2">
@@ -2071,7 +2328,10 @@
             A subject that observes elements of type T, maps them to type U, and publishes mapped elements to observers.
             </summary>
         </member>
-        <member name="P:BagoumLib.Events.Event`2.LastPublished">
+        <member name="P:BagoumLib.Events.Event`2.HasValue">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Events.Event`2.Value">
             <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Events.Event`2.#ctor(System.Func{`0,`1})">
@@ -2119,6 +2379,49 @@
             Clear the accumulated values in Published.
             </summary>
         </member>
+        <member name="T:BagoumLib.Events.Evented`2">
+            <summary>
+            A subject that observes elements of type T, maps them to type U, and publishes mapped elements to observers.
+            <br/>New subscribers are sent the existing value as well as any new values.
+            <br/>Always has a current value.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.Evented`2.Value">
+            <inheritdoc />
+        </member>
+        <member name="P:BagoumLib.Events.Evented`2.OnChange">
+            <summary>
+            Event that fires when the value changes. You can subscribe to this directly if you do not want
+             to receive the existing value on subscription.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.Evented`2.#ctor(`1,System.Func{`0,`1})">
+            <summary>
+            The initial value is published to onSet.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.Evented`2.Subscribe(System.IObserver{`1})">
+            <inheritdoc />
+        </member>
+        <member name="M:BagoumLib.Events.Evented`2.OnNext(`0)">
+            <inheritdoc />
+        </member>
+        <member name="M:BagoumLib.Events.Evented`2.OnError(System.Exception)">
+            <inheritdoc />
+        </member>
+        <member name="M:BagoumLib.Events.Evented`2.OnCompleted">
+            <inheritdoc />
+        </member>
+        <member name="M:BagoumLib.Events.Evented`2.PublishIfNotSame(`0)">
+            <summary>
+            Set a new value only if it is not equal to the existing value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.Evented`2.op_Implicit(BagoumLib.Events.Evented{`0,`1})~`1">
+            <summary>
+            Gets <see cref="P:BagoumLib.Events.Evented`2.Value"/>.
+            </summary>
+        </member>
         <member name="T:BagoumLib.Events.Evented`1">
             <summary>
             A wrapper around a value that publishes an event whenever it is set.
@@ -2127,34 +2430,14 @@
             <br/>This class can be serialized and deserialized in Newtonsoft.JSON.
             </summary>
         </member>
-        <member name="P:BagoumLib.Events.Evented`1.Value">
-            <inheritdoc />
-        </member>
         <member name="M:BagoumLib.Events.Evented`1.#ctor(`0)">
             <summary>
             The initial value is published to onSet.
             </summary>
         </member>
-        <member name="M:BagoumLib.Events.Evented`1.Subscribe(System.IObserver{`0})">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Events.Evented`1.OnNext(`0)">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Events.Evented`1.OnError(System.Exception)">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Events.Evented`1.OnCompleted">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Events.Evented`1.PublishIfNotSame(`0)">
-            <summary>
-            Set a new value only if it is not equal to the existing value.
-            </summary>
-        </member>
         <member name="M:BagoumLib.Events.Evented`1.op_Implicit(BagoumLib.Events.Evented{`0})~`0">
             <summary>
-            Gets <see cref="P:BagoumLib.Events.Evented`1.Value"/>.
+            Gets <see cref="P:BagoumLib.Events.Evented`2.Value"/>.
             </summary>
         </member>
         <member name="T:BagoumLib.Events.IdealOverride`1">
@@ -2205,7 +2488,8 @@
             <summary>
             An event wrapper around a zero-argument function whose value may change unpredictably.
             <br/>This wrapper will only publish return values of the wrapped function when
-             one of the provided triggers is updated.
+             one of the provided triggers is updated or <see cref="M:BagoumLib.Events.LazyEvented`1.Recompute"/> is called.
+            <br/>If the value does not change, this wrapper will not publish anything.
             </summary>
         </member>
         <member name="P:BagoumLib.Events.LazyEvented`1.Value">
@@ -2309,10 +2593,29 @@
             A disposable that doesn't do anything.
             </summary>
         </member>
+        <member name="F:BagoumLib.Events.NullDisposable.Default">
+            <summary>
+            Singleton instance of <see cref="T:BagoumLib.Events.NullDisposable"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.NullDisposable.Dispose">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.Events.NullEvent`1">
             <summary>
             An event that ignores subscriptions and values.
             </summary>
+        </member>
+        <member name="F:BagoumLib.Events.NullEvent`1.Default">
+            <summary>
+            Singleton instance of <see cref="T:BagoumLib.Events.NullEvent`1"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.NullEvent`1.OnNext(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.NullEvent`1.Subscribe(System.IObserver{`0})">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Events.PushLerper`1">
             <summary>
@@ -2408,6 +2711,9 @@
             An event that will only dispatch listeners the first time it receives
              an OnNext call, and then noop until it is reset.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Events.TriggerEvent`1.OnNext(`0)">
+            <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Events.TriggerEvent`1.Reset">
             <summary>
@@ -2831,6 +3137,34 @@
             Set this to true to use .ToString() if the value cannot be printed.
             </summary>
         </member>
+        <member name="T:BagoumLib.Expressions.ReplaceParameterVisitor">
+            <summary>
+            An expression visitor that replaces a parameter with an arbitrary expression.
+            <br/>The resulting tree may not be sound if the expression is of a different type
+             or the parameter is written to and the expression is not writeable.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.ReplaceParameterVisitor.#ctor(System.Linq.Expressions.ParameterExpression,System.Linq.Expressions.Expression)">
+            <summary>
+            An expression visitor that replaces a parameter with an arbitrary expression.
+            <br/>The resulting tree may not be sound if the expression is of a different type
+             or the parameter is written to and the expression is not writeable.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.ReplaceParameterVisitor.VisitParameter(System.Linq.Expressions.ParameterExpression)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Expressions.HasUnboundParameterVisitor">
+            <summary>
+            Checks if a expression tree has any parameters not bound in a Block.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.HasUnboundParameterVisitor.VisitParameter(System.Linq.Expressions.ParameterExpression)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Expressions.HasUnboundParameterVisitor.VisitBlock(System.Linq.Expressions.BlockExpression)">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.Expressions.PrintAsParenthesizedVisitor">
             <summary>
             A visitor that transforms the provided expression into a parenthesized expression (only if necessary).
@@ -3188,23 +3522,6 @@
         <member name="M:BagoumLib.Expressions.PrintVisitor.VisitUnary(System.Linq.Expressions.UnaryExpression)">
             <inheritdoc />
         </member>
-        <member name="T:BagoumLib.Expressions.ReplaceParameterVisitor">
-            <summary>
-            An expression visitor that replaces a parameter with an arbitrary expression.
-            <br/>The resulting tree may not be sound if the expression is of a different type
-             or the parameter is written to and the expression is not writeable.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Expressions.ReplaceParameterVisitor.#ctor(System.Linq.Expressions.ParameterExpression,System.Linq.Expressions.Expression)">
-            <summary>
-            An expression visitor that replaces a parameter with an arbitrary expression.
-            <br/>The resulting tree may not be sound if the expression is of a different type
-             or the parameter is written to and the expression is not writeable.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Expressions.ReplaceParameterVisitor.VisitParameter(System.Linq.Expressions.ParameterExpression)">
-            <inheritdoc/>
-        </member>
         <member name="T:BagoumLib.Expressions.ITypePrinter">
             <summary>
             An interface that prints a type into a string.
@@ -3218,6 +3535,31 @@
         <member name="T:BagoumLib.Expressions.CSharpTypePrinter">
             <summary>
             Tries really hard to convert a type to its C# representation, eg. "int[]" or "Func&lt;bool, string&gt;".
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Expressions.CSharpTypePrinter.Default">
+            <summary>
+            Default printer with <see cref="P:BagoumLib.Expressions.CSharpTypePrinter.UseSimpleTypeNames"/> = true, <see cref="P:BagoumLib.Expressions.CSharpTypePrinter.PrintTypeNamespace"/> = false.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Expressions.CSharpTypePrinter.UseSimpleTypeNames">
+            <summary>
+            If true, will represent simple system types like int/Int32 as "int" instead of "System.Int32".
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Expressions.CSharpTypePrinter.PrintTypeNamespace">
+            <summary>
+            Whether or not to print the namespace of types.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Expressions.CSharpTypePrinter.tupleTypes">
+            <summary>
+            The non-empty tuple types ordered by arity.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Expressions.CSharpTypePrinter.SimpleTypeNameMap">
+            <summary>
+            Map of simple types, such as int/Int32, to their simple names, such as "int"
             </summary>
         </member>
         <member name="M:BagoumLib.Expressions.CSharpTypePrinter.Print(System.Type)">
@@ -3310,6 +3652,16 @@
              the constructed event is also disposed.
             </summary>
         </member>
+        <member name="M:BagoumLib.Extensions.SqrMagnitude(System.Numerics.Complex)">
+            <summary>
+            Returns the square magnitude of a complex number.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Extensions.Freeze``1(``0)">
+            <summary>
+            Create a delegate that returns a value.
+            </summary>
+        </member>
         <member name="T:BagoumLib.ArrayExtensions">
             <summary>
             Static class providing array extensions
@@ -3361,6 +3713,19 @@
             Make sure the array is sorted from lowest to highest priority.
             </summary>
         </member>
+        <member name="M:BagoumLib.ArrayExtensions.GetAtPriority``1(System.ValueTuple{System.Int32,``0}[],System.Int32)">
+            <summary>
+            Returns the first T such that the associated priority is EQUAL TO the given priority.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ArrayExtensions.SelectInPlace``1(``0[],System.Func{``0,``0})">
+            <summary>
+            Update each element of an array in-place using the mapping function.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ArrayExtensions.SelectInPlace``1(``0[],System.Func{``0,System.Int32,``0})">
+            <inheritdoc cref="M:BagoumLib.ArrayExtensions.SelectInPlace``1(``0[],System.Func{``0,``0})"/>
+        </member>
         <member name="T:BagoumLib.IUnrollable`1">
             <summary>
             An object which has a sequence of values, some of which may themselves be
@@ -3387,6 +3752,16 @@
         <member name="M:BagoumLib.IEnumExtensions.PairSuccessive``1(System.Collections.Generic.IEnumerable{``0},``0)">
             <summary>
             Get successive elements of an enumerable.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.IEnumExtensions.AppendIfNonnull``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Return `arr.Append(next)` if next is nnonnull. Otherwise, return `arr`.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.IEnumExtensions.AppendIfNonnull``1(System.Collections.Generic.IEnumerable{``0},System.Nullable{``0})">
+            <summary>
+            Return `arr.Append(next)` if next is nnonnull. Otherwise, return `arr`.
             </summary>
         </member>
         <member name="M:BagoumLib.IEnumExtensions.Enumerate``1(System.Collections.Generic.IEnumerable{``0})">
@@ -3512,9 +3887,31 @@
             Get the maximum number of consecutive occurences of the given object. 
             </summary>
         </member>
+        <member name="M:BagoumLib.IEnumExtensions.WaitForCompletion``1(System.IObservable{``0})">
+            <summary>
+            Get a task that is set to true when the observable is completed.
+            </summary>
+            <param name="src"></param>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:BagoumLib.IEnumExtensions.WithSubscribe``2(``0,System.IObserver{``1},System.IDisposable@)">
+            <summary>
+            Calls `src.Subscribe` and returns `src`.
+            </summary>
+        </member>
         <member name="T:BagoumLib.ListExtensions">
             <summary>
-            Static class providing extensions for <see cref="T:System.Collections.Generic.List`1"/>
+            Static class providing extensions for <see cref="T:System.Collections.Generic.List`1"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ListExtensions.Pop``1(System.Collections.Generic.List{``0})">
+            <summary>
+            Remove and return the last element of a list.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ListExtensions.SelectInPlace``1(System.Collections.Generic.List{``0},System.Func{``0,``0})">
+            <summary>
+            Update each element of a list in-place using the mapping function.
             </summary>
         </member>
         <member name="M:BagoumLib.ListExtensions.ElementWiseHashCode``1(System.Collections.Generic.IReadOnlyList{``0})">
@@ -3592,6 +3989,12 @@
             For a nested dictionary, set dict[key1][key2] = val. Creates dict[key1] if it does not exist.
             </summary>
         </member>
+        <member name="M:BagoumLib.DictExtensions.AddToList2``3(System.Collections.Generic.Dictionary{``0,System.Collections.Generic.Dictionary{``1,System.Collections.Generic.List{``2}}},``0,``1,``2)">
+            <summary>
+            For a nested dictionary whose values are lists, add an element to the list associated with the given key pair,
+             or create a new list if none are yet associated.
+            </summary>
+        </member>
         <member name="M:BagoumLib.DictExtensions.TryGet2``3(System.Collections.Generic.Dictionary{``0,System.Collections.Generic.Dictionary{``1,``2}},``0,``1,``2@)">
             <summary>
             For a nested dictionary, try to get the value at dict[key1][key2].
@@ -3667,10 +4070,70 @@
             Static class providing extensions for events
             </summary>
         </member>
+        <member name="M:BagoumLib.EventExtensions.Finalize``1(System.IObserver{``0},``0)">
+            <summary>
+            Run `ev.OnNext` and then `ev.OnCompleted`.
+            </summary>
+        </member>
         <member name="M:BagoumLib.EventExtensions.Erase``1(BagoumLib.Events.IBObservable{``0})">
             <summary>
             Get an <see cref="T:System.IObservable`1"/> that is triggered when the source event is triggered,
              but does not carry its value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.EventExtensions.Select``2(BagoumLib.Events.ICObservable{``0},System.Func{``0,``1})">
+            <summary>
+            Create an <see cref="T:BagoumLib.Events.Evented`2"/> that maps the source values into another type.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.Functional.Delayed`1">
+            <summary>
+            A value, or a delayed value.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.Delayed`1.IsConcrete">
+            <summary>
+            True iff this struct is represented by a concrete value.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.Delayed`1.ConcreteValue">
+            <summary>
+            A concrete value. Only valid if <see cref="P:BagoumLib.Functional.Delayed`1.IsConcrete"/> is true.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.Delayed`1.DelayedValue">
+            <summary>
+            A delayed value. Only valid if <see cref="P:BagoumLib.Functional.Delayed`1.IsConcrete"/> is false.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.Delayed`1.Value">
+            <summary>
+            Retrieves the concrete value (if provided), else realizes the delayed value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.Delayed`1.#ctor(`0)">
+            <summary>
+            Create a Delayed struct from a concrete value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.Delayed`1.#ctor(System.Func{`0})">
+            <summary>
+            Create a Delayed struct from a delayed value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.Delayed`1.FMap``1(System.Func{`0,``0})">
+            <summary>
+            Functor map over delayed values.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.Delayed`1.op_Implicit(`0)~BagoumLib.Functional.Delayed{`0}">
+            <summary>
+            Create a Delayed struct from a concrete value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.Delayed`1.op_Implicit(System.Func{`0})~BagoumLib.Functional.Delayed{`0}">
+            <summary>
+            Create a Delayed struct from a delayed value.
             </summary>
         </member>
         <member name="T:BagoumLib.Functional.Either`2">
@@ -3824,6 +4287,11 @@
             If the Either is a value (left), return it. If the Either is a delayed value (right), resolve it.
             </summary>
         </member>
+        <member name="M:BagoumLib.Functional.Helpers.LeftOrRight``3(BagoumLib.Functional.Either{``0,``1})">
+            <summary>
+            When both sides of an Either derive from a base type, return the left or right value as the base type.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Functional.Helpers.ValueOrSNull``1(BagoumLib.Functional.Maybe{``0})">
             <summary>
             Get the value if it is present, otherwise get null.
@@ -3937,6 +4405,92 @@
         </member>
         <member name="M:BagoumLib.Functional.Maybe`1.op_Implicit(`0)~BagoumLib.Functional.Maybe{`0}">
             <inheritdoc cref="M:BagoumLib.Functional.Maybe`1.Of(`0)"/>
+        </member>
+        <member name="T:BagoumLib.Functional.OneOf`3">
+            <summary>
+            A value that is one of three possible types.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.OneOf`3.Index">
+            <summary>
+            The index of the correct type (0=A, 1=B, 2=C).
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.OneOf`3.IsA">
+            <summary>
+            True iff the value is of type A.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.OneOf`3.IsB">
+            <summary>
+            True iff the value is of type B.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.OneOf`3.IsC">
+            <summary>
+            True iff the value is of type C.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.OneOf`3.ValA">
+            <summary>
+            The A-value of this type. Only valid if <see cref="P:BagoumLib.Functional.OneOf`3.IsA"/> is true.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.OneOf`3.ValB">
+            <summary>
+            The B-value of this type. Only valid if <see cref="P:BagoumLib.Functional.OneOf`3.IsB"/> is true.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.OneOf`3.ValC">
+            <summary>
+            The C-value of this type. Only valid if <see cref="P:BagoumLib.Functional.OneOf`3.IsC"/> is true.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.#ctor(`0)">
+            <summary>
+            Create a <see cref="T:BagoumLib.Functional.OneOf`3"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.#ctor(`1)">
+            <summary>
+            Create a <see cref="T:BagoumLib.Functional.OneOf`3"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.#ctor(`2)">
+            <summary>
+            Create a <see cref="T:BagoumLib.Functional.OneOf`3"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.Equals(BagoumLib.Functional.OneOf{`0,`1,`2})">
+            <summary>
+            Equality operator. Tests that both objects have the same left/right orientation, and that their valid values are the same.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.op_Equality(BagoumLib.Functional.OneOf{`0,`1,`2}@,BagoumLib.Functional.OneOf{`0,`1,`2}@)">
+            <inheritdoc cref="M:BagoumLib.Functional.OneOf`3.Equals(BagoumLib.Functional.OneOf{`0,`1,`2})"/>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.op_Inequality(BagoumLib.Functional.OneOf{`0,`1,`2}@,BagoumLib.Functional.OneOf{`0,`1,`2}@)">
+            <summary>
+            Inverted equality operator.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.op_Implicit(`0)~BagoumLib.Functional.OneOf{`0,`1,`2}">
+            <inheritdoc cref="M:BagoumLib.Functional.OneOf`3.#ctor(`0)"/>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.op_Implicit(`1)~BagoumLib.Functional.OneOf{`0,`1,`2}">
+            <inheritdoc cref="M:BagoumLib.Functional.OneOf`3.#ctor(`1)"/>
+        </member>
+        <member name="M:BagoumLib.Functional.OneOf`3.op_Implicit(`2)~BagoumLib.Functional.OneOf{`0,`1,`2}">
+            <inheritdoc cref="M:BagoumLib.Functional.OneOf`3.#ctor(`2)"/>
         </member>
         <member name="T:BagoumLib.LogLevel">
             <summary>
@@ -4305,8 +4859,16 @@
             <summary>
             Get the func type typeof(Func&lt;,,,,...&gt;), where arity is the number of generic arguments.
             </summary>
-            <param name="arity"></param>
-            <returns></returns>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.GetActionType(System.Int32)">
+            <summary>
+            Get the action type typeof(Action&lt;,,,,...&gt;), where arity is the number of generic arguments.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.MakeFuncType(System.Type[])">
+            <summary>
+            Make the func type typeof(Func&lt;A,B,C,...&gt;).
+            </summary>
         </member>
         <member name="M:BagoumLib.Reflection.ReflectionUtils.GetTupleType(System.Int32)">
             <summary>
@@ -4362,6 +4924,11 @@
             <param name="field">Field name</param>
             <param name="instance">True if this is an instance field</param>
         </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.GetEnumVals``1">
+            <summary>
+            Get all the values of the enum `T`.
+            </summary>
+        </member>
         <member name="T:BagoumLib.ServiceLocator">
             <summary>
             A store that allows registering and locating services at runtime.
@@ -4409,6 +4976,573 @@
             <summary>
             Find a service of type T, or throw an exception.
             </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.IBand.Src">
+            <summary>
+            Beat detector containing this band.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.IBand.LowLimit">
+            <summary>
+            Lower frequency limit of the band.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.IBand.HighLimit">
+            <summary>
+            Higher frequency limit of the band.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.PowerBand">
+            <summary>
+            Data for a frequency band that reads instantaneous power data and smears/derivates it.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.PowerBand.LogPowerHistory">
+            <summary>
+            History of log-power signals. Note that the sampling rate of this stream is <see cref="P:BagoumLib.SignalProcessing.BeatDetector.PowerSampleRate"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.PowerBand.DerivativeHistory">
+            <summary>
+            History of d/dt of log-power. Note that the sampling rate of this stream is <see cref="P:BagoumLib.SignalProcessing.BeatDetector.PowerSampleRate"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.PowerBand.PowerN">
+            <summary>
+            Size of each convolution block for power signal analysis.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.PowerBand.Src">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.PowerBand.LowLimit">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.PowerBand.HighLimit">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.PowerBand.OnCompleted">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.PowerBand.OnError(System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.PowerBand.OnNext(System.Double)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.PowerBand.LogPower(System.Double)">
+            <summary>
+            Get the logarithm of a power. This function is adjusted to return 0 for low powers.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.SignalBand">
+            <summary>
+            Data for a frequency band that reads amplitude signals from the time domain and smears them.
+             New data can be provided via OnNext, then read from either <see cref="P:BagoumLib.SignalProcessing.SignalBand.History"/>
+            or <see cref="P:BagoumLib.SignalProcessing.SignalBand.DerivativeHistory"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.SignalBand.History">
+            <summary>
+            History of smeared amplitude signals.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.SignalBand.DerivativeHistory">
+            <summary>
+            History of amplitude derivatives.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.SignalBand.Src">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.SignalBand.LowLimit">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.SignalBand.HighLimit">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.SignalBand.OnCompleted">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.SignalBand.OnError(System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.SignalBand.OnNext(System.Numerics.Complex[])">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.SampleRate">
+            <summary>
+            Sample rate of the original audio file.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.PowerSampleRate">
+            <summary>
+            Sampling rate of power signals. This is much lower than the raw audio sampling rate
+            (eg. for 44100Hz audio, N=2048, this sampling rate is in the range 20-100.)
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.NSignal">
+            <summary>
+            Number of samples taken from the original audio stream for each <see cref="T:BagoumLib.SignalProcessing.SignalBand"/> input.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.HzPerSignalBucket">
+            <summary>
+            Width of each FFT bucket in hertz for each <see cref="T:BagoumLib.SignalProcessing.SignalBand"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.NPower">
+            <summary>
+            Number of samples taken from the original audio stream for each <see cref="T:BagoumLib.SignalProcessing.PowerBand"/> input.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.HzPerPowerBucket">
+            <summary>
+            Width of each FFT bucket in hertz for each <see cref="T:BagoumLib.SignalProcessing.PowerBand"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.NSignalBands">
+            <summary>
+            Number of <see cref="T:BagoumLib.SignalProcessing.SignalBand"/>s.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.NPowerBands">
+            <summary>
+            Number of <see cref="T:BagoumLib.SignalProcessing.PowerBand"/>s.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.PowerOverlapFactor">
+            <summary>
+            Where x is the amount of overlap between successive power samples, this is 1/(1-x).
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.NHistory">
+            <summary>
+            Number of historical records kept for energy comparison in <see cref="T:BagoumLib.SignalProcessing.SignalBand"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.SigBands">
+            <summary>
+            Signal bands.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.PowerBands">
+            <summary>
+            Power bands.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.FFT">
+            <summary>
+            FFT provider.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.LastReadSignalSample">
+            <summary>
+            The index of the last read sample from the sample data for <see cref="T:BagoumLib.SignalProcessing.SignalBand"/>.
+            <br/>Note that this may be greater than any band-specific convolution data since convolutions are delayed.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.BeatDetector.LastReadPowerSample">
+            <summary>
+            The index of the last read sample from the sample data for <see cref="T:BagoumLib.SignalProcessing.PowerBand"/>.
+            <br/>Note that this may be greater than any band-specific convolution data since convolutions are delayed.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.BeatDetector.Update(System.Collections.Generic.IReadOnlyList{System.Single},System.Int32,System.Double[])">
+            <summary>
+            Update the beat detector with new samples.
+            </summary>
+            <param name="dataProvider">Provider of sample data.</param>
+            <param name="maxIndex">Max index (exclusive) that can be sampled.</param>
+            <param name="powers">Array in which to store the most recent power data (of length NPower).</param>
+            <returns>True iff samples were read from the provider.</returns>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.ChunkConvolver">
+            <summary>
+            Convolve two sequences in the time domain together, where the first sequence is a series of chunks.
+            <br/>Extra information at the start and end of the resulting convolution is discarded.
+            <br/>Note: the Subscribe repeatedly yields the same underlying array. The yielded array must be processed
+             before calling OnNext.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.ChunkConvolver.Completion">
+            <summary>
+            Task that can be used in place of subscribing to <see cref="M:BagoumLib.SignalProcessing.ChunkConvolver.OnCompleted"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.ChunkConvolver.#ctor(BagoumLib.SignalProcessing.IFFT,System.Int32,System.Numerics.Complex[],System.Boolean)">
+            <summary>
+            </summary>
+            <param name="fft">FFT provider.</param>
+            <param name="srcChunkLen">The length of each block provided by <see cref="M:BagoumLib.SignalProcessing.ChunkConvolver.OnNext(System.Numerics.Complex[])"/>.</param>
+            <param name="resp">Response filter. The length must be a power of two.</param>
+            <param name="useCorrelation">If true, computes a correlation instead of a convolution.
+            (Note that a convolution is symmetric, but a correlation is not. This computes src*resp^.)</param>
+            <returns>A series of chunks of convolved data, each of length <see cref="F:BagoumLib.SignalProcessing.ChunkConvolver.srcChunkLen"/>.</returns>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.ChunkConvolver.OnNext(System.Numerics.Complex[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.ChunkConvolver.OnCompleted">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.ChunkConvolver.OnError(System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.ChunkConvolver.Subscribe(System.IObserver{System.Numerics.Complex[]})">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.FastFourierTransform">
+            <summary>
+            Performs fast Fourier transform (FFT).
+            </summary>
+        </member>
+        <member name="P:BagoumLib.SignalProcessing.FastFourierTransform.Length">
+            <summary>
+            The length of the FFT.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FastFourierTransform.#ctor(System.Int32)">
+            <summary>
+            Initializes the FFT with the given length.
+            </summary>
+            <param name="length">The length of the FFT.</param>
+            <remarks>
+            The FFT length must be a power of two.
+            </remarks>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FastFourierTransform.Forward(System.Span{System.Numerics.Complex})">
+            <summary>
+            Performs forward FFT in-place.
+            </summary>
+            <param name="samples">The samples to be transformed.</param>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FastFourierTransform.InverseScaled(System.Span{System.Numerics.Complex})">
+            <summary>
+            Performs inverse FFT in-place.
+            </summary>
+            <param name="spectrum">The spectrum to be transformed.</param>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FastFourierTransform.Inverse(System.Span{System.Numerics.Complex})">
+            <summary>
+            Performs inverse FFT in-place.
+            </summary>
+            <param name="spectrum">The spectrum to be transformed.</param>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.IFFT">
+            <summary>
+            An algorithm providing an FFT implementation.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.IFFT.DoFFT(System.Numerics.Complex[],System.Int32)">
+            <summary>
+            Given a set of data in bit-reversed order,
+            find the FFT of that data in proper order in-place.
+            <br/>Note that sign=-1 is the forward FFT and sign=1 is the inverse FFT.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.OouraFFT">
+            <summary>
+            FFT implementation based on Takuya Ooura's FFT library.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.OouraFFT.DoFFT(System.Numerics.Complex[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.CombFFT">
+            <summary>
+            Comb-based implementation of FFT.
+            (Demonstration purposes only; this is significantly slower than <see cref="T:BagoumLib.SignalProcessing.OouraFFT"/>.)
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.CombFFT.DoFFT(System.Numerics.Complex[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.RecursiveFFT">
+            <summary>
+            Recursion-based implementation of FFT.
+            (Demonstration purposes only; this is significantly slower than <see cref="T:BagoumLib.SignalProcessing.OouraFFT"/>.)
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.RecursiveFFT.DoFFT(System.Numerics.Complex[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.FFTHelpers">
+            <summary>
+            Helper functions for Fast Fourier Transforms.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.DivideByN(System.Numerics.Complex[])">
+            <summary>
+            Divide each element by the length of the array. Required for FFT normalization.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.Conjugate(System.Numerics.Complex[])">
+            <summary>
+            Replace each element in the array with its complex conjuate.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.FFTToFreq(BagoumLib.SignalProcessing.IFFT,System.Numerics.Complex[],System.Boolean)">
+            <summary>
+            Perform an in-place FFT from a sequence of values into a set of frequencies.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.RemoveAliasing(System.Numerics.Complex[])">
+            <summary>
+            Remove aliased frequencies in the second half of the array (frequencies greater than the folding frequency).
+            <br/>Since DFT is symmetric around the folding frequency, we assume that the true frequencies are the lower
+             frequencies and the higher frequencies are aliasing artifacts.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.AddAliasing(System.Numerics.Complex[])">
+            <summary>
+            Re-add aliased frequencies removed by <see cref="M:BagoumLib.SignalProcessing.FFTHelpers.RemoveAliasing(System.Numerics.Complex[])"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.FFTFromFreq(BagoumLib.SignalProcessing.IFFT,System.Numerics.Complex[],System.Boolean)">
+            <summary>
+            Perform an in-place FFT from a set of frequencies into a sequence of values. Also divide by N.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.NormalizeReals(System.Numerics.Complex[])">
+            <summary>
+            Normalizes the real components only of a data stream in-place, so that the real components to 1.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.Normalize(System.Numerics.Complex[])">
+            <summary>
+            Normalize the values of a data stream in-place, such that their magnitudes sum to 1.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.NormalizeEnergy(System.Numerics.Complex[])">
+            <summary>
+            Normalizes a vector such that the square of square magnitudes sums to 1.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.DataForFnOverPeriod(System.Func{System.Double,System.Numerics.Complex},System.Double,System.Int32)">
+            <summary>
+            Create an array of complex numbers whose values are the values of `fn` evaluated between 0 and `period`.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.DataForFnAtRate(System.Func{System.Double,System.Numerics.Complex},System.Double,System.Int32)">
+            <summary>
+            Create an array of complex numbers whose values are values of `fn` evaluated between 0 and `samples/samplingRate`.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.DataForFn(System.Func{System.Int32,System.Numerics.Complex},System.Int32)">
+            <summary>
+            Create an array of complex numbers whose values are the values of `fn` evaluated between 0 and `samples`.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.WrapIndex(System.Int32,System.Int32)">
+            <summary>
+            Remap the range [ptN/2, ptN) to [-ptN/2,0).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.DataForFilter(System.Func{System.Int32,System.Numerics.Complex},System.Int32)">
+            <summary>
+            Create an array of complex numbers whose values are the values of `fn` evaluated between 0 and `samples`,
+            and the indices are passed to the provided function as follows:
+            <br/>0 1 2 3... (N/2-2) (N/2-1) -N/2 -N/2+1 ... -3 -2 -1
+            <br/>ie. The first half of the array is nonnegative, and the second half is negative.
+            <br/>This function should be used for the filters in <see cref="T:BagoumLib.SignalProcessing.Filters"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.Convolve(BagoumLib.SignalProcessing.IFFT,System.Numerics.Complex[],System.Numerics.Complex[])">
+            <summary>
+            Convolve two periodic sequences in the time domain together.
+            <br/>The arrays must be the same length, and this length must be a power of two.
+            <br/>Overwrites both arrays and returns data1.
+            <br/>Note that convolution is commutative (Convolve(a,b) = Convolve(b,a)).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.Correlate(BagoumLib.SignalProcessing.IFFT,System.Numerics.Complex[],System.Numerics.Complex[])">
+            <summary>
+            Correlates two periodic sequences in the time domain together.
+            <br/>The arrays must be the same length, and this length must be a power of two.
+            <br/>Overwrites both arrays and returns data1.
+            <br/>Note that Correlate(x, y) = Convolve(x, Conjugate(y)).
+            Correlation is not commutative, but convolution is.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.GetFilterLength(System.Numerics.Complex[])">
+            <summary>
+            Get the forward and backward length of a response filter.
+            <br/>Note: for this to work, elements in the middle of the array must be zeroed out correctly.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.PadFilterToLength(System.Numerics.Complex[],System.Int32)">
+            <summary>
+            Pad a response filter in the center so its length is `reqLen`. (If the filter is already of this length,
+             then does nothing.)
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.ConvolveFilters(BagoumLib.SignalProcessing.IFFT,System.Numerics.Complex[],System.Numerics.Complex[])">
+            <summary>
+            Convolve two response filters together. If they are not of the same size, will pad them in the center.
+            <br/>Convolving two response filters of size N and M results in a filter of size N+M. If this size
+             is greater than the size of the array, then pollution will occur. To avoid this, this function
+             will check the filter sizes and create a longer array if required. It will also zero out
+             elements in the middle of the result array after convolution.
+            <br/>May overwrite both arrays and return data1. Alternatively, may return a longer array.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.ConvolveOnFreq(BagoumLib.SignalProcessing.IFFT,System.Numerics.Complex[],System.Numerics.Complex[])">
+            <summary>
+            Convolve two periodic sequences together, where the first is in the time domain
+             and the second is in the frequency domain.
+            <br/>The arrays must be the same length, and this length must be a power of two.
+            <br/>Overwrites and returns data1.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.Pad``1(``0[],System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Pad an array of data with default values on the left, middle, and right.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.PointwiseMultiply(System.Numerics.Complex[],System.Numerics.Complex[])">
+            <summary>
+            Do a pointwise multiplication of two arrays, storing the output in-place in the first array.
+            <br/>If these arrays are the output of a forward FFT, then this represents a convolution.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.IsPowerOfTwo(System.Int32)">
+            <summary>
+            Return true if x is a power of two.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.NextPowerOfTwo(System.Int32)">
+            <summary>
+            Return the first power of 2 greater than or equal to x.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.BitReverseIndices(System.Numerics.Complex[])">
+            <summary>
+            Reorder the elements of the array by placing each element at its bit-reversed index.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.BitReverse(System.Int32,System.Int32)">
+            <summary>
+            Reverse the last `bits` bits of the integer `x`.
+            <br/>eg. BitReverse(3, 4) = BitReverse(0b0011, 4) = 0b1100 = 12
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.FFTHelpers.IExp(System.Double)">
+            <summary>
+            Return e^(ix).
+            </summary>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.Filters">
+            <summary>
+            Reference filters for audio processing.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.Filters.Hann(System.Double,System.Int32)">
+            <summary>
+            Hann windowing over the range [-(N-1)/2, (N-1)/2]. Any outside elements will be zeroed.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.Filters.HalfHann(System.Double,System.Int32)">
+            <summary>
+            Normalized half-Hann windowing over the range [0, N/2). Any outside elements will be zeroed.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.Filters.Identity(System.Int32)">
+            <summary>
+            A filter that returns the same source data.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.Filters.Tukey(System.Int32,System.Int32,System.Double)">
+            <summary>
+            The symmetric Tukey window over the range [-(N-1)/2,(N-1)/2]. Any outside elements will be zeroed.
+            <br/>The tail `falloff` ratios have a cosine lobe, and the center area is 1.
+            </summary>
+            <param name="i">Sample index in the range [-N/2,N/2).</param>
+            <param name="N">Total number of samples. Should be odd.</param>
+            <param name="falloff">Falloff ratio (in the range [0,1]).</param>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.Filters.Gaussian(System.Int32,System.Int32,System.Double)">
+            <summary>
+            Gaussian filter centered at 0. (Has an inbuilt Tukey filter to zero out elements outside the range.)
+            </summary>
+            <param name="i">Sample index in the range [-N/2,N/2).</param>
+            <param name="N">Total number of samples for the filter duration. Should be odd.</param>
+            <param name="sigma">Standard deviation in number of samples. For best results, should be less than N/8.</param>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.Filters.DGaussian(System.Int32,System.Int32,System.Double)">
+            <summary>
+            Derivative Gaussian filter centered at 0. (Has an inbuilt Tukey filter to zero out elements outside the range.)
+            <br/>Note that this is a d/di filter (derivate w.r.t sample index).
+            <br/>For a d/dt filter (derivative w.r.t time), multiply the output of this function by
+            the sampling rate (=di/dt).
+            </summary>
+            <param name="i">Sample index in the range [-N/2,N/2).</param>
+            <param name="N">Total number of samples for the filter duration. Should be odd.</param>
+            <param name="sigma">Standard deviation in number of samples. For best results, should be less than N/8.</param>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.Filters.Morlet(System.Int32,System.Int32,System.Double)">
+            <summary>
+            Create a Morlet wavelet with a normalized energy of 1.
+            </summary>
+            <param name="i">Sample index in the range [-N/2,N/2).</param>
+            <param name="N">Total number of samples for the filter duration. The standard deviation of the Gaussian will be one-eighth of this.</param>
+            <param name="freq">Frequency of the wave as a fraction of sampling rate.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.Filters.LowPass(System.Int32,System.Int32,System.Double)">
+            <summary>
+            Low-pass filter.
+            </summary>
+            <param name="i">Sample index in the range [-N/2,N/2).</param>
+            <param name="N">Number of samples for the filter duration. Should be odd.</param>
+            <param name="cutoff">Frequency cutoff as a fraction of sampling rate. Has a rolloff of 4*SR/N Hz.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.Filters.HighPass(System.Int32,System.Int32,System.Double)">
+            <summary>
+            High-pass filter.
+            </summary>
+            <param name="i">Sample index [0, ptN).</param>
+            <param name="N">Number of samples for the filter duration. Should be odd.</param>
+            <param name="cutoff">Frequency cutoff as a fraction of sampling rate. Has a rolloff of 4*SR/N Hz.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.Filters.BandPass(BagoumLib.SignalProcessing.IFFT,System.Int32,System.Int32,System.Double,System.Double)">
+            <summary>
+            Band-pass filter.
+            </summary>
+            <param name="fft">FFT provider.</param>
+            <param name="N">Number of samples for the filter duration. Should be odd.</param>
+            <param name="ptN">Total number of samples to put in the array. Should be a value 2^k >= N.</param>
+            <param name="cutoff1">Lower frequency cutoff as a fraction of sampling rate.</param>
+            <param name="cutoff2">Higher frequency cutoff as a fraction of sampling rate.</param>
+            <returns></returns>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.IWindower">
+            <summary>
+            A windowing function.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.IWindower.WindowMultiplier(System.Int32,System.Int32)">
+            <summary>
+            Return the 0-1 multiplier for index `i` out of a data array of length `N`.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.NoWindow">
+            <summary>
+            No windowing.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.NoWindow.WindowMultiplier(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.SignalProcessing.HannWindow">
+            <summary>
+            Hann windowing.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.HannWindow.WindowMultiplier(System.Int32,System.Int32)">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Sorting.AlternatingMergeSorter`1">
             <summary>
@@ -4502,6 +5636,11 @@
             Task-related helpers.
             </summary>
         </member>
+        <member name="M:BagoumLib.Tasks.Utilities.And(System.Threading.Tasks.Task,System.Threading.Tasks.Task)">
+            <summary>
+            Return a task that is completed when both provided tasks are completed.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Tasks.Utilities.ContinueWithSync(System.Threading.Tasks.Task,System.Action)">
             <summary>
             Runs a continuation after a task and logs errors from the task or the continuation.
@@ -4526,6 +5665,11 @@
             </summary>
         </member>
         <member name="M:BagoumLib.Tasks.WaitingUtils.GetAwaiter(System.Threading.Tasks.Task@)">
+            <summary>
+            Get an action that completes a task.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.WaitingUtils.GetCompletionAwaiter(System.Threading.Tasks.Task{BagoumLib.Completion}@)">
             <summary>
             Get an action that completes a task.
             </summary>
@@ -4740,17 +5884,47 @@
         <member name="M:BagoumLib.Transitions.DeltaTweener`1.ApplyEnd(`0)">
             <inheritdoc/>
         </member>
+        <member name="T:BagoumLib.Transitions.SequentialTransition">
+            <summary>
+            A transition that runs multiple transitions in sequence.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.SequentialTransition.#ctor(BagoumLib.Functional.Delayed{BagoumLib.Transitions.ITransition}[])">
+            <summary>
+            A transition that runs multiple transitions in sequence.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Transitions.SequentialTransition.Run(BagoumLib.DataStructures.ICoroutineRunner,BagoumLib.DataStructures.CoroutineOptions)">
             <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Transitions.SequentialTransition.With(BagoumLib.Cancellation.ICancellee,System.Func{System.Single})">
             <inheritdoc/>
         </member>
+        <member name="T:BagoumLib.Transitions.ParallelTransition">
+            <summary>
+            A transition that runs multiple transitions in parallel.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.ParallelTransition.#ctor(BagoumLib.Transitions.ITransition[])">
+            <summary>
+            A transition that runs multiple transitions in parallel.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Transitions.ParallelTransition.Run(BagoumLib.DataStructures.ICoroutineRunner,BagoumLib.DataStructures.CoroutineOptions)">
             <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Transitions.ParallelTransition.With(BagoumLib.Cancellation.ICancellee,System.Func{System.Single})">
             <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Transitions.LoopTransition">
+            <summary>
+            A transition that loops a child transition.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.LoopTransition.#ctor(BagoumLib.Transitions.ITransition,System.Nullable{System.Int32})">
+            <summary>
+            A transition that loops a child transition.
+            </summary>
         </member>
         <member name="M:BagoumLib.Transitions.LoopTransition.Run(BagoumLib.DataStructures.ICoroutineRunner,BagoumLib.DataStructures.CoroutineOptions)">
             <inheritdoc/>
@@ -4774,7 +5948,7 @@
               parent-child alignment checks for efficiency.
             </summary>
         </member>
-        <member name="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)">
+        <member name="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)">
             <summary>
             Second pass, top-down: After determining one final type for the entire type tree,
             find the one overloading that satisfies that type (if there are 0 or 2+, then return an error),
@@ -4782,6 +5956,9 @@
             <br/>Implicit casts should be realized at the *parameter* level, not the method level.
             <br/>This overloading should be saved locally and its return type must be provided as <see cref="P:BagoumLib.Unification.ITypeTree.SelectedOverloadReturnType"/>.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)">
+            <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/>
         </member>
         <member name="M:BagoumLib.Unification.ITypeTree.FinalizeUnifiers(BagoumLib.Unification.Unifier)">
             <summary>
@@ -4796,6 +5973,13 @@
             <br/>This should be overriden by <see cref="P:BagoumLib.Unification.ITypeTree.ImplicitCast"/> if it is present.
             </summary>
         </member>
+        <member name="P:BagoumLib.Unification.ITypeTree.SelectedOverloadReturnTypeNoCast">
+            <summary>
+            The return type of the overloading that was selected for this AST.
+            <br/>Note that for a method call, this must be the return type of the method.
+            <br/>This should *not* be overriden by <see cref="P:BagoumLib.Unification.ITypeTree.ImplicitCast"/>.
+            </summary>
+        </member>
         <member name="P:BagoumLib.Unification.ITypeTree.ImplicitCast">
             <summary>
             The type to which the return type of this AST is implicitly cast.
@@ -4804,7 +5988,7 @@
         <member name="P:BagoumLib.Unification.ITypeTree.IsFullyResolved">
             <summary>
             True iff the type of this tree and all its components are fully determined.
-            <br/>This should only be called after <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>.
+            <br/>This should only be called after <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/>.
             </summary>
         </member>
         <member name="M:BagoumLib.Unification.ITypeTree.UnresolvedVariables">
@@ -4851,9 +6035,11 @@
              set <see cref="P:BagoumLib.Unification.IMethodTypeTree`1.Overloads"/> based on the possible argument types.
             </summary>
         </member>
-        <member name="M:BagoumLib.Unification.IMethodTypeTree`1.ImplicitParameterCastEnabled(System.Int32)">
+        <member name="M:BagoumLib.Unification.IMethodTypeTree`1.ImplicitParameterCast(`0,System.Int32)">
             <summary>
-            Whether or not the parameter at `index` can receive implicit casts.
+            Whether or not the parameter at `index` can receive implicit casts for the given overload.
+            <br/>Left: The parameter must match exactly or use the given implicit cast.
+            <br/>Right: The parameter is allowed or not allowed to use any implicit casts at its level.
             </summary>
         </member>
         <member name="P:BagoumLib.Unification.IMethodTypeTree`1.OverloadsAreInterchangeable">
@@ -4862,7 +6048,7 @@
              For example, the overloads for multiplication are { (float, T)->T, (T, float)->T }.
              These two overloads overlap when T=float, in which case the overloads are equivalent.
             <br/>This will cause typechecking in <see cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> and 
-             <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> to complete as soon as a single valid overload is found.
+             <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/> to complete as soon as a single valid overload is found.
             </summary>
         </member>
         <member name="P:BagoumLib.Unification.IMethodTypeTree`1.RealizableOverloads">
@@ -4878,12 +6064,12 @@
         </member>
         <member name="P:BagoumLib.Unification.IMethodTypeTree`1.SelectedOverload">
             <summary>
-            The method overload selected by <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>.
+            The method overload selected by <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/>.
             </summary>
         </member>
         <member name="M:BagoumLib.Unification.IMethodTypeTree`1.WillSelectOverload(`0,BagoumLib.Unification.IImplicitTypeConverterInstance,BagoumLib.Unification.Unifier)">
             <summary>
-            Called in <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> when the overload is selected,
+            Called in <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/> when the overload is selected,
              and before arguments are unified against the overload.
             <br/>This generally requires no implementation, except when overloads or casts carry implicit
              variable declarations.
@@ -4892,8 +6078,8 @@
         <member name="M:BagoumLib.Unification.IMethodTypeTree`1._PossibleUnifiers(BagoumLib.Unification.IMethodTypeTree{`0},BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)">
             <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>
         </member>
-        <member name="M:BagoumLib.Unification.IMethodTypeTree`1._ResolveUnifiers(BagoumLib.Unification.IMethodTypeTree{`0},BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)">
-            <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>
+        <member name="M:BagoumLib.Unification.IMethodTypeTree`1._ResolveUnifiers(BagoumLib.Unification.IMethodTypeTree{`0},BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)">
+            <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/>
         </member>
         <member name="M:BagoumLib.Unification.IMethodTypeTree`1._FinalizeUnifiers(BagoumLib.Unification.IMethodTypeTree{`0},BagoumLib.Unification.Unifier)">
             <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.FinalizeUnifiers(BagoumLib.Unification.Unifier)"/>
@@ -4910,12 +6096,12 @@
         </member>
         <member name="P:BagoumLib.Unification.IAtomicTypeTree.SelectedOverload">
             <summary>
-            The type overload selected after <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>.
+            The type overload selected after <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/>.
             </summary>
         </member>
         <member name="M:BagoumLib.Unification.IAtomicTypeTree.WillSelectOverload(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.IImplicitTypeConverterInstance,BagoumLib.Unification.Unifier)">
             <summary>
-            Called in <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> when the overload is selected.
+            Called in <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/> when the overload is selected.
             <br/>This generally requires no implementation, except when overloads or casts carry implicit
              variable declarations.
             </summary>
@@ -4923,8 +6109,8 @@
         <member name="M:BagoumLib.Unification.IAtomicTypeTree._PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)">
             <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.PossibleUnifiers(BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>
         </member>
-        <member name="M:BagoumLib.Unification.IAtomicTypeTree._ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)">
-            <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/>
+        <member name="M:BagoumLib.Unification.IAtomicTypeTree._ResolveUnifiers(BagoumLib.Unification.IAtomicTypeTree,BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)">
+            <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/>
         </member>
         <member name="T:BagoumLib.Unification.TypeTree">
             <summary>
@@ -5077,13 +6263,13 @@
         </member>
         <member name="T:BagoumLib.Unification.TypeUnifyErr.NoResolvableOverload">
             <summary>
-            During the <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> stage, no overload could be found that unified
+            During the <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/> stage, no overload could be found that unified
              correctly with the parameters and return type.
             </summary>
         </member>
         <member name="M:BagoumLib.Unification.TypeUnifyErr.NoResolvableOverload.#ctor(BagoumLib.Unification.ITypeTree,BagoumLib.Unification.TypeDesignation,System.Collections.Generic.IReadOnlyList{System.ValueTuple{BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeUnifyErr}})">
             <summary>
-            During the <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,System.Boolean)"/> stage, no overload could be found that unified
+            During the <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/> stage, no overload could be found that unified
              correctly with the parameters and return type.
             </summary>
         </member>
@@ -5112,7 +6298,7 @@
             <see cref="!:ITypeTree.PossibleUnifiers(TypeResolver,Unifier)"/> returned more or less than 1 possible top-level type.
             </summary>
         </member>
-        <member name="M:BagoumLib.Unification.TypeUnifyErr.TooManyPossibleTypes.#ctor(System.Collections.Generic.List{BagoumLib.Unification.TypeDesignation})">
+        <member name="M:BagoumLib.Unification.TypeUnifyErr.TooManyPossibleTypes.#ctor(BagoumLib.Unification.ITypeTree,System.Collections.Generic.List{BagoumLib.Unification.TypeDesignation})">
             <summary>
             <see cref="!:ITypeTree.PossibleUnifiers(TypeResolver,Unifier)"/> returned more or less than 1 possible top-level type.
             </summary>

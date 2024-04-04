@@ -29,6 +29,9 @@ public class Tokenized : MonoBehaviour {
     
     public void Listen<T>(IObservable<T> obs, Action<T> listener) =>
         tokens.Add(obs.Subscribe(listener));
+    
+    public void Listen<T>(IObservable<T> obs, IObserver<T> listener) =>
+        tokens.Add(obs.Subscribe(listener));
 
 
     protected virtual void OnEnable() => EnableUpdates();
