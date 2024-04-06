@@ -3707,7 +3707,7 @@
             Get the index of the given object, or return -1 if not found.
             </summary>
         </member>
-        <member name="M:BagoumLib.ArrayExtensions.GetBounded``1(System.ValueTuple{System.Int32,``0}[],System.Int32,``0)">
+        <member name="M:BagoumLib.ArrayExtensions.GetBounded``1(System.ValueTuple{System.Int32,``0}[],System.Int32)">
             <summary>
             Returns the first T such that the associated priority is LEQ the given priority.
             Make sure the array is sorted from lowest to highest priority.
