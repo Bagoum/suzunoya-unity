@@ -1699,6 +1699,11 @@
             Within the update loop, this is set to the delta-time of the frame.
             </summary>
         </member>
+        <member name="P:Suzunoya.ControlFlow.IVNState.HasVNUpdatedThisFrame">
+            <summary>
+            True iff the VN state has computed its update loop for this frame.
+            </summary>
+        </member>
         <member name="P:Suzunoya.ControlFlow.IVNState.MainDialogue">
             <summary>
             The main dialogue box, if it exists.
@@ -2001,6 +2006,9 @@
             True iff bounded contexts with Unit return type can be skipped
             even if they have no save data.
             </summary>
+        </member>
+        <member name="P:Suzunoya.ControlFlow.VNState.HasVNUpdatedThisFrame">
+            <inheritdoc/>
         </member>
         <member name="P:Suzunoya.ControlFlow.VNState.MainDialogue">
             <inheritdoc/>
@@ -2932,7 +2940,7 @@
         <member name="M:Suzunoya.Entities.Entity.Update(System.Single)">
             <inheritdoc/>
         </member>
-        <member name="M:Suzunoya.Entities.Entity.Run(System.Collections.IEnumerator,BagoumLib.DataStructures.CoroutineOptions)">
+        <member name="M:Suzunoya.Entities.Entity.Run(System.Collections.IEnumerator)">
             <summary>
             Run a corountine on this entity.
             </summary>

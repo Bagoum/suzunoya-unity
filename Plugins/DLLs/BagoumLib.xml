@@ -739,6 +739,12 @@
             Cancel a token, and then replace it with a new one.
             </summary>
         </member>
+        <member name="M:BagoumLib.Cancellation.Cancellable.Extend(BagoumLib.Cancellation.ICancellee,BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Return a <see cref="T:BagoumLib.Cancellation.MinCancellee"/> that is cancelled when both
+             of the source cancellees are cancelled.
+            </summary>
+        </member>
         <member name="T:BagoumLib.Cancellation.JointCancellable">
             <summary>
             A cancellable token that is cancelled when its parent is cancelled or it is locally cancelled (via <see cref="M:BagoumLib.Cancellation.JointCancellable.Cancel(System.Int32)"/>).
@@ -756,6 +762,12 @@
         </member>
         <member name="P:BagoumLib.Cancellation.JointCancellable.Cancelled">
             <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Cancellation.JointCancellable.LocallyCancelled">
+            <summary>
+            True if Cancel was called on this token, regardless of whether or not
+            the parent token is cancelled.
+            </summary>
         </member>
         <member name="M:BagoumLib.Cancellation.JointCancellable.#ctor(BagoumLib.Cancellation.ICancellee)">
             <summary>
@@ -1026,14 +1038,19 @@
             Default value to realize if the locale is null or there is no handling for the provided locale.
             </summary>
         </member>
-        <member name="F:BagoumLib.Culture.Variant`1.langToValueMap">
+        <member name="F:BagoumLib.Culture.Variant`1.variants">
             <summary>
-            A map from locales to the object value for that locale.
+            A list of locales and their mapped values.
             </summary>
         </member>
         <member name="F:BagoumLib.Culture.Variant`1.localeP">
             <summary>
             The <see cref="T:BagoumLib.Culture.ILocaleProvider"/> used to get the current locale.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Culture.Variant`1.MyLocales">
+            <summary>
+            The set of locales for which alternate values are provided.
             </summary>
         </member>
         <member name="P:BagoumLib.Culture.Variant`1.Value">
@@ -1371,7 +1388,7 @@
              the coroutine container is deleted.</param>
             <param name="ExecType">Instructions on how to add the new coroutine to the existing list.</param>
         </member>
-        <member name="M:BagoumLib.DataStructures.CoroutineOptions.#ctor(System.Boolean,BagoumLib.DataStructures.CoroutineType)">
+        <member name="M:BagoumLib.DataStructures.CoroutineOptions.#ctor(BagoumLib.DataStructures.CoroutineType,System.Boolean)">
             <summary>
             Options detailing how to handle a new coroutine.
             </summary>
@@ -1379,21 +1396,32 @@
              the coroutine container is deleted.</param>
             <param name="ExecType">Instructions on how to add the new coroutine to the existing list.</param>
         </member>
+        <member name="P:BagoumLib.DataStructures.CoroutineOptions.ExecType">
+            <summary>Instructions on how to add the new coroutine to the existing list.</summary>
+        </member>
         <member name="P:BagoumLib.DataStructures.CoroutineOptions.Droppable">
             <summary>True iff the coroutine can be deleted without waiting for cancellation when
              the coroutine container is deleted.</summary>
         </member>
-        <member name="P:BagoumLib.DataStructures.CoroutineOptions.ExecType">
-            <summary>Instructions on how to add the new coroutine to the existing list.</summary>
-        </member>
         <member name="F:BagoumLib.DataStructures.CoroutineOptions.Default">
             <summary>
-            Default coroutine options (non-droppable and <see cref="F:BagoumLib.DataStructures.CoroutineType.TryStepPrepend"/>)
+            Default coroutine options (non-droppable and <see cref="F:BagoumLib.DataStructures.CoroutineType.StepTryPrepend"/>)
             </summary>
         </member>
         <member name="F:BagoumLib.DataStructures.CoroutineOptions.DroppableDefault">
             <summary>
-            Default coroutine options (droppable and <see cref="F:BagoumLib.DataStructures.CoroutineType.TryStepPrepend"/>)
+            Default coroutine options (droppable and <see cref="F:BagoumLib.DataStructures.CoroutineType.StepTryPrepend"/>)
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CoroutineOptions.DefaultWith(System.Boolean)">
+            <summary>
+            Return <see cref="F:BagoumLib.DataStructures.CoroutineOptions.DroppableDefault"/> if `droppable` is true, else <see cref="F:BagoumLib.DataStructures.CoroutineOptions.Default"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CoroutineOptions.ProcessThisFrame(System.Boolean)">
+            <summary>
+            Return a CoroutineOptions with StepTryPrepend if the entity has updated this frame, or TryStepPrepend
+             if it has not yet updated. This ensures that the coroutine receives one update this frame.
             </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.ICoroutineRunner">
@@ -1764,10 +1792,10 @@
             </summary>
         </member>
         <member name="M:BagoumLib.DataStructures.JointDisposable.#ctor(System.Action,System.IDisposable[])">
-            <summary>
-            </summary>
-            <param name="afterDispose">Function to call after all linked tokens are disposed</param>
-            <param name="disps">Linked tokens to dispose when this token is disposed</param>
+            <inheritdoc cref="T:BagoumLib.DataStructures.JointDisposable"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.JointDisposable.#ctor(System.Action,System.Collections.Generic.IReadOnlyList{System.IDisposable})">
+            <inheritdoc cref="T:BagoumLib.DataStructures.JointDisposable"/>
         </member>
         <member name="M:BagoumLib.DataStructures.JointDisposable.Dispose">
             <inheritdoc/>
@@ -1856,6 +1884,65 @@
         <member name="T:BagoumLib.DataStructures.StackList`1">
             <summary>
             A stack that can also be indexed like a list.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.DataStructures.StateFlow`1">
+            <summary>
+            A helper to manage state flow between states of type <see cref="!:T"/>.
+            
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.StateFlow`1.State">
+            <summary>
+            The current state of the flow transfer.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.StateFlow`1.StateEv">
+            <inheritdoc cref="P:BagoumLib.DataStructures.StateFlow`1.State"/>
+        </member>
+        <member name="P:BagoumLib.DataStructures.StateFlow`1.NextState">
+            <summary>
+            A canceller that contains the next state for the flow transfer.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.StateFlow`1.Cancelled">
+            <summary>
+            Returns true if <see cref="P:BagoumLib.DataStructures.StateFlow`1.NextState"/> is cancelled.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StateFlow`1.#ctor(`0)">
+            <inheritdoc cref="T:BagoumLib.DataStructures.StateFlow`1"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StateFlow`1.Start">
+            <summary>
+            Start the state flow.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StateFlow`1.RunState(BagoumLib.Functional.Maybe{`0})">
+            <summary>
+            Execute the current <see cref="P:BagoumLib.DataStructures.StateFlow`1.State"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StateFlow`1.SetNext(`0)">
+            <summary>
+            Set the next state to execute by calling <see cref="P:BagoumLib.DataStructures.StateFlow`1.NextState"/>.<see cref="M:BagoumLib.Cancellation.GCancellable`1.Cancel(`0)"/>. The next state will only be executed
+             when the current state coroutine calls <see cref="M:BagoumLib.DataStructures.StateFlow`1.GoToNext(`0)"/> or <see cref="M:BagoumLib.DataStructures.StateFlow`1.GoToNextIfCancelled"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StateFlow`1.GoToNext(`0)">
+            <summary>
+            Updates <see cref="P:BagoumLib.DataStructures.StateFlow`1.State"/>, sets a new token in <see cref="P:BagoumLib.DataStructures.StateFlow`1.NextState"/>,
+             and runs the code for the next state (as implemented virtually in <see cref="M:BagoumLib.DataStructures.StateFlow`1.RunState(BagoumLib.Functional.Maybe{`0})"/>).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StateFlow`1.GoToNextIfCancelled">
+            <summary>
+            If <see cref="P:BagoumLib.DataStructures.StateFlow`1.NextState"/> is cancelled, then executes that state and returns true.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StateFlow`1.GoToNextWithDefault(`0)">
+            <summary>
+            Execute the next state as provided in <see cref="P:BagoumLib.DataStructures.StateFlow`1.NextState"/>, or if <see cref="P:BagoumLib.DataStructures.StateFlow`1.NextState"/> is not set then use the default instead.
             </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.Trie">
@@ -3135,6 +3222,11 @@
         <member name="P:BagoumLib.Expressions.CSharpObjectPrinter.FallbackToToString">
             <summary>
             Set this to true to use .ToString() if the value cannot be printed.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.CSharpObjectPrinter.NoPrintMethodFallback(System.Object)">
+            <summary>
+            Method called when no standard method of printing the object succeeded.
             </summary>
         </member>
         <member name="T:BagoumLib.Expressions.ReplaceParameterVisitor">
@@ -6585,6 +6677,11 @@
         <member name="F:BagoumLib.Unification.Unifier.Empty">
             <summary>
             A unifier with no bindings.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Unification.Unifier.Without(BagoumLib.Unification.TypeDesignation.Variable)">
+            <summary>
+            Return a unifier that does not have any bindings with the given variable.
             </summary>
         </member>
         <member name="P:BagoumLib.Unification.Unifier.Item(BagoumLib.Unification.TypeDesignation)">
