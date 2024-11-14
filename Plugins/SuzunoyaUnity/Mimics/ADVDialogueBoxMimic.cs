@@ -55,14 +55,15 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
     public TMP_Text speaker = null!;
     public RubyTextMeshProUGUI mainText = null!;
 
-    public GameObject speakerContainer = null!;
-    public Image speakerIcon = null!;
+    public GameObject? speakerContainer;
+    public Image? speakerIcon;
     public Image nextOkIcon = null!;
     public DialogueBoxButton[] buttons = null!;
 
     public DialogueBoxButton? pauseButton;
     public DialogueBoxButton? autoplayButton;
     public DialogueBoxButton? skipButton;
+    public bool fixedTextColor = false;
 
     private readonly PushLerper<Color> textColor = new(0.1f, (a, b, t) => 
         Color.Lerp(a, b, Easers.EOutSine(t)));
@@ -101,6 +102,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
     }
 
     private void SetTextColor(Color c) {
+        if (fixedTextColor) return;
         speaker.color = mainText.color = c;
         //Assigning mainText.color resets the alpha vertex overrides and triggers a lazy mesh redraw,
         // so we have to reapply alphas like this...
@@ -157,7 +159,6 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
     private IDisposable? rgToken;
     public virtual void Initialize(ADVDialogueBox db) {
         base.Initialize(bound = db);
-        db.Bind(this);
 
         raycastable.AddDisturbance(db.Container.InputAllowed);
         Listen(db.RenderGroup, rg => {
@@ -173,11 +174,12 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         Listen(db.Speaker, obj => {
             bool anon = obj.flags.HasFlag(SpeakFlags.Anonymous);
             if (obj.speaker != null) {
-                speakerContainer.SetActive(true);
+                if (speakerContainer != null)
+                    speakerContainer.SetActive(true);
                 speaker.text = anon ? "???" : obj.speaker.Name;
                 if (obj.speaker is SZYUCharacter sc) {
                     // ReSharper disable once AssignmentInConditionalExpression
-                    if (speakerIcon.enabled = (sc.ADVSpeakerIcon != null && !anon))
+                    if (speakerIcon != null && (speakerIcon.enabled = (sc.ADVSpeakerIcon != null && !anon)))
                         speakerIcon.sprite = sc.ADVSpeakerIcon!;
                     //uiColor.Push(sc.UIColor);
                     //nextOkColor.Push(sc.UIColor, -nextOkLerpTime + 0.1f);
@@ -185,8 +187,10 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
                 }
             }
             if (obj.speaker == null) {
-                speakerIcon.enabled = false;
-                speakerContainer.SetActive(false);
+                if (speakerContainer != null)
+                    speakerContainer.SetActive(false);
+                if (speakerIcon != null)
+                    speakerIcon.enabled = false;
                 //uiColor.Unset();
                 //nextOkColor.Unset();
                 textColor.Unset();
@@ -198,12 +202,17 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         Listen(db.DialogueStarted, op => {
             var sb = new StringBuilder();
             foreach (var frag in op.Line.Fragments) {
-                sb.Append(frag switch {
-                    SpeechFragment.Char c => c.fragment,
-                    SpeechFragment.TagOpen to => TagToOpen(to.tag),
-                    SpeechFragment.TagClose tc => TagToClose(tc.opener.tag),
-                    _ => null
-                });
+                if (frag is SpeechFragment.Char c)
+                    //separate this since it's char type, which can't be put in the same
+                    // switch expr as strings without upcasting to object
+                    sb.Append(c.Fragment);
+                else if (frag switch {
+                             SpeechFragment.TagOpen to => TagToOpen(to.tag),
+                             SpeechFragment.TagClose tc => TagToClose(tc.opener.tag),
+                             _ => null
+                         } is { } str) {
+                    sb.Append(str);
+                }
             }
             mainText.UnditedText += sb.ToString();
             UpdateCharProps(true);
@@ -303,7 +312,7 @@ public class ADVDialogueBoxMimic : RenderedMimic, IPointerClickHandler, IScrollH
         if (!bound.Active) return;
         if (eventData.button == PointerEventData.InputButton.Left)
             ((UnityVNState)bound.Container).ClickConfirmOrSkip();
-        else
+        else if (pauseButton != null && pauseButton.IsInteractable)
             Pause();
     }
 

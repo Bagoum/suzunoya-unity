@@ -31,7 +31,7 @@ public class DialogueBoxButton : Tokenized, IPointerEnterHandler, IPointerExitHa
     /// <br/>However, there may be other conditions in subclasses that cause buttons to be non-interactable.
     /// <br/>Such other conditions can be bound to this event.
     /// </summary>
-    protected DisturbedAnd IsInteractable { get; } = new(true);
+    public DisturbedAnd IsInteractable { get; } = new(true);
 
     protected void FastSetState(ButtonState state) {
         color.Unset();
@@ -45,11 +45,12 @@ public class DialogueBoxButton : Tokenized, IPointerEnterHandler, IPointerExitHa
 
     protected override void BindListeners() {
         base.BindListeners();
+        color.Push(text.color.WithA(StateToColor(State)));
         AddToken(IsInteractable.AddDisturbance(State.Select(s => (s & (ButtonState.Disabled|ButtonState.Hide)) is 0)));
-        AddToken(State.Subscribe(s => color.Push(new Color(1, 1, 1, StateToColor(s)))));
+        AddToken(State.Subscribe(s => color.Push(color.Value.WithA(StateToColor(s)))));
         AddToken(color.Subscribe(c => {
-            for (int ii = 0; ii < sprites.Length; ++ii)
-                sprites[ii].color = c;
+            foreach (var s in sprites)
+                s.color = c;
             text.color = c;
         }));
     }
@@ -59,10 +60,10 @@ public class DialogueBoxButton : Tokenized, IPointerEnterHandler, IPointerExitHa
 
     private static float StateToColor(ButtonState s) => s switch {
         { } when s.HasFlag(ButtonState.Hide) => 0f,
-        { } when s.HasFlag(ButtonState.Disabled) => 0.4f,
+        { } when s.HasFlag(ButtonState.Disabled) => 0.3f,
         { } when s.HasFlag(ButtonState.Active) => 1f,
-        { } when s.HasFlag(ButtonState.Hover) => 0.85f,
-        _ => 0.56f
+        { } when s.HasFlag(ButtonState.Hover) => 0.9f,
+        _ => 0.5f
     };
     
     public void OnPointerEnter(PointerEventData eventData) {

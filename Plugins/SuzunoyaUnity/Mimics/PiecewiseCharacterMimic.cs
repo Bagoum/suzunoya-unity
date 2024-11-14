@@ -5,6 +5,7 @@ using SuzunoyaUnity;
 using SuzunoyaUnity.Components;
 using SuzunoyaUnity.Mimics;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace SuzunoyaUnity.Mimics {
 
@@ -16,10 +17,12 @@ public class PiecewiseCharacterMimic : SpriteIconCharacterMimic {
     public PiecewiseRender defaultPiece = null!;
     private readonly Dictionary<string, PiecewiseRender> pieceMap = new Dictionary<string, PiecewiseRender>();
 
-    public override string SortingLayerFromPrefab => defaultPiece.SortingLayerFromPrefab;
+    public override string SortingLayerFromPrefab => sg.sortingLayerName;
+    private SortingGroup sg = null!;
 
     protected override void Awake() {
         base.Awake();
+        sg = GetComponent<SortingGroup>();
         for (int ii = 0; ii < pieces.Length; ++ii)
             pieceMap[pieces[ii].ident.ToLower()] = pieces[ii];
     }
@@ -47,15 +50,11 @@ public class PiecewiseCharacterMimic : SpriteIconCharacterMimic {
     }
 
     protected override void SetSortingLayer(int layer) {
-        for (int ii = 0; ii < pieces.Length; ++ii) {
-            pieces[ii].SetSortingLayer(layer);
-        }
+        sg.sortingLayerID = layer;
     }
 
     protected override void SetSortingID(int id) {
-        for (int ii = 0; ii < pieces.Length; ++ii) {
-            pieces[ii].SetSortingID(id + ii);
-        }
+        sg.sortingOrder = id;
     }
 
     protected override void SetVisible(bool visible) {

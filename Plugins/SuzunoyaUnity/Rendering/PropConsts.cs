@@ -7,5 +7,6 @@ public static class PropConsts {
     public static readonly int MaskTex = Shader.PropertyToID("_MaskTex");
 
     public static readonly int T = Shader.PropertyToID("_T");
+    public static readonly int MaxT = Shader.PropertyToID("_MaxT");
 }
 }

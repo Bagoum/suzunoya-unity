@@ -10,8 +10,6 @@ namespace SuzunoyaUnity.Mimics {
 public class RenderGroupMimic : Tokenized {
     public ArbitraryCapturer capturer = null!;
     public SpriteRenderer sr = null!;
-    public Texture2D transparentTex = null!;
-    public Texture2D defaultMaskTex = null!;
     private UnityRenderGroup rg = null!;
     private float baseOrthoSize;
 
@@ -39,7 +37,7 @@ public class RenderGroupMimic : Tokenized {
         //Don't need ZoomTarget
         Listen(rg.ZoomTransformOffset, _ => SetCameraLocation());
         
-        Listen(capturer.RenderUpdated, _ => rg.UpdatePB());
+        Listen(capturer.Captured, _ => rg.UpdatePB());
         
         //Don't need RendererAdded
         Listen(rg.EntityActive, b => {

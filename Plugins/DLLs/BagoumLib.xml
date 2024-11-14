@@ -82,6 +82,31 @@
             Convert the untyped assertion `prev` to type IAssertion{T}, then inherit it.
             </summary>
         </member>
+        <member name="T:BagoumLib.Assertions.ActualizeOptions">
+            <summary>
+            Options to configure actualization/deactualization of <see cref="T:BagoumLib.Assertions.IdealizedState"/>.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Assertions.ActualizeOptions.SimultaneousActualization">
+            <summary>
+            Whether or not previous state deactualization should occur at the same time as next state actualization.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Assertions.ActualizeOptions.ActualizeFromNull">
+            <summary>
+            Whether or not this is the first state of any map being actualized.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Assertions.ActualizeOptions.Default">
+            <summary>
+            Default options (no simultaneous actualization).
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Assertions.ActualizeOptions.Simultaneous">
+            <summary>
+            Default options with simultaneous actualization.
+            </summary>
+        </member>
         <member name="T:BagoumLib.Assertions.IdealizedState">
             <summary>
             A set of assertions representing what the state of the world ought to be.
@@ -105,22 +130,21 @@
             Create an idealized state with some assertions.
             </summary>
         </member>
-        <member name="M:BagoumLib.Assertions.IdealizedState.Actualize(BagoumLib.Assertions.IdealizedState,System.Boolean)">
+        <member name="M:BagoumLib.Assertions.IdealizedState.Actualize(BagoumLib.Assertions.IdealizedState,BagoumLib.Assertions.ActualizeOptions)">
             <summary>
             Deactualize the previous state, then actualize this state,
              creating the objects designated by this object's assertions.
             </summary>
             <param name="prev">A previous state. Objects will be transferred instead of created if already created
             by the previous state.</param>
-            <param name="simultaneousActualize">When true, the tasks for deactualizing the previous state
-            and actualizing the new state will be executed simultaneously.</param>
+            <param name="opts">Options for configuring actualization.</param>
         </member>
-        <member name="M:BagoumLib.Assertions.IdealizedState.ActualizeOnNewState">
+        <member name="M:BagoumLib.Assertions.IdealizedState.ActualizeOnNewState(BagoumLib.Assertions.ActualizeOptions)">
             <summary>
             Actualize this state when no previous state exists (ie, this is a new state).
             </summary>
         </member>
-        <member name="M:BagoumLib.Assertions.IdealizedState.DeactualizeOnEndState">
+        <member name="M:BagoumLib.Assertions.IdealizedState.DeactualizeOnEndState(BagoumLib.Assertions.ActualizeOptions)">
             <summary>
             Deactualize this state when no next state exists (ie, this is the last state).
             If this is not the last state, then call nextState.Actualize(thisState),
@@ -137,44 +161,42 @@
             Add assertions.
             </summary>
         </member>
-        <member name="T:BagoumLib.Assertions.OnActualize">
+        <member name="T:BagoumLib.Assertions.RunOnEntryAssertion">
             <summary>
-            An assertion that invokes a callback when it is actualized (but not when it is inherited).
+            An assertion that runs a task on entry (new state/no preceding only). No-op on inherit.
             </summary>
-            <param name="onActualize"></param>
         </member>
-        <member name="M:BagoumLib.Assertions.OnActualize.#ctor(System.Func{System.Threading.Tasks.Task})">
+        <member name="M:BagoumLib.Assertions.RunOnEntryAssertion.#ctor(System.Func{System.Threading.Tasks.Task})">
             <summary>
-            An assertion that invokes a callback when it is actualized (but not when it is inherited).
+            An assertion that runs a task on entry (new state/no preceding only). No-op on inherit.
             </summary>
-            <param name="onActualize"></param>
         </member>
-        <member name="P:BagoumLib.Assertions.OnActualize.onActualize">
-            <summary></summary>
+        <member name="M:BagoumLib.Assertions.RunOnEntryAssertion.#ctor(System.Action)">
+            <inheritdoc/>
         </member>
-        <member name="P:BagoumLib.Assertions.OnActualize.ID">
+        <member name="P:BagoumLib.Assertions.RunOnEntryAssertion.ID">
             <inheritdoc />
         </member>
-        <member name="P:BagoumLib.Assertions.OnActualize.Priority">
-            <inheritdoc />
+        <member name="P:BagoumLib.Assertions.RunOnEntryAssertion.Priority">
+            <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Assertions.OnActualize.ActualizeOnNewState">
-            <inheritdoc />
+        <member name="M:BagoumLib.Assertions.RunOnEntryAssertion.ActualizeOnNewState">
+            <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Assertions.OnActualize.ActualizeOnNoPreceding">
-            <inheritdoc />
+        <member name="M:BagoumLib.Assertions.RunOnEntryAssertion.ActualizeOnNoPreceding">
+            <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Assertions.OnActualize.DeactualizeOnEndState">
-            <inheritdoc />
+        <member name="M:BagoumLib.Assertions.RunOnEntryAssertion.DeactualizeOnEndState">
+            <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Assertions.OnActualize.DeactualizeOnNoSucceeding">
-            <inheritdoc />
+        <member name="M:BagoumLib.Assertions.RunOnEntryAssertion.DeactualizeOnNoSucceeding">
+            <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Assertions.OnActualize.Inherit(BagoumLib.Assertions.IAssertion)">
-            <inheritdoc />
+        <member name="M:BagoumLib.Assertions.RunOnEntryAssertion.Inherit(BagoumLib.Assertions.IAssertion)">
+            <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Assertions.OnActualize._Inherit(BagoumLib.Assertions.OnActualize)">
-            <inheritdoc />
+        <member name="M:BagoumLib.Assertions.RunOnEntryAssertion._Inherit(BagoumLib.Assertions.RunOnEntryAssertion)">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Mathematics.AxisAngle">
             <summary>
@@ -388,6 +410,11 @@
             Returns (target+n*mod) to minimize |src - (target+n*mod)|.
             </summary>
         </member>
+        <member name="M:BagoumLib.Mathematics.BMath.RotateVectorDeg(System.Single,System.Single,System.Single)">
+            <summary>
+            Rotate a vector (x,y) CCW by the provided angle in degrees.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Mathematics.BMath.Rotate(System.Numerics.Vector3@,System.Numerics.Quaternion@)">
             <summary>
             Rotate a vector by a quaternion. Note that the quaternion should already have its angle halved.
@@ -598,6 +625,40 @@
             <summary>
             Create a random string. Uses the chars a-zA-Z0-9 if no set is provided.
             </summary>
+        </member>
+        <member name="T:BagoumLib.Mathematics.V2RV2">
+            <summary>
+            A position description composed of a nonrotational offset
+            and a rotational offset.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.V2RV2.nx">
+            <summary>
+            X-component of nonrotational offset
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.V2RV2.ny">
+            <summary>
+            Y-component of nonrotational offset
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.V2RV2.rx">
+            <summary>
+            X-component of rotational offset
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.V2RV2.ry">
+            <summary>
+            Y-component of rotational offset
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.V2RV2.angle">
+            <summary>
+            Rotation (degrees) of rotational offset
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.ToString">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Cancellation.CancelHelpers">
             <summary>
@@ -816,6 +877,12 @@
             <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Cancellation.JointCancellee.From(BagoumLib.Cancellation.ICancellee,BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Create a cancellee from two parents. If either is null, the other will be directly returned.
+            If both are null, returns Cancellable.Null.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Cancellation.JointCancellee.MaybeFrom(BagoumLib.Cancellation.ICancellee,BagoumLib.Cancellation.ICancellee)">
             <summary>
             Create a cancellee from two parents. If either is null, the other will be directly returned.
             </summary>
@@ -1092,8 +1159,8 @@
         </member>
         <member name="T:BagoumLib.DataStructures.AbstractDMCompactingArray`1">
             <summary>
-            Alternate implementation of <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/> which allows multiple concrete implementations of
-            <see cref="T:BagoumLib.DataStructures.IDeletionMarker`1"/> in one array.
+            Alternate implementation of <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/> which allows any concrete implementation of
+            <see cref="T:BagoumLib.DataStructures.IDeletionMarker`1"/>.
             </summary>
             <typeparam name="T">Value type of array elements</typeparam>
         </member>
@@ -1125,8 +1192,8 @@
         </member>
         <member name="T:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1">
             <summary>
-            Generalized implementation of <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/> for multiple types of <see cref="T:BagoumLib.DataStructures.DeletionMarker`1"/> in one array,
-             even if the underlying value types are different.
+            Generalized implementation of <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/> parametrized by the type of deletion marker.
+            <br/>There is no guarantee about the value type of array elements.
             </summary>
             <typeparam name="D">Subimplementation of <see cref="T:BagoumLib.DataStructures.IDeletionMarker"/></typeparam>
         </member>
@@ -1222,6 +1289,57 @@
         <member name="T:BagoumLib.DataStructures.ArrayList`1">
             <summary>
             Implementation of List that supports Add(in T). This is probably not faster than List.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.DataStructures.DictCache`2">
+            <summary>
+            Cache for dictionaries.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DictCache`2.Consign(System.Collections.Generic.Dictionary{`0,`1})">
+            <summary>
+            Return an object to the cache.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DictCache`2.Get">
+            <summary>
+            Get a new object from the cache, or create it if the cache is empty.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.DataStructures.ListCache`1">
+            <summary>
+            Cache for lists.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.ListCache`1.Consign(System.Collections.Generic.List{`0})">
+            <summary>
+            Return an object to the cache.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.ListCache`1.Get">
+            <summary>
+            Get a new object from the cache, or create it if the cache is empty.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.DataStructures.CacheExtensions">
+            <summary>
+            Extensions for <see cref="T:BagoumLib.DataStructures.ListCache`1"/>, <see cref="T:BagoumLib.DataStructures.DictCache`2"/>, etc.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CacheExtensions.Consign``1(System.Collections.Generic.List{``0})">
+            <inheritdoc cref="M:BagoumLib.DataStructures.ListCache`1.Consign(System.Collections.Generic.List{`0})"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CacheExtensions.Consign``2(System.Collections.Generic.Dictionary{``0,``1})">
+            <inheritdoc cref="M:BagoumLib.DataStructures.DictCache`2.Consign(System.Collections.Generic.Dictionary{`0,`1})"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CacheExtensions.SetDefaultSet``3(System.Collections.Generic.Dictionary{``0,System.Collections.Generic.Dictionary{``1,``2}},``0,``1,``2)">
+            <summary>
+            Set a value in a nested dictionary.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CacheExtensions.ConsignRecursive``2(System.Collections.Generic.Dictionary{``0,System.Collections.Generic.List{``1}})">
+            <summary>
+            Consign all lists within this dictionary, and then the dictionary itself.
             </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.CircularList`1">
@@ -1336,7 +1454,7 @@
             Run the continuation on the underlying object.
             </summary>
         </member>
-        <member name="M:BagoumLib.DataStructures.Continuation`2.Extract">
+        <member name="P:BagoumLib.DataStructures.Continuation`2.Obj">
             <summary>
             Get the underlying value in a base type.
             </summary>
@@ -1499,6 +1617,11 @@
         <member name="P:BagoumLib.DataStructures.DictionaryWithKeys`2.Item(`0)">
             <summary>
             Get/set accessors for the underlying data.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.DictionaryWithKeys`2.Clear">
+            <summary>
+            Clear all data in this dictionary.
             </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.IDeletionMarker">
@@ -1786,6 +1909,44 @@
             Returns the number of non-deleted elements in the array.
             </summary>
         </member>
+        <member name="T:BagoumLib.DataStructures.JointCallback`3">
+            <summary>
+            Invoke a callback when two dependencies are fulfilled.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.JointCallback`3.Callback">
+            <summary>
+            The function that will be called when <see cref="P:BagoumLib.DataStructures.JointCallback`3.First"/> and <see cref="P:BagoumLib.DataStructures.JointCallback`3.Second"/> are provided.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.JointCallback`3.First">
+            <summary>
+            First value to be passed to the callback.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.JointCallback`3.Second">
+            <summary>
+            Second value to be passed to the callback.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.JointCallback`3.#ctor(System.Func{`0,`1,`2})">
+            <inheritdoc cref="T:BagoumLib.DataStructures.JointCallback`3"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.JointCallback`3.#ctor(System.Action{`0,`1})">
+            <inheritdoc cref="T:BagoumLib.DataStructures.JointCallback`3"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.JointCallback`3.SetFirst(`0)">
+            <summary>
+            Provide the first value, and invoke the callback if the second value is already provided.
+            </summary>
+            <exception cref="T:System.Exception">Thrown when the first value is already provided.</exception>
+        </member>
+        <member name="M:BagoumLib.DataStructures.JointCallback`3.SetSecond(`1)">
+            <summary>
+            Provide the second value, and invoke the callback if the first value is already provided.
+            </summary>
+            <exception cref="T:System.Exception">Thrown when the second value is already provided.</exception>
+        </member>
         <member name="T:BagoumLib.DataStructures.JointDisposable">
             <summary>
             A disposable token that, when disposed, disposes multiple other tokens and then calls a function.
@@ -1944,6 +2105,33 @@
             <summary>
             Execute the next state as provided in <see cref="P:BagoumLib.DataStructures.StateFlow`1.NextState"/>, or if <see cref="P:BagoumLib.DataStructures.StateFlow`1.NextState"/> is not set then use the default instead.
             </summary>
+        </member>
+        <member name="T:BagoumLib.DataStructures.SubList`1">
+            <summary>
+            A view over a subsection of a list.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.SubList`1.Count">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.DataStructures.SubList`1.Offset">
+            <summary>
+            The offset of the start of this view from the start of the original list.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.SubList`1.Source">
+            <summary>
+            The original list.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.SubList`1.#ctor(System.Collections.Generic.IReadOnlyList{`0},System.Int32,System.Nullable{System.Int32})">
+            <inheritdoc cref="T:BagoumLib.DataStructures.SubList`1"/>
+        </member>
+        <member name="P:BagoumLib.DataStructures.SubList`1.Item(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.SubList`1.GetEnumerator">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.DataStructures.Trie">
             <summary>
@@ -2169,6 +2357,16 @@
             Aggregate value. Note that the set operator modifies <see cref="P:BagoumLib.Events.DisturbedEvented`2.BaseValue"/>.
             </summary>
         </member>
+        <member name="P:BagoumLib.Events.DisturbedEvented`2.OnChange">
+            <summary>
+            Source event that is fired when this value changes.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Events.DisturbedEvented`2.Disturbances">
+            <summary>
+            List of disturbance effects applied to the core value.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Events.DisturbedEvented`2.#ctor(`1)">
             <summary>
             The initial value is published to onSet.
@@ -2376,7 +2574,7 @@
         </member>
         <member name="P:BagoumLib.Events.IBObservable`1.HasValue">
             <summary>
-            Whether or not this observable has ever published a vlaue.
+            Whether or not this observable has ever published a value.
             </summary>
         </member>
         <member name="P:BagoumLib.Events.IBObservable`1.Value">
@@ -2435,6 +2633,9 @@
         <member name="M:BagoumLib.Events.Event`2.Subscribe(System.IObserver{`1})">
             <inheritdoc/>
         </member>
+        <member name="M:BagoumLib.Events.Event`2.Subscribe(System.IObserver{`1},System.Int32)">
+            <inheritdoc cref="M:BagoumLib.Events.Event`2.Subscribe(System.IObserver{`1})"/>
+        </member>
         <member name="M:BagoumLib.Events.Event`2.OnNext(`0)">
             <inheritdoc/>
         </member>
@@ -2473,12 +2674,20 @@
             <br/>Always has a current value.
             </summary>
         </member>
+        <member name="P:BagoumLib.Events.Evented`2.AllowSameValueUpdate">
+            <summary>
+            Allow the same value to be published multiple times in a row.
+            <br/>True by default. Note that <see cref="M:BagoumLib.Events.Evented`2.PublishIfNotSame(`0)"/> will not
+             publish a value if it is the same as the previous one, regardless of this
+             setting.
+            </summary>
+        </member>
         <member name="P:BagoumLib.Events.Evented`2.Value">
             <inheritdoc />
         </member>
         <member name="P:BagoumLib.Events.Evented`2.OnChange">
             <summary>
-            Event that fires when the value changes. You can subscribe to this directly if you do not want
+            Event that fires when the value updates. You can subscribe to this directly if you do not want
              to receive the existing value on subscription.
             </summary>
         </member>
@@ -2489,6 +2698,9 @@
         </member>
         <member name="M:BagoumLib.Events.Evented`2.Subscribe(System.IObserver{`1})">
             <inheritdoc />
+        </member>
+        <member name="M:BagoumLib.Events.Evented`2.Subscribe(System.IObserver{`1},System.Int32)">
+            <inheritdoc cref="M:BagoumLib.Events.Evented`2.Subscribe(System.IObserver{`1})" />
         </member>
         <member name="M:BagoumLib.Events.Evented`2.OnNext(`0)">
             <inheritdoc />
@@ -2704,6 +2916,9 @@
         <member name="M:BagoumLib.Events.NullEvent`1.Subscribe(System.IObserver{`0})">
             <inheritdoc/>
         </member>
+        <member name="M:BagoumLib.Events.NullEvent`1.Subscribe(System.IObserver{`0},System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.Events.PushLerper`1">
             <summary>
             A wrapper around a sequence of values that smoothly lerps to the most recent value provided.
@@ -2724,9 +2939,11 @@
         <member name="P:BagoumLib.Events.PushLerper`1.Value">
             <inheritdoc/>
         </member>
+        <member name="M:BagoumLib.Events.PushLerper`1.#ctor(System.Single,System.Func{`0,`0,System.Single,`0})">
+            <inheritdoc/>
+        </member>
         <member name="M:BagoumLib.Events.PushLerper`1.#ctor(System.Func{`0,`0,System.Single},System.Func{`0,`0,System.Single,`0})">
             <summary>
-            
             </summary>
             <param name="lerpTime">A pure function that returns the lerp time given the previous and next values.</param>
             <param name="lerper"></param>
@@ -2741,6 +2958,11 @@
         <member name="M:BagoumLib.Events.PushLerper`1.PushIfNotSame(`0,System.Single)">
             <summary>
             Set a new target value to lerp to (see <see cref="M:BagoumLib.Events.PushLerper`1.Push(`0,System.Single)"/>) if it is not the same as the existing target value.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.PushLerper`1.ForcePushIfNotSame(`0,System.Single)">
+            <summary>
+            Force-set the current value to `targetValue` if it is not the same as the existing target value.
             </summary>
         </member>
         <member name="M:BagoumLib.Events.PushLerper`1.Update(System.Single)">
@@ -2758,6 +2980,14 @@
             Puts the object in a state such that the next time a value is pushed, it will be instantaneously lerped to.
             </summary>
         </member>
+        <member name="M:BagoumLib.Events.PushLerper`1.op_Implicit(BagoumLib.Events.PushLerper{`0})~`0">
+            <summary>
+            Get the current value of a <see cref="T:BagoumLib.Events.PushLerper`1"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.PushLerper`1.Subscribe(System.IObserver{`0})">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.Events.PushLerperF`1">
             <summary>
             A wrapper around a sequence of single-argument functions that smoothly lerps to the most recent function.
@@ -2765,10 +2995,30 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="P:BagoumLib.Events.PushLerperF`1.Value">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.PushLerperF`1.#ctor(System.Single,System.Func{`0,`0,System.Single,`0})">
+            <inheritdoc cref="T:BagoumLib.Events.PushLerperF`1"/>
+        </member>
+        <member name="M:BagoumLib.Events.PushLerperF`1.Push(System.Func{System.Single,`0},System.Single)">
+            <inheritdoc cref="M:BagoumLib.Events.PushLerper`1.Push(`0,System.Single)"/>
+        </member>
         <member name="M:BagoumLib.Events.PushLerperF`1.Unset">
             <summary>
             Puts the object in a state such that the next time a function is pushed, it will be instantaneously lerped to.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Events.PushLerperF`1.Update(System.Single)">
+            <inheritdoc cref="M:BagoumLib.Events.PushLerper`1.Update(System.Single)"/>
+        </member>
+        <member name="M:BagoumLib.Events.PushLerperF`1.op_Implicit(BagoumLib.Events.PushLerperF{`0})~`0">
+            <summary>
+            Get the current value of a <see cref="T:BagoumLib.Events.PushLerper`1"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Events.PushLerperF`1.Subscribe(System.IObserver{`0})">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Events.ReplayEvent`1">
             <summary>
@@ -2788,6 +3038,9 @@
             <param name="history">Maximum number of recently published elements to send to new subscribers</param>
         </member>
         <member name="M:BagoumLib.Events.ReplayEvent`1.Subscribe(System.IObserver{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.ReplayEvent`1.Subscribe(System.IObserver{`0},System.Int32)">
             <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Events.ReplayEvent`1.OnNext(`0)">
@@ -2812,10 +3065,68 @@
             When the provided observable sends a value, this trigger will be reset.
             </summary>
         </member>
+        <member name="T:BagoumLib.JSONHelpers">
+            <summary>
+            Helper utilities for JSON serialization.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.JSONHelpers.GetTypeName">
+            <summary>
+            Get a type name according to Newtonsoft.Json serialization rules.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.SingletonConverter`1">
+            <summary>
+            Newtonsoft.Json serializer for singleton subclasses of a parent class T.
+            <br/>The singleton for a subclass must be accessible as static property `Subclass.S`,
+            or type T must have a static property SINGLETON_KEY that provides the name of the property.
+            <br/>The singletons are serialized using the local class name (Type.Name).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.SingletonConverter`1.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc />
+        </member>
+        <member name="M:BagoumLib.SingletonConverter`1.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc />
+        </member>
+        <member name="M:BagoumLib.SingletonConverter`1.CanConvert(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="T:BagoumLib.ComplexDictKeyConverter`2">
+            <summary>
+            JSON converter for dictionaries with non-primitive keys.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ComplexDictKeyConverter`2.CanConvert(System.Type)">
+            <inheritdoc />
+        </member>
+        <member name="M:BagoumLib.ComplexDictKeyConverter`2.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc />
+        </member>
+        <member name="M:BagoumLib.ComplexDictKeyConverter`2.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <inheritdoc />
+        </member>
         <member name="T:BagoumLib.MultiException">
             <summary>
             An exception class with basically the same functionality as <see cref="T:System.AggregateException"/>, but with
             more explicit control over the message.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.Exceptions">
+            <summary>
+            Helpers for exceptions.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Exceptions.MaybeAggregate``1(System.Collections.Generic.IList{``0})">
+            <summary>
+            Combine multiple errors into one.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Exceptions.PrintNestedException(System.Exception,System.Boolean)">
+            <summary>
+            Return a string describing a nested exception, showing the outermost
+             exception first and then moving inwards.
+            <br/>Includes a stacktrace from the innermost exception.
             </summary>
         </member>
         <member name="M:BagoumLib.Exceptions.PrintNestedExceptionInverted(System.Exception,System.Boolean)">
@@ -3911,6 +4222,11 @@
             Return the first element of an enumerable, or null if it is empty.
             </summary>
         </member>
+        <member name="M:BagoumLib.IEnumExtensions.CastFilter``2(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Filter to include only the elements of `arr` that are of type `U`.
+            </summary>
+        </member>
         <member name="M:BagoumLib.IEnumExtensions.FilterNone``1(System.Collections.Generic.IEnumerable{System.Nullable{``0}})">
             <summary>
             Filter out null elements.
@@ -3996,6 +4312,16 @@
             Static class providing extensions for <see cref="T:System.Collections.Generic.List`1"/>.
             </summary>
         </member>
+        <member name="M:BagoumLib.ListExtensions.Cleared``1(System.Collections.Generic.List{``0})">
+            <summary>
+            Clear the list and return it.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ListExtensions.Added``1(System.Collections.Generic.List{``0},``0)">
+            <summary>
+            Add an element to a list and return it.
+            </summary>
+        </member>
         <member name="M:BagoumLib.ListExtensions.Pop``1(System.Collections.Generic.List{``0})">
             <summary>
             Remove and return the last element of a list.
@@ -4004,6 +4330,11 @@
         <member name="M:BagoumLib.ListExtensions.SelectInPlace``1(System.Collections.Generic.List{``0},System.Func{``0,``0})">
             <summary>
             Update each element of a list in-place using the mapping function.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ListExtensions.IsSubsetOf``1(System.Collections.Generic.IReadOnlyList{``0},System.Collections.Generic.IReadOnlyList{``0})">
+            <summary>
+            Returns true iff every item in `subset` is contained within `other`.
             </summary>
         </member>
         <member name="M:BagoumLib.ListExtensions.ElementWiseHashCode``1(System.Collections.Generic.IReadOnlyList{``0})">
@@ -4045,9 +4376,19 @@
             Subtract 1 from idx, but reset it to mod-1 if it is less than zero.
             </summary>
         </member>
+        <member name="M:BagoumLib.ListExtensions.AddNonNull``1(System.Collections.Generic.List{``0},``0)">
+            <summary>
+            Add `x` to the list if it is not null, and return the list.
+            </summary>
+        </member>
         <member name="T:BagoumLib.DictExtensions">
             <summary>
             Static class providing extensions for dictionaries
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DictExtensions.CopyInto``2(System.Collections.Generic.Dictionary{``0,``1},System.Collections.Generic.Dictionary{``0,``1})">
+            <summary>
+            Copy all key/value pairs from `src` into `target`.
             </summary>
         </member>
         <member name="M:BagoumLib.DictExtensions.GetOrThrow``2(System.Collections.Generic.Dictionary{``0,``1},``0)">
@@ -4102,9 +4443,32 @@
             Get the value at the given key, or create a new value.
             </summary>
         </member>
+        <member name="M:BagoumLib.DictExtensions.GetOrNull``2(System.Collections.Generic.Dictionary{``0,``1},``0)">
+            <summary>
+            Get the value associated with a key, or return null.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DictExtensions.Push``2(System.Collections.Generic.Dictionary{``0,System.Collections.Generic.Stack{``1}},``0,``1)">
+            <summary>
+            Push a value onto the stack mapped to the provided key.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DictExtensions.Pop``2(System.Collections.Generic.Dictionary{``0,System.Collections.Generic.Stack{``1}},``0)">
+            <summary>
+            Pop a value from the stack mapped to the provided key. Clear the key if the stack becomes empty.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DictExtensions.SearchByType``1(System.Collections.Generic.Dictionary{System.Type,``0},System.Object,System.Boolean)">
+            <summary>
+            Get the value `V` associated with the type that most accurately defines `obj`, in the order:
+            <br/>- obj.GetType()
+            <br/>- interfaces
+            <br/>- base types
+            </summary>
+        </member>
         <member name="T:BagoumLib.NullableExtensions">
             <summary>
-            Static class providing extensions for nullable struct types
+            Static class providing extensions for nullable types
             </summary>
         </member>
         <member name="M:BagoumLib.NullableExtensions.And(System.Nullable{System.Boolean},System.Boolean)">
@@ -4119,7 +4483,12 @@
         </member>
         <member name="M:BagoumLib.NullableExtensions.FMap``2(System.Nullable{``0},System.Func{``0,``1})">
             <summary>
-            Functor map over nullable structs
+            Functor map over nullable structs.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.NullableExtensions.OptFMap``2(``0,System.Func{``0,``1})">
+            <summary>
+            Functor map over nullable class types.
             </summary>
         </member>
         <member name="M:BagoumLib.NullableExtensions.Bind``2(System.Nullable{``0},System.Func{``0,System.Nullable{``1}})">
@@ -4177,6 +4546,37 @@
             <summary>
             Create an <see cref="T:BagoumLib.Events.Evented`2"/> that maps the source values into another type.
             </summary>
+        </member>
+        <member name="T:BagoumLib.FuncExtensions">
+            <summary>
+            Static class providing extensions for actions/funcs.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.FuncExtensions.AsFunc``2(``1,System.Action{``0})">
+            <summary>
+            Create a Func that calls the `preceding` Action and then returns `result`.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.FuncExtensions.Or(System.Func{System.Boolean},System.Func{System.Boolean})">
+            <summary>
+            Create a Func that returns true if either argument returns true.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.FuncExtensions.Use``2(``0,System.Func{``0,``1})">
+            <summary>
+            Provide the first value as an argument to the Func.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.FuncExtensions.Then(System.Action,System.Action)">
+            <summary>
+            Return an action that execute two actions in sequence.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.FuncExtensions.Then``1(System.Action{``0},System.Action{``0})">
+            <inheritdoc cref="M:BagoumLib.FuncExtensions.Then(System.Action,System.Action)"/>
+        </member>
+        <member name="M:BagoumLib.FuncExtensions.Then``2(System.Action{``0,``1},System.Action{``0,``1})">
+            <inheritdoc cref="M:BagoumLib.FuncExtensions.Then(System.Action,System.Action)"/>
         </member>
         <member name="T:BagoumLib.Functional.Delayed`1">
             <summary>
@@ -4420,6 +4820,16 @@
             Else the result will be a Left (including in the case when no arguments are provided.)
             </summary>
         </member>
+        <member name="M:BagoumLib.Functional.Helpers.Select``2(BagoumLib.Functional.Maybe{``0},System.Func{``0,``1})">
+            <summary>
+            Alias for <see cref="M:BagoumLib.Functional.Maybe`1.FMap``1(System.Func{`0,``0})"/> for LINQ compatibility.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.Helpers.SelectMany``3(BagoumLib.Functional.Maybe{``0},System.Func{``0,BagoumLib.Functional.Maybe{``1}},System.Func{``0,``1,``2})">
+            <summary>
+            LINQ implementation for SelectMany.
+            </summary>
+        </member>
         <member name="T:BagoumLib.Functional.Maybe`1">
             <summary>
             A value of type T that may or may not exist.
@@ -4460,6 +4870,11 @@
         <member name="M:BagoumLib.Functional.Maybe`1.FMap``1(System.Func{`0,``0})">
             <summary>
             Functor map.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.Maybe`1.Bind``1(System.Func{`0,BagoumLib.Functional.Maybe{``0}})">
+            <summary>
+            Monadic bind.
             </summary>
         </member>
         <member name="M:BagoumLib.Functional.Maybe`1.Or(`0)">
@@ -4717,229 +5132,34 @@
         <member name="M:BagoumLib.TrivialLogListener.CanSkipMessage(BagoumLib.LogLevel,System.Exception)">
             <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Reflection.BuilderExtensions.EmitSwitch(FluentIL.IEmitter,BagoumLib.Reflection.Emitter,System.Collections.Generic.IEnumerable{System.ValueTuple{System.Int32,BagoumLib.Reflection.Emitter}},BagoumLib.Reflection.Emitter,System.Boolean)">
+        <member name="T:BagoumLib.Reflection.NamedParam">
             <summary>
-            Create a jumptable switch statement.
+            A simplified description of a method parameter.
             </summary>
-            <param name="il">IL generator</param>
-            <param name="arg">Argument to switch</param>
-            <param name="_cases">Cases for the switch statement. Keys may be negative.</param>
-            <param name="deflt">Default case</param>
-            <param name="isReturnSwitch">True iff all switch cases (including default) end in Ret.</param>
-            <returns></returns>
+            <param name="Type">Parameter type</param>
+            <param name="Name">Parameter name</param>
         </member>
-        <member name="T:BagoumLib.Reflection.ExampleBaseCustomType">
+        <member name="M:BagoumLib.Reflection.NamedParam.#ctor(System.Type,System.String)">
             <summary>
-            An example base type for <see cref="T:BagoumLib.Reflection.CustomDataBuilder"/>.
+            A simplified description of a method parameter.
             </summary>
+            <param name="Type">Parameter type</param>
+            <param name="Name">Parameter name</param>
         </member>
-        <member name="F:BagoumLib.Reflection.ExampleBaseCustomType.nonRecordedField">
-            <summary>
-            This field is not examined by <see cref="T:BagoumLib.Reflection.CustomDataBuilder"/>,
-             and is not accessible by the Has/Read/Write methods.
-            </summary>
+        <member name="P:BagoumLib.Reflection.NamedParam.Type">
+            <summary>Parameter type</summary>
         </member>
-        <member name="M:BagoumLib.Reflection.ExampleBaseCustomType.HasFloat(System.Int32)">
+        <member name="P:BagoumLib.Reflection.NamedParam.Name">
+            <summary>Parameter name</summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.NamedParam.op_Implicit(System.Reflection.ParameterInfo)~BagoumLib.Reflection.NamedParam">
             <summary>
-            Base field checker method. Should return false.
+            Implicit conversion of ParameterInfo to <see cref="T:BagoumLib.Reflection.NamedParam"/>.
             </summary>
         </member>
-        <member name="M:BagoumLib.Reflection.ExampleBaseCustomType.ReadFloat(System.Int32)">
+        <member name="P:BagoumLib.Reflection.NamedParam.AsParameter">
             <summary>
-            Base field reader method. Should throw an exception.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.ExampleBaseCustomType.WriteFloat(System.Int32,System.Single)">
-            <summary>
-            Base field writer method. Should throw an exception.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.ExampleBaseCustomType.CopyInto(BagoumLib.Reflection.ExampleBaseCustomType)">
-            <summary>
-            Copy this object's values onto another object.
-            This should copy any values not handled by <see cref="T:BagoumLib.Reflection.CustomDataBuilder"/>
-             (in this case, just <see cref="F:BagoumLib.Reflection.ExampleBaseCustomType.nonRecordedField"/>).
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.ExampleBaseCustomType.CopyIntoVirtual(BagoumLib.Reflection.ExampleBaseCustomType)">
-            <summary>
-            Virtual method to copy this object's values onto another object.
-            <br/>Subclasses should implement this by casting the argument to their own type
-            and then calling their own <see cref="M:BagoumLib.Reflection.ExampleBaseCustomType.CopyInto(BagoumLib.Reflection.ExampleBaseCustomType)"/>, which itself should call this base class <see cref="M:BagoumLib.Reflection.ExampleBaseCustomType.CopyInto(BagoumLib.Reflection.ExampleBaseCustomType)"/>.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.ExampleBaseCustomType.Clone">
-            <summary>
-            Virtual method to clone an object.
-            Should be `CopyInto(new T())` where T is the type of the overriding subclass.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:BagoumLib.Reflection.CustomDataFieldDescriptor">
-            <summary>
-            A description of a field on a custom data type.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataFieldDescriptor.#ctor(System.String,System.Type)">
-            <summary>
-            A description of a field on a custom data type.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Reflection.CustomDataFieldDescriptor.MakeProperty">
-            <summary>
-            Whether or not the field should also have an associated property.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataFieldDescriptor.ToString">
-            <inheritdoc />
-        </member>
-        <member name="T:BagoumLib.Reflection.CustomDataDescriptor">
-            <summary>
-            A description of a custom data type, described uniquely by its fields and its base type.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataDescriptor.#ctor(BagoumLib.Reflection.CustomDataFieldDescriptor[])">
-            <summary>
-            A description of a custom data type, described uniquely by its fields and its base type.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Reflection.CustomDataDescriptor.BaseType">
-            <summary>
-            The base type of the custom data type being constructed.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataDescriptor.Equals(BagoumLib.Reflection.CustomDataDescriptor)">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataDescriptor.GetHashCode">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataDescriptor.IsSubclassOf(BagoumLib.Reflection.BuiltCustomDataDescriptor)">
-            <summary>
-            Checks if this type is a subclass of the provided type.
-            </summary>
-        </member>
-        <member name="F:BagoumLib.Reflection.CustomDataDescriptor.Empty">
-            <summary>
-            A custom data type with no fields and no base type.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataDescriptor.ToString">
-            <inheritdoc />
-        </member>
-        <member name="T:BagoumLib.Reflection.BuiltCustomDataFieldDescriptor">
-            <summary>
-            The metadata of a field on a built custom data type.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.BuiltCustomDataFieldDescriptor.#ctor(BagoumLib.Reflection.CustomDataFieldDescriptor,System.Int32,System.Reflection.Emit.FieldBuilder,System.Reflection.Emit.PropertyBuilder)">
-            <summary>
-            The metadata of a field on a built custom data type.
-            </summary>
-        </member>
-        <member name="T:BagoumLib.Reflection.BuiltCustomDataDescriptor">
-            <summary>
-            The metadata of a built custom data type.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.BuiltCustomDataDescriptor.#ctor(BagoumLib.Reflection.CustomDataDescriptor,System.Type,System.Reflection.ConstructorInfo,System.Reflection.MethodInfo,BagoumLib.Reflection.BuiltCustomDataFieldDescriptor[])">
-            <summary>
-            The metadata of a built custom data type.
-            </summary>
-        </member>
-        <member name="T:BagoumLib.Reflection.CustomDataBuilder">
-            <summary>
-            A class that constructs simple types containing fields of various types.
-            <br/>If specified, the types also provide methods in the format FindT for each T
-             in <see cref="F:BagoumLib.Reflection.CustomDataBuilder.byIdAccessible"/> (eg. FindFloat), that allow looking up
-             a field by ID (converted from name via <see cref="M:BagoumLib.Reflection.CustomDataBuilder.GetVariableKey(System.String,System.Type)"/>) on any
-             subclass of <see cref="P:BagoumLib.Reflection.CustomDataBuilder.CustomDataBaseType"/>.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Reflection.CustomDataBuilder.Factory">
-            <summary>
-            Type factory used to create runtime types.
-            </summary>
-        </member>
-        <member name="F:BagoumLib.Reflection.CustomDataBuilder.variableNameToID">
-            <summary>
-            Dictionary mapping string, type pairs to IDs, as looked up by GetVariableKey.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Reflection.CustomDataBuilder.CustomDataBaseType">
-            <summary>
-            The starting type from which all types generated by this <see cref="T:BagoumLib.Reflection.CustomDataBuilder"/> are derived.
-            </summary>
-        </member>
-        <member name="F:BagoumLib.Reflection.CustomDataBuilder.customDataTypes">
-            <summary>
-            A map containing all types that have been built.
-            </summary>
-        </member>
-        <member name="F:BagoumLib.Reflection.CustomDataBuilder.customDataDescriptors">
-            <summary>
-            A map containing the build metadata for all types that have been built.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.#ctor(System.Type,System.String,System.String,System.Type[])">
-            <summary>
-            Constructor that can be used when there is a fixed base type.
-            The base type must have functions in the format {Read/Write/Has}T(int key) for all types T in byIdAccessible. It also must have a Clone and CopyInto function as well. See <see cref="T:BagoumLib.Reflection.ExampleBaseCustomType"/>.
-            <br/>It is recommended to use a base type if possible.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.#ctor(System.String,System.String,System.Type[])">
-            <summary>
-            Constructor that can be used when there is no fixed base type.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.#ctor(System.Type)">
-            <summary>
-            A degenerate constructor for cases where type-building is not actually used. Note that <see cref="M:BagoumLib.Reflection.CustomDataBuilder.CreateCustomDataType(BagoumLib.Reflection.CustomDataDescriptor,BagoumLib.Reflection.BuiltCustomDataDescriptor@,System.Action{FluentIL.ITypeBuilder})"/> will throw unless you are requesting the base type.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.GetVariableKey(System.String,System.Type)">
-            <summary>
-            Get the id for a field with the given name and type.
-            The id can be passed to the generated field reader, writer, and checker methods.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.GetFieldName(System.String,System.Type)">
-            <summary>
-            Given the name of a variable used in a <see cref="T:BagoumLib.Reflection.CustomDataDescriptor"/> (eg. "myFloat"), get the name of the corresponding field on a custom data type (eg. "m0_myFloat").
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.GetPropertyName(System.String,System.Type)">
-            <summary>
-            Given the name of a variable used in a <see cref="T:BagoumLib.Reflection.CustomDataDescriptor"/> (eg. "myFloat"), get the name of the corresponding property on a custom data type (eg. "P0_myFloat").
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.FieldReaderMethodName(System.Type)">
-            <summary>
-            Method name for reading an arbitrary value of type T by its id. Generally "ReadT".
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.FieldWriterMethodName(System.Type)">
-            <summary>
-            Method name for writing an arbitrary value of type T by its id. Generally "WriteT".
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.FieldCheckerMethodName(System.Type)">
-            <summary>
-            Method name for checking if a value of type T with the given id exists. Generally "HasT".
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.SetReservedKeys">
-            <summary>
-            Set reserved key-id pairs.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Reflection.CustomDataBuilder.CreateCustomDataType(BagoumLib.Reflection.CustomDataDescriptor,BagoumLib.Reflection.BuiltCustomDataDescriptor@,System.Action{FluentIL.ITypeBuilder})">
-            <summary>
-            Create a custom type with the fields described in <paramref name="req"/>,
-            and Read{T}(int id) functions that allow looking up fields by ID.
-            <br/>The actual field names will be determined by <see cref="M:BagoumLib.Reflection.CustomDataBuilder.GetFieldName(System.String,System.Type)"/>.
-            <br/>A base type can be provided, but that type must derive from <see cref="P:BagoumLib.Reflection.CustomDataBuilder.CustomDataBaseType"/>, and it must have a descriptor registered in the builder. 
+            Description of this type in the format "TYPE NAME", where TYPE is simplified.
             </summary>
         </member>
         <member name="T:BagoumLib.Reflection.ReflectionUtils">
@@ -4973,6 +5193,12 @@
             <summary>
             Alias for CSharpTypePrinter.Default.Print(t), which prints the type as close to the native
             C# description as possible without namespaces.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils.SimpRName(System.Type)">
+            <summary>
+            Alias for CSharpTypePrinter.Default.Print(t), which simplifies the type according to runtime rules
+             and then prints it type as close to the native C# description as possible without namespaces.
             </summary>
         </member>
         <member name="M:BagoumLib.Reflection.ReflectionUtils.IsWeakSubclassOf(System.Type,System.Type)">
@@ -5020,6 +5246,280 @@
             <summary>
             Get all the values of the enum `T`.
             </summary>
+        </member>
+        <member name="T:BagoumLib.Reflection.SimplifiedExprPrinter">
+            <summary>
+            Type printer allowing injection of type simplifiers before printing.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Reflection.SimplifiedExprPrinter.Default">
+            <summary>
+            Default instance.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.SimplifiedExprPrinter.InjectSimplifier(System.Func{System.Type,System.Type})">
+            <summary>
+            Add a simplifier which will be used to recursively convert any type before printing it.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.SimplifiedExprPrinter.Print(System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Reflection.TypeMember">
+            <summary>
+            Abstraction over class members (methods, constructors, fields, properties).
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Params">
+            <summary>
+            The parameters to this member. If this is an instance member (eg. string.Length), then the first
+             element is the instance parameter.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.ReturnType">
+            <summary>
+            Return type of this member.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Static">
+            <summary>
+            Whether or not this member is static.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.BaseMi">
+            <summary>
+            The base <see cref="T:System.Reflection.MemberInfo"/> that this abstraction describes.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.TypeName">
+            <summary>
+            The simplified name of the type containing this member.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.GetAttribute``1">
+            <summary>
+            <see cref="P:BagoumLib.Reflection.TypeMember.BaseMi"/>.GetCustomAttribute
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.InvokeInst(System.Object,System.Object[])">
+            <summary>
+            Invoke this member. If this is an instance member, then `instance` must be provided as an instance
+             on which to invoke the member; if this is a static member, then `instance` must be null.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Invoke(System.Object[])">
+            <summary>
+            Invoke this member. If this is an instance member, then the first element in `args` must be the instance.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.InvokeExInst(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression[])">
+            <summary>
+            Creates an expression representing the invocation of this member.
+            If this is an instance member, then `instance` must be provided as an instance
+             on which to invoke the member; if this is a static member, then `instance` must be null.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.InvokeEx(System.Linq.Expressions.Expression[])">
+            <summary>
+            Creates an expression representing the invocation of this member.
+            If this is an instance member, then the first element in `args` must be the instance.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.TypeOnlySignature">
+            <summary>
+            The signature of this method without any parameter names.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.AsSignature(System.Func{BagoumLib.Reflection.NamedParam,System.Int32,System.String})">
+            <summary>
+            The signature of this method, where the representation of each parameter is defined by `paramMod`.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Make(System.Reflection.MemberInfo)">
+            <summary>
+            Create a <see cref="T:BagoumLib.Reflection.TypeMember"/> representing a <see cref="T:System.Reflection.MemberInfo"/>, or throw an exception.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.MakeWriteable(System.Reflection.MemberInfo)">
+            <summary>
+            Create a <see cref="T:BagoumLib.Reflection.TypeMember"/> representing a <see cref="T:System.Reflection.MemberInfo"/>
+             that is a field or property, or throw an exception.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.MaybeMake(System.Reflection.MemberInfo)">
+            <summary>
+            Attempt to create a <see cref="T:BagoumLib.Reflection.TypeMember"/> representing a <see cref="T:System.Reflection.MemberInfo"/>.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.Reflection.TypeMember.Method">
+            <summary>
+            A <see cref="T:BagoumLib.Reflection.TypeMember"/> representing a class method.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Method.Mi">
+            <inheritdoc cref="P:BagoumLib.Reflection.TypeMember.Method.BaseMi"/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Method.BaseMi">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Method.Params">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Method.ReturnType">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Method.Static">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Method.IsExtension">
+            <summary>
+            True iff this is an extension method.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Method.#ctor(System.Reflection.MethodInfo)">
+            <inheritdoc cref="T:BagoumLib.Reflection.TypeMember.Method"/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Method.ParamsForMethod(System.Reflection.MethodInfo)">
+            <summary>
+            Converts the parameters of this method, including the instance if applicable, to
+            an array of <see cref="T:BagoumLib.Reflection.NamedParam"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Method.InvokeInst(System.Object,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Method.InvokeExInst(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Method.TypeOnlySignature">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Method.AsSignature(System.Func{BagoumLib.Reflection.NamedParam,System.Int32,System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Reflection.TypeMember.Constructor">
+            <summary>
+            A <see cref="T:BagoumLib.Reflection.TypeMember"/> representing a constructor.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Constructor.Cons">
+            <inheritdoc cref="P:BagoumLib.Reflection.TypeMember.Constructor.BaseMi"/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Constructor.BaseMi">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Constructor.Params">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Constructor.ReturnType">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Constructor.Static">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Constructor.#ctor(System.Reflection.ConstructorInfo)">
+            <inheritdoc cref="T:BagoumLib.Reflection.TypeMember.Constructor"/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Constructor.InvokeInst(System.Object,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Constructor.InvokeExInst(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Constructor.TypeOnlySignature">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Constructor.AsSignature(System.Func{BagoumLib.Reflection.NamedParam,System.Int32,System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Reflection.TypeMember.Writeable">
+            <summary>
+            Base class for <see cref="T:BagoumLib.Reflection.TypeMember"/>s that are writeable (ie. fields and properties).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Writeable.SetInst(System.Object,System.Object,System.Object[])">
+            <summary>
+            Set the value of this member.
+            If this is an instance member, then `instance` must be provided as an instance
+             on which to invoke the member; if this is a static member, then `instance` must be null.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.Reflection.TypeMember.Property">
+            <summary>
+            A <see cref="T:BagoumLib.Reflection.TypeMember"/> representing a property.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Property.Prop">
+            <inheritdoc cref="P:BagoumLib.Reflection.TypeMember.Property.BaseMi"/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Property.BaseMi">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Property.Params">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Property.ReturnType">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Property.Static">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Property.#ctor(System.Reflection.PropertyInfo)">
+            <inheritdoc cref="T:BagoumLib.Reflection.TypeMember.Property"/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Property.InvokeInst(System.Object,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Property.SetInst(System.Object,System.Object,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Property.InvokeExInst(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Property.TypeOnlySignature">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Property.AsSignature(System.Func{BagoumLib.Reflection.NamedParam,System.Int32,System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="T:BagoumLib.Reflection.TypeMember.Field">
+            <summary>
+            A <see cref="T:BagoumLib.Reflection.TypeMember"/> representing a field.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Field.Fi">
+            <inheritdoc cref="P:BagoumLib.Reflection.TypeMember.Field.BaseMi"/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Field.BaseMi">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Field.Params">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Field.ReturnType">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Reflection.TypeMember.Field.Static">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Field.#ctor(System.Reflection.FieldInfo)">
+            <inheritdoc cref="T:BagoumLib.Reflection.TypeMember.Field"/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Field.InvokeInst(System.Object,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Field.SetInst(System.Object,System.Object,System.Object[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Field.InvokeExInst(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Field.TypeOnlySignature">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Reflection.TypeMember.Field.AsSignature(System.Func{BagoumLib.Reflection.NamedParam,System.Int32,System.String})">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.ServiceLocator">
             <summary>
@@ -5723,9 +6223,41 @@
             Wikisort sorting algorithm, adapted for C# from https://github.com/BonzaiThePenguin/WikiSort/blob/master/WikiSort.java
             </summary>
         </member>
+        <member name="T:BagoumLib.Tasks.TaskQueue">
+            <summary>
+            A container that queues tasks for sequential execution.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Tasks.TaskQueue.CurrentTask">
+            <summary>
+            The currently executing task.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Tasks.TaskQueue.ExecutingTransition">
+            <summary>
+            True when a task is being executed.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Tasks.TaskQueue.AllowOnlyOneQueued">
+            <summary>
+            If true, then only one task can be queued up at a time. True by default.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.TaskQueue.EnqueueTask(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Enqueue a task for execution.
+            </summary>
+            <returns>A task that is completed when the provided task is run to completion.</returns>
+        </member>
         <member name="T:BagoumLib.Tasks.Utilities">
             <summary>
             Task-related helpers.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Tasks.Utilities.TaskWhenAll">
+            <summary>
+            Calls Task.InternalWhenAll, skipping array reallocation.
+            <br/>DO NOT pass null tasks to this!
             </summary>
         </member>
         <member name="M:BagoumLib.Tasks.Utilities.And(System.Threading.Tasks.Task,System.Threading.Tasks.Task)">
@@ -5733,11 +6265,54 @@
             Return a task that is completed when both provided tasks are completed.
             </summary>
         </member>
-        <member name="M:BagoumLib.Tasks.Utilities.ContinueWithSync(System.Threading.Tasks.Task,System.Action)">
+        <member name="M:BagoumLib.Tasks.Utilities.Then(System.Threading.Tasks.Task,System.Func{System.Threading.Tasks.Task})">
             <summary>
-            Runs a continuation after a task and logs errors from the task or the continuation.
+            Run two tasks in sequence.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.Utilities.AsTask``1(System.Action)">
+            <summary>
+            Return a Func that calls the provided action and then returns a null task.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.Utilities.AsTask``1(System.Action{``0})">
+            <inheritdoc cref="M:BagoumLib.Tasks.Utilities.AsTask``1(System.Action)"/>
+        </member>
+        <member name="M:BagoumLib.Tasks.Utilities.All``1(System.Collections.Generic.IReadOnlyList{``0},System.Func{``0,System.Threading.Tasks.Task})">
+            <summary>
+            Runs the map function on all items in the list and returns a Task.WhenAll.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.Utilities.All(System.Collections.Generic.List{System.Threading.Tasks.Task})">
+            <summary>
+            Removes completed or null tasks from the list, and then calls WhenAll.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.Utilities.All(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
+            <summary>
+            Removes completed or null tasks from the list, and then calls WhenAll.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.Utilities.DontReportCancellation(System.Threading.Tasks.Task)">
+            <summary>
+            Return a task that is completed successfully if the original task
+             is completed successfully or cancelled, and fails if the original task fails.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.Utilities.ContinueWithSync(System.Threading.Tasks.Task,System.Action,System.Nullable{System.Boolean})">
+            <summary>
+            Runs a continuation after a task and logs exceptions from the task or the continuation.
             <br/>The continuation runs even if the task is cancelled/hits an exception.
-            <br/>It is useful to use this on unawaited tasks with a null continuation, as it logs errors.
+            <br/>If the continuation hits an exception,
+             the task result will contain that exception (with the original task exception nested within it).
+            <br/>It is useful to use this on unawaited tasks with a null continuation, as it logs exceptions.
+            <br/>If `logOnCancelled` is true or `done` is null, then will also log cancellations.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.Utilities.Log(System.Threading.Tasks.Task)">
+            <summary>
+            Logs exceptions or cancellation from the task.
+            <br/>Use on unawaited tasks to report errors.
             </summary>
         </member>
         <member name="M:BagoumLib.Tasks.Utilities.ContinueSuccessWithSync``1(System.Threading.Tasks.Task{``0},System.Action{``0})">
@@ -5756,14 +6331,39 @@
             Put the result of this task into a <see cref="T:System.Threading.Tasks.TaskCompletionSource`1"/>.
             </summary>
         </member>
+        <member name="F:BagoumLib.Tasks.WaitingUtils.NoOp">
+            <summary>
+            An Action that does nothing.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Tasks.WaitingUtils.GetAwaiter(System.Threading.Tasks.Task@)">
             <summary>
             Get an action that completes a task.
             </summary>
         </member>
+        <member name="M:BagoumLib.Tasks.WaitingUtils.GetUnitAwaiter(System.Threading.Tasks.Task{System.Reactive.Unit}@)">
+            <summary>
+            Get an action that completes a task.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.WaitingUtils.GetManyAwaiter(System.Int32,System.Threading.Tasks.Task@)">
+            <summary>
+            Get an action that must be called `ct` times to complete a task.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Tasks.WaitingUtils.GetCompletionAwaiter(System.Threading.Tasks.Task{BagoumLib.Completion}@)">
             <summary>
             Get an action that completes a task.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.WaitingUtils.GetCondition(System.Func{System.Boolean}@)">
+            <summary>
+            Get an action that sets a boolean value (returned by `cond`) to true.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Tasks.WaitingUtils.GetManyCallback(System.Int32,System.Action)">
+            <summary>
+            Get a callback that must be called `ct` times in order to invoke `whenAll`.
             </summary>
         </member>
         <member name="M:BagoumLib.Tasks.WaitingUtils.WaitFor(System.Single,System.Action{BagoumLib.Completion},BagoumLib.Cancellation.ICancellee,System.Func{System.Single})">
@@ -5887,6 +6487,9 @@
             Lerp function specific to type T (unclamped). Add handling for types via Tween.RegisterLerper.
             </summary>
         </member>
+        <member name="M:BagoumLib.Transitions.Tweener`1.#ctor(BagoumLib.Functional.Either{`0,System.Func{`0}},BagoumLib.Functional.Either{`0,System.Func{`0}},System.Single,System.Action{`0},BagoumLib.Mathematics.Easer,BagoumLib.Cancellation.ICancellee)">
+            <inheritdoc cref="T:BagoumLib.Transitions.Tweener`1"/>
+        </member>
         <member name="M:BagoumLib.Transitions.Tweener`1.ApplyStart">
             <inheritdoc/>
         </member>
@@ -5914,6 +6517,9 @@
             A tweener that does nothing for the provided amount of time.
             </summary>
         </member>
+        <member name="M:BagoumLib.Transitions.NoopTweener.#ctor(System.Single,BagoumLib.Cancellation.ICancellee)">
+            <inheritdoc cref="!:NoopTweener&lt;T&gt;"/>
+        </member>
         <member name="M:BagoumLib.Transitions.NoopTweener.ApplyStart">
             <inheritdoc/>
         </member>
@@ -5937,6 +6543,9 @@
             <summary>
             Multiplier function specific to type T. Add handling for types via Tween.RegisterMultiplier.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.ScaleInTweener`1.#ctor(`0,System.Single,System.Action{`0},BagoumLib.Mathematics.Easer,BagoumLib.Cancellation.ICancellee)">
+            <inheritdoc cref="T:BagoumLib.Transitions.ScaleInTweener`1"/>
         </member>
         <member name="M:BagoumLib.Transitions.ScaleInTweener`1.ApplyStart">
             <inheritdoc/>
@@ -5966,6 +6575,9 @@
             <summary>
             Lerp function specific to type T. Add handling for types via Tween.RegisterLerper.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.DeltaTweener`1.#ctor(BagoumLib.Functional.Either{`0,System.Func{`0}},`0,System.Single,System.Action{`0},BagoumLib.Mathematics.Easer,BagoumLib.Cancellation.ICancellee)">
+            <inheritdoc cref="T:BagoumLib.Transitions.DeltaTweener`1"/>
         </member>
         <member name="M:BagoumLib.Transitions.DeltaTweener`1.ApplyStart">
             <inheritdoc/>
@@ -6837,6 +7449,9 @@
             Basic implementation for <see cref="T:BagoumLib.Unification.IImplicitTypeConverter"/>.
             </summary>
         </member>
+        <member name="P:BagoumLib.Unification.ImplicitTypeConverter.NextInstance">
+            <inheritdoc/>
+        </member>
         <member name="M:BagoumLib.Unification.ImplicitTypeConverter.#ctor(System.Type,System.Type)">
             <inheritdoc cref="T:BagoumLib.Unification.ImplicitTypeConverter"/>
         </member>
@@ -6853,8 +7468,14 @@
         <member name="P:BagoumLib.Unification.ImplicitTypeConverter.Instance.Converter">
             <inheritdoc cref="P:BagoumLib.Unification.IImplicitTypeConverterInstance.Converter"/>
         </member>
+        <member name="P:BagoumLib.Unification.ImplicitTypeConverter.Instance.MethodType">
+            <inheritdoc/>
+        </member>
         <member name="P:BagoumLib.Unification.ImplicitTypeConverter.Instance.Generic">
             <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Unification.ImplicitTypeConverter.Instance.#ctor(BagoumLib.Unification.ImplicitTypeConverter)">
+            <inheritdoc cref="T:BagoumLib.Unification.ImplicitTypeConverter.Instance"/>
         </member>
         <member name="M:BagoumLib.Unification.ImplicitTypeConverter.Instance.Realize(BagoumLib.Unification.Unifier)">
             <inheritdoc/>
@@ -6881,6 +7502,349 @@
         </member>
         <member name="M:BagoumLib.Unification.RealizedImplicitCast.Simplify(BagoumLib.Unification.Unifier)">
             <inheritdoc/>
+        </member>
+        <member name="T:System.Collections.Generic.PriorityQueue`2">
+            <summary>
+             Represents a min priority queue.
+            </summary>
+            <typeparam name="TElement">Specifies the type of elements in the queue.</typeparam>
+            <typeparam name="TPriority">Specifies the type of priority associated with enqueued elements.</typeparam>
+            <remarks>
+             Implements an array-backed quaternary min-heap. Each element is enqueued with an associated priority
+             that determines the dequeue order: elements with the lowest priority get dequeued first.
+            </remarks>
+        </member>
+        <member name="F:System.Collections.Generic.PriorityQueue`2._nodes">
+            <summary>
+            Represents an implicit heap-ordered complete d-ary tree, stored as an array.
+            </summary>
+        </member>
+        <member name="F:System.Collections.Generic.PriorityQueue`2._comparer">
+            <summary>
+            Custom comparer used to order the heap.
+            </summary>
+        </member>
+        <member name="F:System.Collections.Generic.PriorityQueue`2._unorderedItems">
+            <summary>
+            Lazily-initialized collection used to expose the contents of the queue.
+            </summary>
+        </member>
+        <member name="F:System.Collections.Generic.PriorityQueue`2._size">
+            <summary>
+            The number of nodes in the heap.
+            </summary>
+        </member>
+        <member name="F:System.Collections.Generic.PriorityQueue`2._version">
+            <summary>
+            Version updated on mutation to help validate enumerators operate on a consistent state.
+            </summary>
+        </member>
+        <member name="F:System.Collections.Generic.PriorityQueue`2.Arity">
+            <summary>
+            Specifies the arity of the d-ary heap, which here is quaternary.
+            It is assumed that this value is a power of 2.
+            </summary>
+        </member>
+        <member name="F:System.Collections.Generic.PriorityQueue`2.Log2Arity">
+            <summary>
+            The binary logarithm of <see cref="F:System.Collections.Generic.PriorityQueue`2.Arity" />.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.#ctor">
+            <summary>
+             Initializes a new instance of the <see cref="T:System.Collections.Generic.PriorityQueue`2"/> class.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.#ctor(System.Int32)">
+            <summary>
+             Initializes a new instance of the <see cref="T:System.Collections.Generic.PriorityQueue`2"/> class
+             with the specified initial capacity.
+            </summary>
+            <param name="initialCapacity">Initial capacity to allocate in the underlying heap array.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+             The specified <paramref name="initialCapacity"/> was negative.
+            </exception>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.#ctor(System.Collections.Generic.IComparer{`1})">
+            <summary>
+             Initializes a new instance of the <see cref="T:System.Collections.Generic.PriorityQueue`2"/> class
+             with the specified custom priority comparer.
+            </summary>
+            <param name="comparer">
+             Custom comparer dictating the ordering of elements.
+             Uses <see cref="P:System.Collections.Generic.Comparer`1.Default" /> if the argument is <see langword="null"/>.
+            </param>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.#ctor(System.Int32,System.Collections.Generic.IComparer{`1})">
+            <summary>
+             Initializes a new instance of the <see cref="T:System.Collections.Generic.PriorityQueue`2"/> class
+             with the specified initial capacity and custom priority comparer.
+            </summary>
+            <param name="initialCapacity">Initial capacity to allocate in the underlying heap array.</param>
+            <param name="comparer">
+             Custom comparer dictating the ordering of elements.
+             Uses <see cref="P:System.Collections.Generic.Comparer`1.Default" /> if the argument is <see langword="null"/>.
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+             The specified <paramref name="initialCapacity"/> was negative.
+            </exception>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.#ctor(System.Collections.Generic.IEnumerable{System.ValueTuple{`0,`1}})">
+            <summary>
+             Initializes a new instance of the <see cref="T:System.Collections.Generic.PriorityQueue`2"/> class
+             that is populated with the specified elements and priorities.
+            </summary>
+            <param name="items">The pairs of elements and priorities with which to populate the queue.</param>
+            <exception cref="T:System.ArgumentNullException">
+             The specified <paramref name="items"/> argument was <see langword="null"/>.
+            </exception>
+            <remarks>
+             Constructs the heap using a heapify operation,
+             which is generally faster than enqueuing individual elements sequentially.
+            </remarks>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.#ctor(System.Collections.Generic.IEnumerable{System.ValueTuple{`0,`1}},System.Collections.Generic.IComparer{`1})">
+            <summary>
+             Initializes a new instance of the <see cref="T:System.Collections.Generic.PriorityQueue`2"/> class
+             that is populated with the specified elements and priorities,
+             and with the specified custom priority comparer.
+            </summary>
+            <param name="items">The pairs of elements and priorities with which to populate the queue.</param>
+            <param name="comparer">
+             Custom comparer dictating the ordering of elements.
+             Uses <see cref="P:System.Collections.Generic.Comparer`1.Default" /> if the argument is <see langword="null"/>.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+             The specified <paramref name="items"/> argument was <see langword="null"/>.
+            </exception>
+            <remarks>
+             Constructs the heap using a heapify operation,
+             which is generally faster than enqueuing individual elements sequentially.
+            </remarks>
+        </member>
+        <member name="P:System.Collections.Generic.PriorityQueue`2.Count">
+            <summary>
+             Gets the number of elements contained in the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.
+            </summary>
+        </member>
+        <member name="P:System.Collections.Generic.PriorityQueue`2.Comparer">
+            <summary>
+             Gets the priority comparer used by the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.
+            </summary>
+        </member>
+        <member name="P:System.Collections.Generic.PriorityQueue`2.UnorderedItems">
+            <summary>
+             Gets a collection that enumerates the elements of the queue in an unordered manner.
+            </summary>
+            <remarks>
+             The enumeration does not order items by priority, since that would require N * log(N) time and N space.
+             Items are instead enumerated following the internal array heap layout.
+            </remarks>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.Enqueue(`0,`1)">
+            <summary>
+             Adds the specified element with associated priority to the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.
+            </summary>
+            <param name="element">The element to add to the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.</param>
+            <param name="priority">The priority with which to associate the new element.</param>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.Peek">
+            <summary>
+             Returns the minimal element from the <see cref="T:System.Collections.Generic.PriorityQueue`2"/> without removing it.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Collections.Generic.PriorityQueue`2"/> is empty.</exception>
+            <returns>The minimal element of the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.</returns>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.Dequeue">
+            <summary>
+             Removes and returns the minimal element from the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">The queue is empty.</exception>
+            <returns>The minimal element of the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.</returns>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.DequeueEnqueue(`0,`1)">
+            <summary>
+             Removes the minimal element and then immediately adds the specified element with associated priority to the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>,
+            </summary>
+            <param name="element">The element to add to the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.</param>
+            <param name="priority">The priority with which to associate the new element.</param>
+            <exception cref="T:System.InvalidOperationException">The queue is empty.</exception>
+            <returns>The minimal element removed before performing the enqueue operation.</returns>
+            <remarks>
+             Implements an extract-then-insert heap operation that is generally more efficient
+             than sequencing Dequeue and Enqueue operations: in the worst case scenario only one
+             shift-down operation is required.
+            </remarks>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.TryDequeue(`0@,`1@)">
+            <summary>
+             Removes the minimal element from the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>,
+             and copies it to the <paramref name="element"/> parameter,
+             and its associated priority to the <paramref name="priority"/> parameter.
+            </summary>
+            <param name="element">The removed element.</param>
+            <param name="priority">The priority associated with the removed element.</param>
+            <returns>
+             <see langword="true"/> if the element is successfully removed;
+             <see langword="false"/> if the <see cref="T:System.Collections.Generic.PriorityQueue`2"/> is empty.
+            </returns>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.TryPeek(`0@,`1@)">
+            <summary>
+             Returns a value that indicates whether there is a minimal element in the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>,
+             and if one is present, copies it to the <paramref name="element"/> parameter,
+             and its associated priority to the <paramref name="priority"/> parameter.
+             The element is not removed from the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.
+            </summary>
+            <param name="element">The minimal element in the queue.</param>
+            <param name="priority">The priority associated with the minimal element.</param>
+            <returns>
+             <see langword="true"/> if there is a minimal element;
+             <see langword="false"/> if the <see cref="T:System.Collections.Generic.PriorityQueue`2"/> is empty.
+            </returns>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.EnqueueDequeue(`0,`1)">
+            <summary>
+             Adds the specified element with associated priority to the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>,
+             and immediately removes the minimal element, returning the result.
+            </summary>
+            <param name="element">The element to add to the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.</param>
+            <param name="priority">The priority with which to associate the new element.</param>
+            <returns>The minimal element removed after the enqueue operation.</returns>
+            <remarks>
+             Implements an insert-then-extract heap operation that is generally more efficient
+             than sequencing Enqueue and Dequeue operations: in the worst case scenario only one
+             shift-down operation is required.
+            </remarks>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.EnqueueRange(System.Collections.Generic.IEnumerable{System.ValueTuple{`0,`1}})">
+            <summary>
+             Enqueues a sequence of element/priority pairs to the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.
+            </summary>
+            <param name="items">The pairs of elements and priorities to add to the queue.</param>
+            <exception cref="T:System.ArgumentNullException">
+             The specified <paramref name="items"/> argument was <see langword="null"/>.
+            </exception>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.EnqueueRange(System.Collections.Generic.IEnumerable{`0},`1)">
+            <summary>
+             Enqueues a sequence of elements pairs to the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>,
+             all associated with the specified priority.
+            </summary>
+            <param name="elements">The elements to add to the queue.</param>
+            <param name="priority">The priority to associate with the new elements.</param>
+            <exception cref="T:System.ArgumentNullException">
+             The specified <paramref name="elements"/> argument was <see langword="null"/>.
+            </exception>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.Clear">
+            <summary>
+             Removes all items from the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.EnsureCapacity(System.Int32)">
+            <summary>
+             Ensures that the <see cref="T:System.Collections.Generic.PriorityQueue`2"/> can hold up to
+             <paramref name="capacity"/> items without further expansion of its backing storage.
+            </summary>
+            <param name="capacity">The minimum capacity to be used.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+             The specified <paramref name="capacity"/> is negative.
+            </exception>
+            <returns>The current capacity of the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>.</returns>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.TrimExcess">
+            <summary>
+             Sets the capacity to the actual number of items in the <see cref="T:System.Collections.Generic.PriorityQueue`2"/>,
+             if that is less than 90 percent of current capacity.
+            </summary>
+            <remarks>
+             This method can be used to minimize a collection's memory overhead
+             if no new elements will be added to the collection.
+            </remarks>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.Grow(System.Int32)">
+            <summary>
+            Grows the priority queue to match the specified min capacity.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.RemoveRootNode">
+            <summary>
+            Removes the node from the root of the heap
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.GetParentIndex(System.Int32)">
+            <summary>
+            Gets the index of an element's parent.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.GetFirstChildIndex(System.Int32)">
+            <summary>
+            Gets the index of the first child of an element.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.Heapify">
+            <summary>
+            Converts an unordered list into a heap.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.MoveUpDefaultComparer(System.ValueTuple{`0,`1},System.Int32)">
+            <summary>
+            Moves a node up in the tree to restore heap order.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.MoveUpCustomComparer(System.ValueTuple{`0,`1},System.Int32)">
+            <summary>
+            Moves a node up in the tree to restore heap order.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.MoveDownDefaultComparer(System.ValueTuple{`0,`1},System.Int32)">
+            <summary>
+            Moves a node down in the tree to restore heap order.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.MoveDownCustomComparer(System.ValueTuple{`0,`1},System.Int32)">
+            <summary>
+            Moves a node down in the tree to restore heap order.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.InitializeComparer(System.Collections.Generic.IComparer{`1})">
+            <summary>
+            Initializes the custom comparer to be used internally by the heap.
+            </summary>
+        </member>
+        <member name="T:System.Collections.Generic.PriorityQueue`2.UnorderedItemsCollection">
+            <summary>
+             Enumerates the contents of a <see cref="T:System.Collections.Generic.PriorityQueue`2"/>, without any ordering guarantees.
+            </summary>
+        </member>
+        <member name="T:System.Collections.Generic.PriorityQueue`2.UnorderedItemsCollection.Enumerator">
+            <summary>
+             Enumerates the element and priority pairs of a <see cref="T:System.Collections.Generic.PriorityQueue`2"/>,
+             without any ordering guarantees.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.UnorderedItemsCollection.Enumerator.Dispose">
+            <summary>
+            Releases all resources used by the <see cref="T:System.Collections.Generic.PriorityQueue`2.UnorderedItemsCollection.Enumerator"/>.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.UnorderedItemsCollection.Enumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the <see cref="P:System.Collections.Generic.PriorityQueue`2.UnorderedItems"/>.
+            </summary>
+            <returns><see langword="true"/> if the enumerator was successfully advanced to the next element; <see langword="false"/> if the enumerator has passed the end of the collection.</returns>
+        </member>
+        <member name="P:System.Collections.Generic.PriorityQueue`2.UnorderedItemsCollection.Enumerator.Current">
+            <summary>
+            Gets the element at the current position of the enumerator.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.PriorityQueue`2.UnorderedItemsCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the <see cref="P:System.Collections.Generic.PriorityQueue`2.UnorderedItems"/>.
+            </summary>
+            <returns>An <see cref="T:System.Collections.Generic.PriorityQueue`2.UnorderedItemsCollection.Enumerator"/> for the <see cref="P:System.Collections.Generic.PriorityQueue`2.UnorderedItems"/>.</returns>
         </member>
     </members>
 </doc>

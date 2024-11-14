@@ -42,12 +42,12 @@ public class ExampleVNScript : MonoBehaviour {
         //This allows the data objects to be mimicked on screen, and also allows them to receive update events
         ServiceLocator.Find<IVNWrapper>().TrackVN(vn);
 
-        _ = RunSomeCode().Execute().ContinueWithSync();
+        RunSomeCode().Execute().Log();
     }
 
     [ContextMenu("Run Script")]
     public void RunScript() {
-        _ = RunSomeCode().Execute().ContinueWithSync();
+        RunSomeCode().Execute().Log();
     }
     
     private BoundedContext<Unit> RunSomeCode() => new(vn, "exampleContent", async () => {

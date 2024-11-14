@@ -41,6 +41,10 @@ public class UnityRenderGroupMask {
         destroyed = true;
     }
 }
+
+public interface IRenderGroupOutput {
+    RenderTexture RenderTo { get; }
+}
 public class UnityRenderGroup : RenderGroup {
     private const int maxRenderGroups = 5;
     private string RenderGroupLayer(int i) => $"RenderGroup{i}";
@@ -55,8 +59,8 @@ public class UnityRenderGroup : RenderGroup {
 
     public void SetMask(UnityRenderGroupMask? mask) {
         Mask.Done();
-        Mask = mask ?? new UnityRenderGroupMask(mimic.defaultMaskTex, false);
-        pb.SetTexture(PropConsts.MaskTex, Mask.mask);
+        Mask = mask ?? new UnityRenderGroupMask(Texture2D.whiteTexture, false);
+        mat.SetTexture(PropConsts.MaskTex, Mask.mask);
     }
 
     /// <summary>
@@ -68,17 +72,13 @@ public class UnityRenderGroup : RenderGroup {
     /// Applies effects and transitions to the captured RenderTexture to render it to screen.
     /// </summary>
     private SpriteRenderer displayer = null!;
-    private MaterialPropertyBlock pb = null!;
     private Material mat = null!;
     private int layer;
     private int layerMask;
     public Camera Camera => capturer.Camera;
     public RenderTexture Captured => capturer.Captured;
 
-    
-
-    public UnityRenderGroup(string key = "$default", int priority = 0, 
-        bool visible = false) : base(key, priority, visible) {
+    public UnityRenderGroup(int priority = 0, bool visible = false) : base(priority, visible) {
         AddToken(allRGs.Add(this));
     }
 
@@ -87,16 +87,18 @@ public class UnityRenderGroup : RenderGroup {
         capturer = mimic.capturer;
         displayer = mimic.sr;
         mat = displayer.material;
-        mat.EnableKeyword(RenderGroupTransition.NO_TRANSITION_KW);
-        displayer.GetPropertyBlock(pb = new MaterialPropertyBlock());
+        CombinerKeywords.Apply(mat, CombinerKeywords.FROM_ONLY);
         SetMask(null);
-        UpdatePB();
         SetLayer(FindNextLayer());
     }
 
     public void UpdatePB() {
-        pb.SetTexture(PropConsts.RGTex, Captured);
-        displayer.SetPropertyBlock(pb);
+        mat.SetTexture(PropConsts.RGTex, Captured);
+        if (Visible) {
+            //Possible implementation of blit-to-screen for render groups
+            //RenderTexture.active = ServiceLocator.Find<IRenderGroupOutput>().RenderTo;
+            //Graphics.Blit(null, RenderTexture.active, mat);
+        }
     }
 
     private int FindNextLayer() {
@@ -109,7 +111,7 @@ public class UnityRenderGroup : RenderGroup {
         }
         foreach (var x in opts)
             return x;
-        throw new Exception($"No layers available for render group mimic {Key}");
+        throw new Exception($"No layers available for render group mimic");
     }
 
     private void SetLayer(int i) {
@@ -132,18 +134,18 @@ public class UnityRenderGroup : RenderGroup {
     }, false); //Don't allow user skip on render transition
 
     private IEnumerator BasicTwoWayTransition(RenderGroupTransition.TwoGroup tg, bool reverse, ICancellee ct, Action<Completion> done) {
-        mat.DisableKeyword(RenderGroupTransition.NO_TRANSITION_KW);
-        mat.EnableKeyword(tg.KW);
+        CombinerKeywords.Apply(mat, tg.KW);
+        mat.SetFloat(PropConsts.MaxT, tg.time);
         Visible.Value = true;
         for (float t = 0; t < tg.time; t += Container.dT) {
             if (ct.Cancelled)
                 break;
-            pb.SetTexture(PropConsts.RGTex2, tg.target == null ? mimic.transparentTex : (Texture)tg.target.Captured);
-            pb.SetFloat(PropConsts.T, reverse ? (1 - t / tg.time) : t / tg.time);
+            mat.SetTexture(PropConsts.RGTex2, tg.target == null ? Texture2D.blackTexture : tg.target.Captured);
+            mat.SetFloat(PropConsts.T, reverse ? (tg.time - t) : t);
             yield return null;
         }
-        mat.DisableKeyword(tg.KW);
-        mat.EnableKeyword(RenderGroupTransition.NO_TRANSITION_KW);
+        CombinerKeywords.Apply(mat, CombinerKeywords.FROM_ONLY);
+        mat.SetTexture(PropConsts.RGTex2, null);
         Visible.Value = reverse;
         if (tg.target != null)
             tg.target.Visible.Value = !reverse;

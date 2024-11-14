@@ -4,7 +4,8 @@ Shader "SZYU/RenderGroupDisplay" {
 		[PerRendererData] _RGTex("Render Group Texture", 2D) = "white" {}
 		[PerRendererData] _RGTex2("Render Group Second Texture", 2D) = "white" {}
 		[PerRendererData] _MaskTex("Mask Texture", 2D) = "white" {}
-		_T("Transition Ratio", Float) = 1
+		[PerRendererData] _T("Time", Range(0, 10)) = 1
+		[PerRendererData] _MaxT("Max Transition Time", Range(0, 10)) = 1
 	}
 	
 	SubShader {
@@ -24,9 +25,9 @@ Shader "SZYU/RenderGroupDisplay" {
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma multi_compile_local __ MIX_NONE
-			#pragma multi_compile_local __ MIX_FADE
+			#pragma multi_compile_local __ MIX_FROM_ONLY MIX_TO_ONLY MIX_WIPE_TEX MIX_WIPE1 MIX_WIPE_CENTER MIX_WIPE_Y MIX_ALPHA_BLEND
             #include "UnityCG.cginc"
+            #include "Assets/Danmokou/CG/TexMerge.cginc"
         
             struct vertex {
                 float4 loc  : POSITION;
@@ -52,30 +53,12 @@ Shader "SZYU/RenderGroupDisplay" {
             sampler2D _RGTex;
             sampler2D _RGTex2;
             sampler2D _MaskTex;
-			float _T;
-
-			float4 premult(float4 c) {
-				c.rgb *= c.a;
-				return c;
-			}
 
 			float4 frag(fragment f) : SV_Target {
-				float4 c1 = tex2D(_RGTex, f.uv);
 				float4 mask = tex2D(_MaskTex, f.uv).a * f.c;
-			#ifdef MIX_NONE
-				return premult(mask * c1);
-			#endif
-				float fill = 1;
-			#ifdef MIX_FADE
-				fill = smoothstep(0, 1, _T);
-			#endif
-				float4 c2 = tex2D(_RGTex2, f.uv);
-				//Transparent textures may have nonzero RGBs
-				if (c2.a < 0.001)
-					c2 = float4(0,0,0,0);
-				float4 c = c1 * (1 - fill) + c2 * fill;
-				//return float4(c.r, 0, 0, 1);
-				return premult(mask * c);
+				mask.rgb *= mask.a;
+				float4 c = MERGE(_RGTex, _RGTex2, f.uv);
+				return mask * c;
 			}
 			ENDCG
 		}

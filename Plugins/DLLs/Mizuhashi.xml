@@ -897,6 +897,9 @@
             Flags for regex construction. By default, uses RegexOptions.Compiled.
             </summary>
         </member>
+        <member name="M:Mizuhashi.Lexers.RegexTokenizer`1.#ctor(System.String,System.Func{Mizuhashi.Position,System.Text.RegularExpressions.Match,BagoumLib.Functional.Maybe{`0}})">
+            <inheritdoc/>
+        </member>
         <member name="T:Mizuhashi.Lexers.RegexLexer`1">
             <summary>
             A simple lexer that uses regexes to convert an input string into a list of tokens.
@@ -1157,6 +1160,11 @@
             A top-level Markdown block that includes a tailing newline or EOF.
             </summary>
         </member>
+        <member name="M:Mizuhashi.Parsers.Markdown.Block.Flatten">
+            <summary>
+            Flatten a nested block.
+            </summary>
+        </member>
         <member name="T:Mizuhashi.Parsers.Markdown.Block.Paired">
             <summary>
             Convenience structure that contains two sequential blocks. This is used by internal
@@ -1168,6 +1176,9 @@
             Convenience structure that contains two sequential blocks. This is used by internal
              parsing handling, but will not be present in the results if you call Document or Parse.
             </summary>
+        </member>
+        <member name="M:Mizuhashi.Parsers.Markdown.Block.Paired.Flatten">
+            <inheritdoc/>
         </member>
         <member name="T:Mizuhashi.Parsers.Markdown.Block.Empty">
             <summary>

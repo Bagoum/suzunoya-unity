@@ -144,7 +144,6 @@ public class VNWrapper : MonoBehaviour, IVNWrapper {
     }
 
     private void NewRenderGroup(RenderGroup rg) {
-        Logging.Logs.Log("New render group {0}", rg.Key, LogLevel.DEBUG1);
         if (rg is UnityRenderGroup urg)
             Instantiate(renderGroupMimic, tr, false).GetComponent<RenderGroupMimic>().Initialize(urg);
         else

@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using BagoumLib;
 using SuzunoyaUnity;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuzunoyaUnity.Components {
 public abstract class PiecewiseRender : MonoBehaviour {
     public string ident = "";
-    public abstract string SortingLayerFromPrefab { get; }
     public abstract void SetEmote(string? key);
-    public abstract void SetSortingLayer(int layer);
-    public abstract void SetSortingID(int id);
     public abstract void SetVisible(bool visible);
     public abstract void SetTint(Color c);
 }
@@ -20,7 +18,6 @@ public class PiecewiseSpriteRender : PiecewiseRender {
     
     public EmoteVariant[] emotes = null!;
     private readonly Dictionary<string, Sprite> emoteMap = new Dictionary<string, Sprite>();
-    public override string SortingLayerFromPrefab => sr.sortingLayerName;
     
     private void Awake() {
         Relocate();
@@ -32,17 +29,19 @@ public class PiecewiseSpriteRender : PiecewiseRender {
 
     [ContextMenu("Relocate")]
     private void Relocate() {
+#if UNITY_EDITOR
+        Undo.RecordObject(this, "Update sprite positioning");
+#endif
         transform.localPosition = offsetPx * (1 / sr.sprite.pixelsPerUnit);
+    #if UNITY_EDITOR
+        EditorUtility.SetDirty(this);
+    #endif
     }
 
 
     public override void SetEmote(string? emote) {
         sr.sprite = Helpers.FindSprite(emote, emotes, emoteMap).Try(out var s) ? s : sr.sprite;
     }
-
-    public override void SetSortingLayer(int layer) => sr.sortingLayerID = layer;
-
-    public override void SetSortingID(int id) => sr.sortingOrder = id;
 
     public override void SetVisible(bool visible) => sr.enabled = visible;
 

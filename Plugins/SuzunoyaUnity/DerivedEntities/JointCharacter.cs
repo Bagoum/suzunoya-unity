@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace SuzunoyaUnity.Derived {
 public class JointCharacter : SZYUCharacter {
+    public override bool MimicRequested => false;
     public readonly SZYUCharacter[] parts;
     public override Color TextColor => parts[0].TextColor;
     public override Color UIColor => parts[0].UIColor;
