@@ -277,6 +277,11 @@
             Static class providing low-level math utilities.
             </summary>
         </member>
+        <member name="F:BagoumLib.Mathematics.BMath.IntFloatMax">
+            <summary>
+            int.MaxValue/2
+            </summary>
+        </member>
         <member name="F:BagoumLib.Mathematics.BMath.HPI">
             <summary>
             Half of pi.
@@ -384,6 +389,9 @@
             <summary>
             Returns (x - a) / (b - a); ie. t such that LerpUnclamped(a, b, t) = x.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.BMath.Ratio(System.Single,System.Single,System.Single)">
+            <inheritdoc cref="M:BagoumLib.Mathematics.BMath.Ratio(System.Double,System.Double,System.Double)"/>
         </member>
         <member name="M:BagoumLib.Mathematics.BMath.RatioC(System.Single,System.Single,System.Single)">
             <summary>
@@ -528,6 +536,64 @@
             Quartic easer (slow at beginning and end).
             </summary>
         </member>
+        <member name="F:BagoumLib.Mathematics.Easers.BackElasticity">
+            <summary>
+            Elasticity for <see cref="M:BagoumLib.Mathematics.Easers.EInBack(System.Single)"/>/<see cref="M:BagoumLib.Mathematics.Easers.EOutBack(System.Single)"/>.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Mathematics.Easers.IOBackElasticity">
+            <summary>
+            Elasticity for <see cref="M:BagoumLib.Mathematics.Easers.EIOBack(System.Single)"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.EInBack(System.Single)">
+            <summary>
+            Elastic easer starting by going negative and then moving quickly to the endpoint.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.CEOutBack(System.Single,System.Single)">
+            <inheritdoc cref="M:BagoumLib.Mathematics.Easers.EInBack(System.Single)"/>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.EOutBack(System.Single)">
+            <summary>
+            Elastic easer that goes beyond the endpoint and then is pulled back.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.EIOBack(System.Single)">
+            <summary>
+            Elastic easer that starts by going negative, then quickly goes beyond the endpoint, and then is pulled back.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.EInElastic(System.Single)">
+            <summary>
+            Elastic easer that oscillates around the starting point.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.EOutElastic(System.Single)">
+            <summary>
+            Elastic easer that oscillates around the ending point.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.EIOElastic(System.Single)">
+            <summary>
+            Elastic easer that oscillates around the starting and ending points.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.EInBounce(System.Single)">
+            <summary>
+            Easer that bounces increasingly to the endpoint.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.EOutBounce(System.Single)">
+            <summary>
+            Easer that quickly goes to the endpoint, then bounces decreasingly.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.EIOBounce(System.Single)">
+            <summary>
+            Easer that bounces increasingly to the endpoint, then bounces decreasingly.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Mathematics.Easers.ELinear(System.Single)">
             <summary>
             f(x) = x. Same as EIdentity.
@@ -536,6 +602,11 @@
         <member name="M:BagoumLib.Mathematics.Easers.EIdentity(System.Single)">
             <summary>
             f(x) = x. Same as ELinear.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.Easers.CEOutPow(System.Single,System.Single)">
+            <summary>
+            1 - (1-x)^(pow)
             </summary>
         </member>
         <member name="M:BagoumLib.Mathematics.Easers.CEOutBounce(System.Single[])">
@@ -621,6 +692,11 @@
             Utilities for Random.
             </summary>
         </member>
+        <member name="F:BagoumLib.Mathematics.RandUtils.R">
+            <summary>
+            Static instance of Random.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Mathematics.RandUtils.RandString(System.Random,System.Int32,System.String)">
             <summary>
             Create a random string. Uses the chars a-zA-Z0-9 if no set is provided.
@@ -655,6 +731,91 @@
         <member name="F:BagoumLib.Mathematics.V2RV2.angle">
             <summary>
             Rotation (degrees) of rotational offset
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Mathematics.V2RV2.Zero">
+            <summary>
+            Create a V2RV2 with all fields set to zero.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Mathematics.V2RV2.ComputedLocation">
+            <summary>
+            Get the computed position of this V2RV2, calculated as (nx, ny) + Rotate((rx, ry), angle).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.#ctor(System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <inheritdoc cref="T:BagoumLib.Mathematics.V2RV2"/>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.NRot(System.Single,System.Single)">
+            <summary>
+            Create a V2RV2 with nonrotational coordinates and an angle of zero.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.NRotAngled(System.Single,System.Single,System.Single)">
+            <summary>
+            Create a V2RV2 with nonrotational coordinates.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.Rot(System.Single,System.Single,System.Single)">
+            <summary>
+            Create a V2RV2 with rotational coordinates.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.RX(System.Single,System.Single)">
+            <summary>
+            Create a V2RV2 with all fields set to zero except the rotational-X and angle.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.RY(System.Single,System.Single)">
+            <summary>
+            Create a V2RV2 with all fields set to zero except the rotational-Y and angle.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.Angle(System.Single)">
+            <summary>
+            Create a V2RV2 with all fields set to zero except the angle.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.Bank(System.Nullable{System.Single})">
+            <summary>
+            Convert the V2RV2 into non-rotational coordinates only, and set the angle to the
+             override if provided or the current angle.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.BankOffset(System.Single)">
+            <summary>
+            Convert the V2RV2 into non-rotational coordinates only, and set the angle to the
+             current angle plus the provided offset.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.ForceAngle(System.Single)">
+            <summary>
+            Create a V2RV2 with the angle set to new_ang.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.op_Addition(BagoumLib.Mathematics.V2RV2,BagoumLib.Mathematics.V2RV2)">
+            <summary>
+            Find the sum of each field in two V2RV2s.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.op_Subtraction(BagoumLib.Mathematics.V2RV2,BagoumLib.Mathematics.V2RV2)">
+            <summary>
+            Find the difference of each field in two V2RV2s.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.op_Multiply(System.Single,BagoumLib.Mathematics.V2RV2)">
+            <summary>
+            Multiply all elements of a V2RV2.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.op_Division(BagoumLib.Mathematics.V2RV2,System.Single)">
+            <summary>
+            Divide all elements of a V2RV2.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Mathematics.V2RV2.op_Addition(BagoumLib.Mathematics.V2RV2,System.Single)">
+            <summary>
+            Increase the angle of a V2RV2.
             </summary>
         </member>
         <member name="M:BagoumLib.Mathematics.V2RV2.ToString">
@@ -865,6 +1026,9 @@
         <member name="P:BagoumLib.Cancellation.PassthroughCancellee.Root">
             <inheritdoc/>
         </member>
+        <member name="M:BagoumLib.Cancellation.PassthroughCancellee.#ctor(BagoumLib.Cancellation.ICancellee,BagoumLib.Cancellation.ICancellee)">
+            <inheritdoc cref="T:BagoumLib.Cancellation.PassthroughCancellee"/>
+        </member>
         <member name="T:BagoumLib.Cancellation.JointCancellee">
             <summary>
             A cancellee that is cancelled when either of its two parents are cancelled.
@@ -875,6 +1039,12 @@
         </member>
         <member name="P:BagoumLib.Cancellation.JointCancellee.Cancelled">
             <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.JointCancellee.#ctor(BagoumLib.Cancellation.ICancellee,BagoumLib.Cancellation.ICancellee)">
+            <inheritdoc cref="T:BagoumLib.Cancellation.JointCancellee"/>
+        </member>
+        <member name="M:BagoumLib.Cancellation.JointCancellee.#ctor(BagoumLib.Cancellation.ICancellee,BagoumLib.Cancellation.Cancellable@)">
+            <inheritdoc cref="T:BagoumLib.Cancellation.JointCancellee"/>
         </member>
         <member name="M:BagoumLib.Cancellation.JointCancellee.From(BagoumLib.Cancellation.ICancellee,BagoumLib.Cancellation.ICancellee)">
             <summary>
@@ -1171,7 +1341,7 @@
             <param name="capacity"></param>
         </member>
         <member name="P:BagoumLib.DataStructures.AbstractDMCompactingArray`1.Item(System.Int32)">
-            <inheritdoc cref="!:DMCompactingArray&lt;T&gt;.Item"/>
+            <inheritdoc cref="P:BagoumLib.DataStructures.DMCompactingArray`1.Item(System.Int32)"/>
         </member>
         <member name="M:BagoumLib.DataStructures.AbstractDMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)">
             <inheritdoc cref="M:BagoumLib.DataStructures.IReadOnlyDMCompactingArray`1.GetIfExistsAt(System.Int32,`0@)"/>
@@ -1433,14 +1603,40 @@
             Number of elements that are marked for deletion.
             </summary>
         </member>
+        <member name="M:BagoumLib.DataStructures.CompactingArray`1.#ctor(System.Int32,System.Int32)">
+            <inheritdoc cref="T:BagoumLib.DataStructures.CompactingArray`1"/>
+        </member>
         <member name="M:BagoumLib.DataStructures.CompactingArray`1.Delete(System.Int32)">
             <inheritdoc cref="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Delete(System.Int32)"/>
         </member>
         <member name="M:BagoumLib.DataStructures.CompactingArray`1.Compact">
             <inheritdoc cref="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Compact"/>
         </member>
+        <member name="M:BagoumLib.DataStructures.CompactingArray`1.AddRef(`0@)">
+            <summary>
+            Add an element to the end of the array. Takes a reference for struct-type optimization.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CompactingArray`1.Add(`0)">
+            <summary>
+            Add an element to the end of the array.
+            </summary>
+        </member>
         <member name="M:BagoumLib.DataStructures.CompactingArray`1.Empty">
             <inheritdoc cref="M:BagoumLib.DataStructures.AnyTypeDMCompactingArray`1.Empty"/>
+        </member>
+        <member name="P:BagoumLib.DataStructures.CompactingArray`1.Item(System.Int32)">
+            <summary>
+            Get the index'th element in the array. Note that this object may be marked as deleted.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CompactingArray`1.ItemAt(System.Int32)">
+            <inheritdoc cref="P:BagoumLib.DataStructures.CompactingArray`1.Item(System.Int32)"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.CompactingArray`1.TryGet(System.Int32,`0@)">
+            <summary>
+            Get the index'th element in the array only if it has not been marked as deleted.
+            </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.Continuation`2">
             <summary>
@@ -1656,7 +1852,7 @@
         </member>
         <member name="T:BagoumLib.DataStructures.IDeletionMarker`1">
             <summary>
-            An <see cref="T:BagoumLib.DataStructures.IDeletionMarker"/> for an underlying value of type <see cref="!:T"/>.
+            An <see cref="T:BagoumLib.DataStructures.IDeletionMarker"/> for an underlying value of type T.
             </summary>
         </member>
         <member name="P:BagoumLib.DataStructures.IDeletionMarker`1.Value">
@@ -1889,6 +2085,36 @@
         <member name="M:BagoumLib.DataStructures.FColor.Equals(BagoumLib.DataStructures.FColor)">
             <inheritdoc/>
         </member>
+        <member name="T:BagoumLib.DataStructures.FreezableArray`1">
+            <summary>
+            An array of data that cannot be modified and has element-based equality/hashing.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.FreezableArray`1.Data">
+            <summary>
+            The underlying data.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FreezableArray`1.#ctor(`0[])">
+            <inheritdoc cref="T:BagoumLib.DataStructures.FreezableArray`1"/>
+        </member>
+        <member name="P:BagoumLib.DataStructures.FreezableArray`1.Empty">
+            <summary>
+            An empty array.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FreezableArray`1.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FreezableArray`1.Equals(BagoumLib.DataStructures.FreezableArray{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FreezableArray`1.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.FreezableArray`1.ToString">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.DataStructures.IReadOnlyDMCompactingArray`1">
             <summary>
             Interface for reading from a <see cref="T:BagoumLib.DataStructures.DMCompactingArray`1"/> or <see cref="T:BagoumLib.DataStructures.AbstractDMCompactingArray`1"/>.
@@ -1979,6 +2205,17 @@
         <member name="M:BagoumLib.DataStructures.SinglyLinkedList`1.GetEnumerator">
             <inheritdoc/>
         </member>
+        <member name="T:BagoumLib.DataStructures.ListDisposable">
+            <summary>
+            A disposable object that nests multiple other disposables.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.ListDisposable.#ctor(System.Collections.Generic.IReadOnlyList{System.IDisposable})">
+            <inheritdoc cref="T:BagoumLib.DataStructures.ListDisposable"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.ListDisposable.From``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.IDisposable})">
+            <inheritdoc cref="T:BagoumLib.DataStructures.ListDisposable"/>
+        </member>
         <member name="M:BagoumLib.DataStructures.ListDisposable.Dispose">
             <inheritdoc/>
         </member>
@@ -2037,9 +2274,32 @@
             Fast resizeable wrapper around T[] that is safe for arbitrary indexing.
             </summary>
         </member>
+        <member name="M:BagoumLib.DataStructures.SafeResizableArray`1.#ctor(System.Int32)">
+            <inheritdoc cref="T:BagoumLib.DataStructures.SafeResizableArray`1"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.SafeResizableArray`1.SafeAssign(System.Int32,`0)">
+            <summary>
+            Assign the index'th element in the array. If the underlying array is too small, increase its size.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.SafeResizableArray`1.SafeGet(System.Int32)">
+            <summary>
+            Get the index'th element in the array, or return the default value if it is out of bounds.
+            </summary>
+        </member>
         <member name="M:BagoumLib.DataStructures.SafeResizableArray`1.EmptyAndReset">
             <summary>
             Clear all elements in the array and reset it to its base size.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.DataStructures.StackLet`1">
+            <summary>
+            Wrapper around Stack.Push to allow `using`/Dispose pattern.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StackLet`1.#ctor(System.Collections.Generic.Stack{`0})">
+            <summary>
+            Wrapper around Stack.Push to allow `using`/Dispose pattern.
             </summary>
         </member>
         <member name="T:BagoumLib.DataStructures.StackList`1">
@@ -2047,10 +2307,56 @@
             A stack that can also be indexed like a list.
             </summary>
         </member>
+        <member name="P:BagoumLib.DataStructures.StackList`1.Count">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StackList`1.#ctor(System.Int32)">
+            <inheritdoc cref="T:BagoumLib.DataStructures.StackList`1"/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StackList`1.Push(`0)">
+            <summary>
+            Add an element to the end of the stack.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StackList`1.Pop">
+            <summary>
+            Remove and return the last element.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StackList`1.Peek">
+            <summary>
+            Return the last element.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StackList`1.Peek(System.Int32)">
+            <summary>
+            Return the `distance`'th element from the back (distance = 1 is the last element).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StackList`1.MaybePeek">
+            <summary>
+            Return the last element if the stack is not empty; otherwise, return 
+            </summary>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StackList`1.Clear">
+            <summary>
+            Empty all elements from the stack.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.StackList`1.Item(System.Int32)">
+            <summary>
+            Get a reference to the 'ind''th element.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.DataStructures.StackList`1.System#Collections#Generic#IReadOnlyList{T}#Item(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.DataStructures.StackList`1.GetEnumerator">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.DataStructures.StateFlow`1">
             <summary>
-            A helper to manage state flow between states of type <see cref="!:T"/>.
-            
+            A helper to manage state flow between states of type T.
             </summary>
         </member>
         <member name="P:BagoumLib.DataStructures.StateFlow`1.State">
@@ -2252,6 +2558,9 @@
             The percentage of the block that will be evicted every time the event yields a new value.
             </summary>
         </member>
+        <member name="M:BagoumLib.Events.ArrayOverlapperEvent`1.#ctor(System.Int32,System.Double,System.Boolean)">
+            <inheritdoc cref="T:BagoumLib.Events.ArrayOverlapperEvent`1"/>
+        </member>
         <member name="M:BagoumLib.Events.ArrayOverlapperEvent`1.OnNext(`0[])">
             <inheritdoc/>
         </member>
@@ -2287,6 +2596,9 @@
             <summary>
             The number of indices that have been set in <see cref="P:BagoumLib.Events.ChunkerEvent`1.NextChunk"/>.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Events.ChunkerEvent`1.#ctor(System.Int32,System.Boolean)">
+            <inheritdoc cref="T:BagoumLib.Events.ChunkerEvent`1"/>
         </member>
         <member name="M:BagoumLib.Events.ChunkerEvent`1.OnNext(`0)">
             <inheritdoc/>
@@ -2659,7 +2971,22 @@
             All values published by this event.
             </summary>
         </member>
+        <member name="P:BagoumLib.Events.AccEvent`1.HasValue">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Events.AccEvent`1.Value">
+            <inheritdoc/>
+        </member>
         <member name="M:BagoumLib.Events.AccEvent`1.OnNext(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.AccEvent`1.OnCompleted">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.AccEvent`1.OnError(System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.AccEvent`1.Subscribe(System.IObserver{`0})">
             <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Events.AccEvent`1.Clear">
@@ -2749,6 +3076,11 @@
              revoked at will.
             </summary>
         </member>
+        <member name="P:BagoumLib.Events.IdealOverride`1.Ideal">
+            <summary>
+            The ideal value, which is the current value if there is no override.
+            </summary>
+        </member>
         <member name="P:BagoumLib.Events.IdealOverride`1.Value">
             <inheritdoc />
         </member>
@@ -2756,6 +3088,9 @@
             <summary>
             Reset the override value, so <see cref="M:BagoumLib.Events.IdealOverride`1.get_Value"/> will return the ideal value.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Events.IdealOverride`1.#ctor(`0)">
+            <inheritdoc cref="T:BagoumLib.Events.IdealOverride`1"/>
         </member>
         <member name="M:BagoumLib.Events.IdealOverride`1.Subscribe(System.IObserver{`0})">
             <inheritdoc />
@@ -2768,6 +3103,11 @@
         </member>
         <member name="M:BagoumLib.Events.IdealOverride`1.OnNext(`0)">
             <inheritdoc />
+        </member>
+        <member name="M:BagoumLib.Events.IdealOverride`1.SetIdeal(`0)">
+            <summary>
+            Modify <see cref="P:BagoumLib.Events.IdealOverride`1.Ideal"/>.
+            </summary>
         </member>
         <member name="T:BagoumLib.Events.EventedSerializer">
             <summary>
@@ -2902,7 +3242,7 @@
         </member>
         <member name="T:BagoumLib.Events.NullEvent`1">
             <summary>
-            An event that ignores subscriptions and values.
+            An event that ignores subscriptions, values, errors, and completions.
             </summary>
         </member>
         <member name="F:BagoumLib.Events.NullEvent`1.Default">
@@ -2910,13 +3250,22 @@
             Singleton instance of <see cref="T:BagoumLib.Events.NullEvent`1"/>.
             </summary>
         </member>
+        <member name="P:BagoumLib.Events.NullEvent`1.HasValue">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Events.NullEvent`1.Value">
+            <inheritdoc/>
+        </member>
         <member name="M:BagoumLib.Events.NullEvent`1.OnNext(`0)">
             <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Events.NullEvent`1.Subscribe(System.IObserver{`0})">
+        <member name="M:BagoumLib.Events.NullEvent`1.OnCompleted">
             <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Events.NullEvent`1.Subscribe(System.IObserver{`0},System.Int32)">
+        <member name="M:BagoumLib.Events.NullEvent`1.OnError(System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.NullEvent`1.Subscribe(System.IObserver{`0})">
             <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Events.PushLerper`1">
@@ -3031,6 +3380,12 @@
             Maximum number of recently published elements to send to new subscribers.
             </summary>
         </member>
+        <member name="P:BagoumLib.Events.ReplayEvent`1.HasValue">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Events.ReplayEvent`1.Value">
+            <inheritdoc/>
+        </member>
         <member name="M:BagoumLib.Events.ReplayEvent`1.#ctor(System.Int32)">
             <summary>
             Create a new <see cref="T:BagoumLib.Events.ReplayEvent`1"/>.
@@ -3040,10 +3395,13 @@
         <member name="M:BagoumLib.Events.ReplayEvent`1.Subscribe(System.IObserver{`0})">
             <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Events.ReplayEvent`1.Subscribe(System.IObserver{`0},System.Int32)">
+        <member name="M:BagoumLib.Events.ReplayEvent`1.OnNext(`0)">
             <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Events.ReplayEvent`1.OnNext(`0)">
+        <member name="M:BagoumLib.Events.ReplayEvent`1.OnCompleted">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.ReplayEvent`1.OnError(System.Exception)">
             <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Events.TriggerEvent`1">
@@ -3052,7 +3410,22 @@
              an OnNext call, and then noop until it is reset.
             </summary>
         </member>
+        <member name="P:BagoumLib.Events.TriggerEvent`1.HasValue">
+            <inheritdoc/>
+        </member>
+        <member name="P:BagoumLib.Events.TriggerEvent`1.Value">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.TriggerEvent`1.Subscribe(System.IObserver{`0})">
+            <inheritdoc/>
+        </member>
         <member name="M:BagoumLib.Events.TriggerEvent`1.OnNext(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.TriggerEvent`1.OnCompleted">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Events.TriggerEvent`1.OnError(System.Exception)">
             <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Events.TriggerEvent`1.Reset">
@@ -3112,6 +3485,17 @@
             more explicit control over the message.
             </summary>
         </member>
+        <member name="P:BagoumLib.MultiException.InnerExceptions">
+            <summary>
+            List of exceptions aggregated within this.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.MultiException.#ctor(System.String,System.Collections.Generic.IEnumerable{System.Exception})">
+            <inheritdoc cref="T:BagoumLib.MultiException"/>
+        </member>
+        <member name="M:BagoumLib.MultiException.#ctor(System.String,System.Exception[])">
+            <inheritdoc cref="T:BagoumLib.MultiException"/>
+        </member>
         <member name="T:BagoumLib.Exceptions">
             <summary>
             Helpers for exceptions.
@@ -3135,6 +3519,19 @@
              exception first and then moving outwards.
             <br/>Includes a stacktrace from the innermost exception.
             </summary>
+        </member>
+        <member name="T:BagoumLib.Expressions.EnumerateVisitor">
+            <summary>
+            Expression visitor that enumerates all nodes in preorder.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.EnumerateVisitor.Enumerate(System.Linq.Expressions.Expression)">
+            <summary>
+            Enumerate all nodes in preorder.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.EnumerateVisitor.Visit(System.Linq.Expressions.Expression)">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Expressions.ExExtensions">
             <summary>
@@ -3524,16 +3921,34 @@
         <member name="M:BagoumLib.Expressions.LinearizeVisitor.VisitUnary(System.Linq.Expressions.UnaryExpression)">
             <inheritdoc />
         </member>
+        <member name="T:BagoumLib.Expressions.IObjectPrinter">
+            <summary>
+            Interface for converting objects into string representations.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.IObjectPrinter.Print(System.Object)">
+            <summary>
+            Convert an object into a string representation.
+            </summary>
+        </member>
         <member name="T:BagoumLib.Expressions.CSharpObjectPrinter">
             <summary>
             Tries really hard to convert an object to a C# representation.
             <br/>Note that this is not possible for all types.
             </summary>
         </member>
+        <member name="P:BagoumLib.Expressions.CSharpObjectPrinter.TypePrinter">
+            <summary>
+            Type-to-string printer.
+            </summary>
+        </member>
         <member name="P:BagoumLib.Expressions.CSharpObjectPrinter.FallbackToToString">
             <summary>
             Set this to true to use .ToString() if the value cannot be printed.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.CSharpObjectPrinter.Print(System.Object)">
+            <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Expressions.CSharpObjectPrinter.NoPrintMethodFallback(System.Object)">
             <summary>
@@ -3560,6 +3975,11 @@
         <member name="T:BagoumLib.Expressions.HasUnboundParameterVisitor">
             <summary>
             Checks if a expression tree has any parameters not bound in a Block.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Expressions.HasUnboundParameterVisitor.UnboundParameters">
+            <summary>
+            All the unbound parameters.
             </summary>
         </member>
         <member name="M:BagoumLib.Expressions.HasUnboundParameterVisitor.VisitParameter(System.Linq.Expressions.ParameterExpression)">
@@ -3825,6 +4245,11 @@
         <member name="M:BagoumLib.Expressions.PrintVisitor.VisitBlock(System.Linq.Expressions.BlockExpression)">
             <inheritdoc />
         </member>
+        <member name="M:BagoumLib.Expressions.PrintVisitor.VisitConditionalAsIfElse(System.Linq.Expressions.ConditionalExpression)">
+            <summary>
+            Visit a conditional expression, but print it as an if/else block instead of a ternary.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Expressions.PrintVisitor.VisitConditional(System.Linq.Expressions.ConditionalExpression)">
             <inheritdoc />
         </member>
@@ -3871,9 +4296,6 @@
             <inheritdoc />
         </member>
         <member name="M:BagoumLib.Expressions.PrintVisitor.VisitMemberAssignment(System.Linq.Expressions.MemberAssignment)">
-            <inheritdoc />
-        </member>
-        <member name="M:BagoumLib.Expressions.PrintVisitor.VisitMemberBinding(System.Linq.Expressions.MemberBinding)">
             <inheritdoc />
         </member>
         <member name="M:BagoumLib.Expressions.PrintVisitor.VisitMemberInit(System.Linq.Expressions.MemberInitExpression)">
@@ -3968,9 +4390,46 @@
         <member name="M:BagoumLib.Expressions.CSharpTypePrinter.Print(System.Type)">
             <inheritdoc/>
         </member>
+        <member name="T:BagoumLib.Expressions.VisitorHelpers">
+            <summary>
+            Helpers for expression visitors.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.VisitorHelpers.IsBlockishExpression(System.Linq.Expressions.Expression)">
+            <summary>
+            Return true if this expression does not have a value in C# source code
+            (block expressions, void-typed conditional expressions, try expressions, switch expressions).
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.VisitorHelpers.ParameterByRefPrefix(System.Reflection.ParameterInfo)">
+            <summary>
+            Return the in/out/ref prefix for a by-ref parameter.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Expressions.VisitorHelpers.NameTypeInWords(System.Type)">
             <summary>
             Converts a type into a camel-case representation with no symbols.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.VisitorHelpers.IsChecked(System.Linq.Expressions.ExpressionType)">
+            <summary>
+            Return true if this operator is a checked arithmetic operator.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.VisitorHelpers.IsAssign(System.Linq.Expressions.ExpressionType)">
+            <summary>
+            Return true if this operator is an assignment-type operator.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.VisitorHelpers.BinaryOperatorString(System.Linq.Expressions.ExpressionType)">
+            <summary>
+            Convert a binary operator into its infix source code representation.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Expressions.VisitorHelpers.UnaryOperatorString(System.Linq.Expressions.ExpressionType,System.Type)">
+            <summary>
+            Convert a unary operator into its source code representation.
+             Return Either.Left if the operator is on the left side, or Either.Right if the operator is on the right side.
             </summary>
         </member>
         <member name="T:BagoumLib.Extensions">
@@ -4128,6 +4587,21 @@
         </member>
         <member name="M:BagoumLib.ArrayExtensions.SelectInPlace``1(``0[],System.Func{``0,System.Int32,``0})">
             <inheritdoc cref="M:BagoumLib.ArrayExtensions.SelectInPlace``1(``0[],System.Func{``0,``0})"/>
+        </member>
+        <member name="M:BagoumLib.ArrayExtensions.SelectToArr``2(``0[],System.Func{``0,``1})">
+            <summary>
+            = arr.Select(map).ToArray()
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ArrayExtensions.SelectToArr``2(System.Collections.Generic.IReadOnlyList{``0},System.Func{``0,``1})">
+            <summary>
+            = arr.Select(map).ToArray()
+            </summary>
+        </member>
+        <member name="M:BagoumLib.ArrayExtensions.SelectToList``2(System.Collections.Generic.IReadOnlyList{``0},System.Func{``0,``1})">
+            <summary>
+            = arr.Select(map).ToLis()
+            </summary>
         </member>
         <member name="T:BagoumLib.IUnrollable`1">
             <summary>
@@ -4526,6 +5000,11 @@
             Try to get the top element in a <see cref="T:BagoumLib.DataStructures.StackList`1"/>.
             </summary>
         </member>
+        <member name="M:BagoumLib.DataStructureExtensions.WithPush``1(System.Collections.Generic.Stack{``0},``0)">
+            <summary>
+            Push an entry to a stack, and return a disposable that pops it.
+            </summary>
+        </member>
         <member name="T:BagoumLib.EventExtensions">
             <summary>
             Static class providing extensions for events
@@ -4583,11 +5062,6 @@
             A value, or a delayed value.
             </summary>
         </member>
-        <member name="P:BagoumLib.Functional.Delayed`1.IsConcrete">
-            <summary>
-            True iff this struct is represented by a concrete value.
-            </summary>
-        </member>
         <member name="P:BagoumLib.Functional.Delayed`1.ConcreteValue">
             <summary>
             A concrete value. Only valid if <see cref="P:BagoumLib.Functional.Delayed`1.IsConcrete"/> is true.
@@ -4596,6 +5070,11 @@
         <member name="P:BagoumLib.Functional.Delayed`1.DelayedValue">
             <summary>
             A delayed value. Only valid if <see cref="P:BagoumLib.Functional.Delayed`1.IsConcrete"/> is false.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.Delayed`1.IsConcrete">
+            <summary>
+            True iff this struct is represented by a concrete value.
             </summary>
         </member>
         <member name="P:BagoumLib.Functional.Delayed`1.Value">
@@ -4633,11 +5112,6 @@
             A value that is either of type L (left) or of type R (right).
             </summary>
         </member>
-        <member name="P:BagoumLib.Functional.Either`2.IsLeft">
-            <summary>
-            True iff the value is of type L.
-            </summary>
-        </member>
         <member name="P:BagoumLib.Functional.Either`2.Left">
             <summary>
             The left-value of this type. Only valid if <see cref="P:BagoumLib.Functional.Either`2.IsLeft"/> is true.
@@ -4646,6 +5120,11 @@
         <member name="P:BagoumLib.Functional.Either`2.Right">
             <summary>
             The right-value of this type. Only valid if <see cref="P:BagoumLib.Functional.Either`2.IsLeft"/> is false.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.Either`2.IsLeft">
+            <summary>
+            True iff the value is of type L.
             </summary>
         </member>
         <member name="P:BagoumLib.Functional.Either`2.IsRight">
@@ -4830,19 +5309,26 @@
             LINQ implementation for SelectMany.
             </summary>
         </member>
+        <member name="M:BagoumLib.Functional.Helpers.ReplaceEntries``1(System.Boolean,System.Collections.Generic.List{``0},System.Collections.Generic.List{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            Replace entries in `replaceIn` when they pass `replaceFilter` with entries in `replaceFrom`.
+            If `allowFewer` is true, then won't replace arguments if there are no more entries in `replaceFrom`.
+            All replacements must be consumed.
+            </summary>
+        </member>
         <member name="T:BagoumLib.Functional.Maybe`1">
             <summary>
             A value of type T that may or may not exist.
             </summary>
         </member>
-        <member name="P:BagoumLib.Functional.Maybe`1.Valid">
-            <summary>
-            True iff the value exists.
-            </summary>
-        </member>
         <member name="P:BagoumLib.Functional.Maybe`1.Value">
             <summary>
             The underlying value. Undefined if <see cref="P:BagoumLib.Functional.Maybe`1.Valid"/> is false.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.Maybe`1.Valid">
+            <summary>
+            True iff the value exists.
             </summary>
         </member>
         <member name="M:BagoumLib.Functional.Maybe`1.#ctor(System.Boolean,`0)">
@@ -4870,6 +5356,11 @@
         <member name="M:BagoumLib.Functional.Maybe`1.FMap``1(System.Func{`0,``0})">
             <summary>
             Functor map.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Functional.Maybe`1.RApply``1(BagoumLib.Functional.Maybe{System.Func{`0,``0}})">
+            <summary>
+            Applicative apply.
             </summary>
         </member>
         <member name="M:BagoumLib.Functional.Maybe`1.Bind``1(System.Func{`0,BagoumLib.Functional.Maybe{``0}})">
@@ -4918,6 +5409,21 @@
             A value that is one of three possible types.
             </summary>
         </member>
+        <member name="P:BagoumLib.Functional.OneOf`3.ValA">
+            <summary>
+            The A-value of this type. Only valid if <see cref="P:BagoumLib.Functional.OneOf`3.IsA"/> is true.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.OneOf`3.ValB">
+            <summary>
+            The B-value of this type. Only valid if <see cref="P:BagoumLib.Functional.OneOf`3.IsB"/> is true.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Functional.OneOf`3.ValC">
+            <summary>
+            The C-value of this type. Only valid if <see cref="P:BagoumLib.Functional.OneOf`3.IsC"/> is true.
+            </summary>
+        </member>
         <member name="P:BagoumLib.Functional.OneOf`3.Index">
             <summary>
             The index of the correct type (0=A, 1=B, 2=C).
@@ -4936,21 +5442,6 @@
         <member name="P:BagoumLib.Functional.OneOf`3.IsC">
             <summary>
             True iff the value is of type C.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Functional.OneOf`3.ValA">
-            <summary>
-            The A-value of this type. Only valid if <see cref="P:BagoumLib.Functional.OneOf`3.IsA"/> is true.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Functional.OneOf`3.ValB">
-            <summary>
-            The B-value of this type. Only valid if <see cref="P:BagoumLib.Functional.OneOf`3.IsB"/> is true.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Functional.OneOf`3.ValC">
-            <summary>
-            The C-value of this type. Only valid if <see cref="P:BagoumLib.Functional.OneOf`3.IsC"/> is true.
             </summary>
         </member>
         <member name="M:BagoumLib.Functional.OneOf`3.#ctor(`0)">
@@ -5004,6 +5495,41 @@
             Logging levels for <see cref="T:BagoumLib.Logging"/>.
             </summary>
         </member>
+        <member name="F:BagoumLib.LogLevel.DEBUG1">
+            <summary>
+            Lowest-priority debug level
+            </summary>
+        </member>
+        <member name="F:BagoumLib.LogLevel.DEBUG2">
+            <summary>
+            Second-lowest-priority debug level
+            </summary>
+        </member>
+        <member name="F:BagoumLib.LogLevel.DEBUG3">
+            <summary>
+            Second-highest-priority debug level
+            </summary>
+        </member>
+        <member name="F:BagoumLib.LogLevel.DEBUG4">
+            <summary>
+            Highest-priority debug level
+            </summary>
+        </member>
+        <member name="F:BagoumLib.LogLevel.INFO">
+            <summary>
+            Informational logs (default level)
+            </summary>
+        </member>
+        <member name="F:BagoumLib.LogLevel.WARNING">
+            <summary>
+            Warnings
+            </summary>
+        </member>
+        <member name="F:BagoumLib.LogLevel.ERROR">
+            <summary>
+            Errors/exceptions
+            </summary>
+        </member>
         <member name="T:BagoumLib.LogMessage">
             <summary>
             A compiled log message that can be read by log listeners.
@@ -5029,6 +5555,37 @@
             An exception that may be associated with the message.
             </summary>
         </member>
+        <member name="M:BagoumLib.LogMessage.#ctor(System.String,BagoumLib.LogLevel,System.Exception,System.Nullable{System.Boolean})">
+            <inheritdoc cref="T:BagoumLib.LogMessage"/>
+        </member>
+        <member name="M:BagoumLib.LogMessage.Info(System.String,BagoumLib.LogLevel)">
+            <summary>
+            Create a <see cref="T:BagoumLib.LogMessage"/> with a default level of <see cref="F:BagoumLib.LogLevel.INFO"/>.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.LogMessage.Warning(System.String)">
+            <summary>
+            Create a warning log.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.LogMessage.Error(System.Exception,System.String)">
+            <summary>
+            Create an error log.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.LogMessage.op_Implicit(System.String)~BagoumLib.LogMessage">
+            <summary>
+            Convert a string to an info log.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.LogMessage.op_Implicit(System.Exception)~BagoumLib.LogMessage">
+            <summary>
+            Convert an exception to an error log.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.LogMessage.ToString">
+            <inheritdoc/>
+        </member>
         <member name="T:BagoumLib.Logging">
             <summary>
             A static class containing a singleton logger.
@@ -5038,6 +5595,15 @@
             <summary>
             Singleton logger.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Logging.ToFileLink(System.String,System.Int32,System.String)">
+            <summary>
+            Create a file link (clickable in some IDEs) linking to a line in a specific file
+            </summary>
+            <param name="filename">Path to file</param>
+            <param name="line">Line in file</param>
+            <param name="content">Message to put in the link text (defaults to filename:line)</param>
+            <returns></returns>
         </member>
         <member name="T:BagoumLib.LogStringFmt">
             <summary>
@@ -5167,6 +5733,16 @@
             Helpers for reflection and type handling.
             </summary>
         </member>
+        <member name="F:BagoumLib.Reflection.ReflectionUtils.FuncTypesByArity">
+            <summary>
+            The types Func{}, Func{,}, Func{,,}, etc.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.Reflection.ReflectionUtils.TupleTypesByArity">
+            <summary>
+            The types (), (,), (,,), etc.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Reflection.ReflectionUtils.GetFuncType(System.Int32)">
             <summary>
             Get the func type typeof(Func&lt;,,,,...&gt;), where arity is the number of generic arguments.
@@ -5241,6 +5817,26 @@
             <param name="t">Type containing the field</param>
             <param name="field">Field name</param>
             <param name="instance">True if this is an instance field</param>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils._Property``1(System.Object,System.String)">
+            <summary>
+            Get the value of a property by name.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils._StaticProperty``1(System.Type,System.String)">
+            <summary>
+            Get the value of a static property by name.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils._Field``1(System.Object,System.String)">
+            <summary>
+            Get the value of a field by name.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Reflection.ReflectionUtils._StaticField``1(System.Type,System.String)">
+            <summary>
+            Get the value of a static field by name.
+            </summary>
         </member>
         <member name="M:BagoumLib.Reflection.ReflectionUtils.GetEnumVals``1">
             <summary>
@@ -5569,6 +6165,11 @@
             Find a service of type T, or throw an exception.
             </summary>
         </member>
+        <member name="T:BagoumLib.SignalProcessing.IBand">
+            <summary>
+            A frequency band in a beat detector.
+            </summary>
+        </member>
         <member name="P:BagoumLib.SignalProcessing.IBand.Src">
             <summary>
             Beat detector containing this band.
@@ -5594,6 +6195,11 @@
             History of log-power signals. Note that the sampling rate of this stream is <see cref="P:BagoumLib.SignalProcessing.BeatDetector.PowerSampleRate"/>.
             </summary>
         </member>
+        <member name="P:BagoumLib.SignalProcessing.PowerBand.SmoothLogPowerHistory">
+            <summary>
+            History of log-power signals passed through a Hann filter.
+            </summary>
+        </member>
         <member name="P:BagoumLib.SignalProcessing.PowerBand.DerivativeHistory">
             <summary>
             History of d/dt of log-power. Note that the sampling rate of this stream is <see cref="P:BagoumLib.SignalProcessing.BeatDetector.PowerSampleRate"/>.
@@ -5612,6 +6218,9 @@
         </member>
         <member name="P:BagoumLib.SignalProcessing.PowerBand.HighLimit">
             <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.PowerBand.#ctor(BagoumLib.SignalProcessing.BeatDetector,System.Double,System.Double)">
+            <inheritdoc cref="T:BagoumLib.SignalProcessing.PowerBand"/>
         </member>
         <member name="M:BagoumLib.SignalProcessing.PowerBand.OnCompleted">
             <inheritdoc/>
@@ -5652,6 +6261,9 @@
         </member>
         <member name="P:BagoumLib.SignalProcessing.SignalBand.HighLimit">
             <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.SignalProcessing.SignalBand.#ctor(BagoumLib.SignalProcessing.BeatDetector,System.Double,System.Double)">
+            <inheritdoc cref="T:BagoumLib.SignalProcessing.SignalBand"/>
         </member>
         <member name="M:BagoumLib.SignalProcessing.SignalBand.OnCompleted">
             <inheritdoc/>
@@ -5738,6 +6350,16 @@
             <summary>
             The index of the last read sample from the sample data for <see cref="T:BagoumLib.SignalProcessing.PowerBand"/>.
             <br/>Note that this may be greater than any band-specific convolution data since convolutions are delayed.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.SignalProcessing.BeatDetector.MaxHz">
+            <summary>
+            Maximum parsed frequency.
+            </summary>
+        </member>
+        <member name="F:BagoumLib.SignalProcessing.BeatDetector.MinHz">
+            <summary>
+            Minimum parsed frequency.
             </summary>
         </member>
         <member name="M:BagoumLib.SignalProcessing.BeatDetector.Update(System.Collections.Generic.IReadOnlyList{System.Single},System.Int32,System.Double[])">
@@ -6188,6 +6810,19 @@
             See <see cref="M:BagoumLib.Sorting.CombMergeSorter`1.Sort(`0[],System.Int32,System.Int32,BagoumLib.Sorting.LeqCompare{`0},`0[])"/>
             </summary>
         </member>
+        <member name="T:BagoumLib.Sorting.InsertionSort`1">
+            <summary>
+            Implementation of insertion sort.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Sorting.InsertionSort`1.Sort(`0[],System.Int32,System.Int32,System.Collections.Generic.IComparer{`0})">
+            <summary>
+            Sort the provided range of the array.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Sorting.InsertionSort`1.Sort_(`0[],System.Int32,System.Int32,System.Collections.Generic.IComparer{`0})">
+            <inheritdoc cref="M:BagoumLib.Sorting.InsertionSort`1.Sort(`0[],System.Int32,System.Int32,System.Collections.Generic.IComparer{`0})"/>
+        </member>
         <member name="T:BagoumLib.Sorting.LeqCompare`1">
             <summary>
             Returns true iff a is less than or equal to b.
@@ -6218,11 +6853,6 @@
             See <see cref="M:BagoumLib.Sorting.MergeSorter`1.Sort(`0[],System.Int32,System.Int32,BagoumLib.Sorting.LeqCompare{`0},`0[])"/>
             </summary>
         </member>
-        <member name="T:BagoumLib.Sorting.WikiSorter`1">
-            <summary>
-            Wikisort sorting algorithm, adapted for C# from https://github.com/BonzaiThePenguin/WikiSort/blob/master/WikiSort.java
-            </summary>
-        </member>
         <member name="T:BagoumLib.Tasks.TaskQueue">
             <summary>
             A container that queues tasks for sequential execution.
@@ -6233,14 +6863,16 @@
             The currently executing task.
             </summary>
         </member>
-        <member name="P:BagoumLib.Tasks.TaskQueue.ExecutingTransition">
+        <member name="P:BagoumLib.Tasks.TaskQueue.IsExecuting">
             <summary>
             True when a task is being executed.
             </summary>
         </member>
         <member name="P:BagoumLib.Tasks.TaskQueue.AllowOnlyOneQueued">
             <summary>
-            If true, then only one task can be queued up at a time. True by default.
+            If true, then only one task can be queued up at a time.
+            Queued tasks will be cleared when a new task is added.
+            True by default.
             </summary>
         </member>
         <member name="M:BagoumLib.Tasks.TaskQueue.EnqueueTask(System.Func{System.Threading.Tasks.Task})">
@@ -6329,6 +6961,11 @@
         <member name="M:BagoumLib.Tasks.Utilities.Pipe(System.Threading.Tasks.Task,System.Threading.Tasks.TaskCompletionSource{System.Reactive.Unit})">
             <summary>
             Put the result of this task into a <see cref="T:System.Threading.Tasks.TaskCompletionSource`1"/>.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.Tasks.WaitingUtils">
+            <summary>
+            Helpers for awaiting tasks.
             </summary>
         </member>
         <member name="F:BagoumLib.Tasks.WaitingUtils.NoOp">
@@ -6450,15 +7087,69 @@
         <member name="M:BagoumLib.Transitions.TransitionBase`1.With(BagoumLib.Cancellation.ICancellee,System.Func{System.Single})">
             <inheritdoc/>
         </member>
+        <member name="T:BagoumLib.Transitions.TransitionHelpers">
+            <summary>
+            Helpers for creating transitions.
+            </summary>
+        </member>
+        <member name="P:BagoumLib.Transitions.TransitionHelpers.DefaultDeltaTimeProvider">
+            <summary>
+            Default provider for transition deltaTime. Should be provided by consuming libraries.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.TransitionHelpers.Apply``1(System.Func{System.Single,``0},System.Single,System.Action{``0},System.Func{``0},BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Create a transition that applies a value provided by `eval` at every time step.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.TransitionHelpers.TweenTo``1(``0,``0,System.Single,System.Action{``0},BagoumLib.Mathematics.Easer,BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Create a transition that lerps from `start` to `end`.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.TransitionHelpers.TweenDelta``1(``0,``0,System.Single,System.Action{``0},BagoumLib.Mathematics.Easer,BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Create a transition that lerps from `start` to `start+delta`.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.TransitionHelpers.TweenBy``1(``0,System.Single,System.Single,System.Action{``0},BagoumLib.Mathematics.Easer,BagoumLib.Cancellation.ICancellee)">
+            <summary>
+            Create a transition that lerps from `start` to `start*by`.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.TransitionHelpers.Then(BagoumLib.Transitions.ITransition,BagoumLib.Transitions.ITransition)">
+            <summary>
+            Run two transitions in sequence.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.TransitionHelpers.Then(BagoumLib.Transitions.ITransition,System.Func{BagoumLib.Transitions.ITransition})">
+            <inheritdoc cref="M:BagoumLib.Transitions.TransitionHelpers.Then(BagoumLib.Transitions.ITransition,BagoumLib.Transitions.ITransition)"/>
+        </member>
+        <member name="M:BagoumLib.Transitions.TransitionHelpers.Parallel(BagoumLib.Transitions.ITransition[])">
+            <summary>
+            Run multiple transitions in parallel.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.TransitionHelpers.Parallel(BagoumLib.Transitions.ITransition,BagoumLib.Transitions.ITransition[])">
+            <summary>
+            Run multiple transitions in parallel.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.TransitionHelpers.Loop(BagoumLib.Transitions.ITransition,System.Nullable{System.Int32})">
+            <summary>
+            Loop a transition.
+            </summary>
+        </member>
+        <member name="T:BagoumLib.Transitions.StatusApplier`1">
+            <summary>
+            A transition that sets a value based on a function of time (<see cref="P:BagoumLib.Transitions.StatusApplier`1.Valuer"/>).
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
         <member name="P:BagoumLib.Transitions.StatusApplier`1.Valuer">
             <summary>
             Value to apply given time T.
             If <see cref="F:BagoumLib.Transitions.StatusApplier`1.InitialValue"/> is defined, this will be added to it.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Transitions.StatusApplier`1.Apply">
-            <summary>
-            Method to update value.
             </summary>
         </member>
         <member name="F:BagoumLib.Transitions.StatusApplier`1.InitialValue">
@@ -6466,6 +7157,18 @@
             If present, will be used as an offset for Valuer.
             Evaluated when the transition is run.
             </summary>
+        </member>
+        <member name="M:BagoumLib.Transitions.StatusApplier`1.#ctor(System.Func{System.Single,`0},System.Single,System.Action{`0},BagoumLib.Cancellation.ICancellee)">
+            <inheritdoc cref="T:BagoumLib.Transitions.StatusApplier`1"/>
+        </member>
+        <member name="M:BagoumLib.Transitions.StatusApplier`1.ApplyStart">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Transitions.StatusApplier`1.ApplyStep(`0,System.Single)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Transitions.StatusApplier`1.ApplyEnd(`0)">
+            <inheritdoc/>
         </member>
         <member name="T:BagoumLib.Transitions.Tweener`1">
             <summary>
@@ -6518,7 +7221,7 @@
             </summary>
         </member>
         <member name="M:BagoumLib.Transitions.NoopTweener.#ctor(System.Single,BagoumLib.Cancellation.ICancellee)">
-            <inheritdoc cref="!:NoopTweener&lt;T&gt;"/>
+            <inheritdoc cref="T:BagoumLib.Transitions.NoopTweener"/>
         </member>
         <member name="M:BagoumLib.Transitions.NoopTweener.ApplyStart">
             <inheritdoc/>
@@ -6816,66 +7519,6 @@
         <member name="M:BagoumLib.Unification.IAtomicTypeTree._ResolveUnifiers(BagoumLib.Unification.IAtomicTypeTree,BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)">
             <inheritdoc cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/>
         </member>
-        <member name="T:BagoumLib.Unification.TypeTree">
-            <summary>
-            A basic implementation of <see cref="T:BagoumLib.Unification.ITypeTree"/>.
-            </summary>
-        </member>
-        <member name="T:BagoumLib.Unification.TypeTree.ITree">
-            <summary>
-            Degenerate interface inheriting <see cref="T:BagoumLib.Unification.ITypeTree"/>.
-            </summary>
-        </member>
-        <member name="T:BagoumLib.Unification.TypeTree.Method">
-            <summary>
-            Tree representing a method call.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Unification.TypeTree.Method.#ctor(BagoumLib.Unification.TypeDesignation.Dummy[],BagoumLib.Unification.TypeTree.ITree[])">
-            <summary>
-            Tree representing a method call.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Unification.TypeTree.Method.SelectedOverload">
-            <inheritdoc/>
-        </member>
-        <member name="P:BagoumLib.Unification.TypeTree.Method.ImplicitCast">
-            <inheritdoc/>
-        </member>
-        <member name="P:BagoumLib.Unification.TypeTree.Method.RealizableOverloads">
-            <inheritdoc/>
-        </member>
-        <member name="P:BagoumLib.Unification.TypeTree.Method.OverloadsAreInterchangeable">
-            <inheritdoc/>
-        </member>
-        <member name="T:BagoumLib.Unification.TypeTree.AtomicWithType">
-            <summary>
-            Tree representing an atomic value.
-            </summary>
-        </member>
-        <member name="M:BagoumLib.Unification.TypeTree.AtomicWithType.#ctor(BagoumLib.Unification.TypeDesignation[])">
-            <summary>
-            Tree representing an atomic value.
-            </summary>
-        </member>
-        <member name="P:BagoumLib.Unification.TypeTree.AtomicWithType.SelectedOverload">
-            <inheritdoc/>
-        </member>
-        <member name="P:BagoumLib.Unification.TypeTree.AtomicWithType.ImplicitCast">
-            <inheritdoc/>
-        </member>
-        <member name="P:BagoumLib.Unification.TypeTree.Arr.SelectedOverload">
-            <inheritdoc/>
-        </member>
-        <member name="P:BagoumLib.Unification.TypeTree.Arr.ImplicitCast">
-            <inheritdoc/>
-        </member>
-        <member name="P:BagoumLib.Unification.TypeTree.Arr.RealizableOverloads">
-            <inheritdoc/>
-        </member>
-        <member name="P:BagoumLib.Unification.TypeTree.Arr.OverloadsAreInterchangeable">
-            <inheritdoc/>
-        </member>
         <member name="T:BagoumLib.Unification.TypeUnifyErr">
             <summary>
             A failure in type unification for <see cref="T:BagoumLib.Unification.TypeDesignation"/>.
@@ -6967,14 +7610,14 @@
         </member>
         <member name="T:BagoumLib.Unification.TypeUnifyErr.NoResolvableOverload">
             <summary>
-            During the <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/> stage, no overload could be found that unified
-             correctly with the parameters and return type.
+            During the <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)"/> stage,
+             no overload could be found that unified correctly with the parameters and return type.
             </summary>
         </member>
         <member name="M:BagoumLib.Unification.TypeUnifyErr.NoResolvableOverload.#ctor(BagoumLib.Unification.ITypeTree,BagoumLib.Unification.TypeDesignation,System.Collections.Generic.IReadOnlyList{System.ValueTuple{BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeUnifyErr}})">
             <summary>
-            During the <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/> stage, no overload could be found that unified
-             correctly with the parameters and return type.
+            During the <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)"/> stage,
+             no overload could be found that unified correctly with the parameters and return type.
             </summary>
         </member>
         <member name="T:BagoumLib.Unification.TypeUnifyErr.MultipleOverloads">
@@ -6999,12 +7642,12 @@
         </member>
         <member name="T:BagoumLib.Unification.TypeUnifyErr.TooManyPossibleTypes">
             <summary>
-            <see cref="!:ITypeTree.PossibleUnifiers(TypeResolver,Unifier)"/> returned more or less than 1 possible top-level type.
+            AST type-checking returned more than 1 possible top-level type.
             </summary>
         </member>
         <member name="M:BagoumLib.Unification.TypeUnifyErr.TooManyPossibleTypes.#ctor(BagoumLib.Unification.ITypeTree,System.Collections.Generic.List{BagoumLib.Unification.TypeDesignation})">
             <summary>
-            <see cref="!:ITypeTree.PossibleUnifiers(TypeResolver,Unifier)"/> returned more or less than 1 possible top-level type.
+            AST type-checking returned more than 1 possible top-level type.
             </summary>
         </member>
         <member name="T:BagoumLib.Unification.TypeDesignation">
@@ -7026,7 +7669,7 @@
             True iff this type and its arguments are all resolved, and can thus be constructed into a concrete type.
             </summary>
         </member>
-        <member name="M:BagoumLib.Unification.TypeDesignation.#ctor(BagoumLib.Unification.TypeDesignation[])">
+        <member name="M:BagoumLib.Unification.TypeDesignation.#ctor(System.Boolean,BagoumLib.Unification.TypeDesignation[])">
             <inheritdoc cref="T:BagoumLib.Unification.TypeDesignation"/>
         </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Unify(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.Unifier)">
@@ -7069,6 +7712,12 @@
             Check if a variable would occur in this.Simplify(u).
             </summary>
         </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.SimplifyArgs(BagoumLib.Unification.Unifier,BagoumLib.Unification.TypeDesignation[])">
+            <summary>
+            Simplify an array of types using the unifier.
+            If no simplifications were made, return null.
+            </summary>
+        </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.GetVariables">
             <summary>
             Get all the unbound type variables (<see cref="T:BagoumLib.Unification.TypeDesignation.Variable"/>) in this definition.
@@ -7085,6 +7734,22 @@
         <member name="M:BagoumLib.Unification.TypeDesignation.MakeArrayType">
             <summary>
             Make an array type designation for this type.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Equals(BagoumLib.Unification.TypeDesignation)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.op_Equality(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeDesignation)">
+            <summary>
+            Equality operator.
+            </summary>
+        </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.op_Inequality(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeDesignation)">
+            <summary>
+            Inequality operator.
             </summary>
         </member>
         <member name="T:BagoumLib.Unification.TypeDesignation.Known">
@@ -7131,9 +7796,6 @@
         <member name="M:BagoumLib.Unification.TypeDesignation.Known.Resolve(BagoumLib.Unification.Unifier)">
             <inheritdoc/>
         </member>
-        <member name="M:BagoumLib.Unification.TypeDesignation.Known.Equals(System.Object)">
-            <inheritdoc/>
-        </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Known.GetHashCode">
             <inheritdoc/>
         </member>
@@ -7172,6 +7834,13 @@
             <param name="returnTyp">Method return type</param>
             <param name="argTyps">Method parameter types, preceded by the instance type if this is an instance method</param>
         </member>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.Method(BagoumLib.Unification.TypeDesignation,System.Collections.Generic.IEnumerable{BagoumLib.Unification.TypeDesignation})">
+            <summary>
+            Create a type designation representing a method call.
+            </summary>
+            <param name="returnTyp">Method return type</param>
+            <param name="argTyps">Method parameter types, preceded by the instance type if this is an instance method</param>
+        </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.PartialApplyToFunc(System.Int32)">
             <summary>
             For a method tree (a,b,c,d,e)->f, convert it to eg. (a,b)->Func&lt;c,d,e,f&gt; (for args=2).
@@ -7196,9 +7865,6 @@
         </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.RecreateVariablesD">
             <inheritdoc cref="M:BagoumLib.Unification.TypeDesignation.Dummy.RecreateVariables(System.Collections.Generic.Dictionary{BagoumLib.Unification.TypeDesignation.Variable,BagoumLib.Unification.TypeDesignation.Variable})"/>
-        </member>
-        <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.Equals(System.Object)">
-            <inheritdoc/>
         </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Dummy.GetHashCode">
             <inheritdoc/>
@@ -7228,8 +7894,8 @@
              and each numeric literal can be `int`, `float`, or `double`. There are 3^6 = 729 possible unifiers!
             </summary>
         </member>
-        <member name="P:BagoumLib.Unification.TypeDesignation.Variable.IsResolved">
-            <inheritdoc/>
+        <member name="M:BagoumLib.Unification.TypeDesignation.Variable.#ctor">
+            <inheritdoc cref="T:BagoumLib.Unification.TypeDesignation.Variable"/>
         </member>
         <member name="M:BagoumLib.Unification.TypeDesignation.Variable.Simplify(BagoumLib.Unification.Unifier)">
             <inheritdoc/>

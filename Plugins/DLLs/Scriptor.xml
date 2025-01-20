@@ -69,6 +69,21 @@
             Get the semantic token type for a method.
             </summary>
         </member>
+        <member name="T:Scriptor.Analysis.BasicSemanticTokenModifiers">
+            <summary>
+            Basic universal semantic token modifiers.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Analysis.BasicSemanticTokenModifiers.Const">
+            <summary>
+            A constant variable.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Analysis.BasicSemanticTokenModifiers.DynamicVar">
+            <summary>
+            A dynamic-lookup variable.
+            </summary>
+        </member>
         <member name="T:Scriptor.Analysis.DebugHelpers">
             <summary>
             Helpers for reading debug information from language constructs.
@@ -501,6 +516,12 @@
             The variables stored in this environment frame.
             </summary>
         </member>
+        <member name="F:Scriptor.Analysis.EnvFrame.FloatVars">
+            <summary>
+            The float-typed frame variables in this environment frame
+             (also available in <see cref="F:Scriptor.Analysis.EnvFrame.Variables"/>).
+            </summary>
+        </member>
         <member name="P:Scriptor.Analysis.EnvFrame.Item(System.Int32)">
             <summary>
             Get the i'th parent of this envframe.
@@ -517,6 +538,8 @@
         <member name="M:Scriptor.Analysis.EnvFrame.MaybeGetValue``1(System.String)">
             <summary>
             Get a value stored in this envframe or a parent envframe.
+            <br/>If the variable does not exist, return Maybe.None.
+            If the variable exists but has the wrong type, throw an exception.
             </summary>
         </member>
         <member name="M:Scriptor.Analysis.EnvFrame.Value``1(System.String)">
@@ -534,11 +557,6 @@
             Get a value stored in this envframe or a parent envframe.
             </summary>
         </member>
-        <member name="M:Scriptor.Analysis.EnvFrame.FrameVarValues(Scriptor.Analysis.LexicalScope,System.Linq.Expressions.Expression,System.Int32,System.Type)">
-            <summary>
-            For an envFrame in the provided scope, get the type variables in the ancestor scope `parentage` levels up.
-            </summary>
-        </member>
         <member name="M:Scriptor.Analysis.EnvFrame.FrameVarValues(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Type)">
             <summary>
             Get the local type variables for an envFrame.
@@ -551,7 +569,7 @@
         </member>
         <member name="M:Scriptor.Analysis.EnvFrame.Free">
             <summary>
-            Free this EnvFrame. It will only be returned to the cache when all dependencies have freed it.
+            Free this EnvFrame. It will only be returned to the cache when all dependents have freed it.
             </summary>
         </member>
         <member name="M:Scriptor.Analysis.EnvFrame.Mirror">
@@ -566,83 +584,47 @@
              local values are not.
             </summary>
         </member>
-        <member name="T:Scriptor.Analysis.FrameVars">
-            <summary>
-            Variables of a specific type stored in an <see cref="T:Scriptor.Analysis.EnvFrame"/>.
-            </summary>
-        </member>
-        <member name="P:Scriptor.Analysis.FrameVars.Type">
-            <summary>
-            Type of the stored variables.
-            </summary>
-        </member>
-        <member name="M:Scriptor.Analysis.FrameVars.AssertLength(System.Int32)">
-            <summary>
-            Called before storing variable data.
-            Ensure that there is enough allocated space to store the provided number of variables.
-            </summary>
-        </member>
-        <member name="M:Scriptor.Analysis.FrameVars.Cache">
-            <summary>
-            Dispose of this instance by returning it to a cache.
-            </summary>
-        </member>
-        <member name="M:Scriptor.Analysis.FrameVars.Clone">
-            <summary>
-            Copy the values in this variable store.
-            </summary>
-        </member>
-        <member name="M:Scriptor.Analysis.FrameVars.GetVarStoreType(System.Type)">
-            <summary>
-            Get the type FrameVars{t}.
-            </summary>
-        </member>
-        <member name="M:Scriptor.Analysis.FrameVars.Create(System.Type)">
-            <summary>
-            Get an instance of object FrameVars{t}.
-            </summary>
-        </member>
-        <member name="T:Scriptor.Analysis.FrameVars`1">
-            <inheritdoc cref="T:Scriptor.Analysis.FrameVars"/>
-        </member>
-        <member name="P:Scriptor.Analysis.FrameVars`1.Type">
-            <inheritdoc/>
-        </member>
-        <member name="M:Scriptor.Analysis.FrameVars`1.Create">
-            <summary>
-            Create an instance of <see cref="T:Scriptor.Analysis.FrameVars`1"/>.
-            </summary>
-        </member>
-        <member name="F:Scriptor.Analysis.FrameVars`1.Values">
-            <summary>
-            Values of the stored variables.
-            </summary>
-        </member>
-        <member name="M:Scriptor.Analysis.FrameVars`1.AssertLength(System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Scriptor.Analysis.FrameVars`1.Cache">
-            <inheritdoc/>
-        </member>
-        <member name="M:Scriptor.Analysis.FrameVars`1.Clone">
-            <inheritdoc/>
-        </member>
         <member name="T:Scriptor.Analysis.IVariableStoreCreator">
             <summary>
-            Helper interface/class for creating an instance of FrameVars{T}.
+            Helper interface for creating typed variable arrays in <see cref="T:Scriptor.Analysis.EnvFrame"/>.
             </summary>
         </member>
-        <member name="M:Scriptor.Analysis.IVariableStoreCreator.Create">
+        <member name="M:Scriptor.Analysis.IVariableStoreCreator.Create(System.Int32)">
+            <inheritdoc cref="M:Scriptor.Analysis.IVariableStoreCreator.Create(System.Type,System.Int32)"/>
+        </member>
+        <member name="M:Scriptor.Analysis.IVariableStoreCreator.Cache(System.Object)">
+            <inheritdoc cref="M:Scriptor.Analysis.IVariableStoreCreator.CacheAny(System.Object)"/>
+        </member>
+        <member name="M:Scriptor.Analysis.IVariableStoreCreator.Clone(System.Object)">
+            <inheritdoc cref="M:Scriptor.Analysis.IVariableStoreCreator.CloneAny(System.Object)"/>
+        </member>
+        <member name="M:Scriptor.Analysis.IVariableStoreCreator.Create(System.Type,System.Int32)">
             <summary>
-            Create an instance of FrameVars{T}.
+            Get an instance of T[].
+            </summary>
+        </member>
+        <member name="M:Scriptor.Analysis.IVariableStoreCreator.CacheAny(System.Object)">
+            <summary>
+            Dispose of any array T[] by returning it to a type-specific cache.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Analysis.IVariableStoreCreator.CloneAny(System.Object)">
+            <summary>
+            Clone any array T[].
             </summary>
         </member>
         <member name="T:Scriptor.Analysis.VariableStoreCreator`1">
             <inheritdoc cref="T:Scriptor.Analysis.IVariableStoreCreator"/>
         </member>
+        <member name="M:Scriptor.Analysis.VariableStoreCreator`1.Cache(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Analysis.VariableStoreCreator`1.Clone(System.Object)">
+            <inheritdoc/>
+        </member>
         <member name="T:Scriptor.Analysis.EFArrayPool`1">
             <summary>
-            Cache for storing arrays of small length, for use by <see cref="T:Scriptor.Analysis.FrameVars`1"/>.
+            Cache for storing arrays of small length.
             </summary>
         </member>
         <member name="M:Scriptor.Analysis.EFArrayPool`1.Return(`0[])">
@@ -1084,8 +1066,8 @@
              stored locally in an environment frame for this scope,
              or stored locally in any parent environment frame.
             <br/>The returned expression is in the form
-             `(envFrame.Parent.Parent....FrameVars[i] as FrameVars{T}).Values[j]`.
-            <br/>Note that MSIL will optimize out the common frameVars access if many variables are referenced.
+             `(envFrame.Parent.Parent....Variables[i] as T[])[j]`.
+            <br/>Note that MSIL will optimize out the common Variables access if many variables are referenced.
             </summary>
         </member>
         <member name="M:Scriptor.Analysis.LexicalScope.TryGetLocalOrParentVariable(Scriptor.Expressions.TExArgCtx,System.Type,System.String,Scriptor.Analysis.VarDecl@)">
@@ -1138,6 +1120,66 @@
             Create a non-dynamic lexical scope that has the same content as this one.
             </summary>
         </member>
+        <member name="T:Scriptor.Analysis.TypeTree">
+            <summary>
+            A basic implementation of <see cref="T:BagoumLib.Unification.ITypeTree"/>.
+            </summary>
+        </member>
+        <member name="T:Scriptor.Analysis.TypeTree.ITree">
+            <summary>
+            Degenerate interface inheriting <see cref="T:BagoumLib.Unification.ITypeTree"/>.
+            </summary>
+        </member>
+        <member name="T:Scriptor.Analysis.TypeTree.Method">
+            <summary>
+            Tree representing a method call.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Analysis.TypeTree.Method.#ctor(BagoumLib.Unification.TypeDesignation.Dummy[],Scriptor.Analysis.TypeTree.ITree[])">
+            <summary>
+            Tree representing a method call.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Analysis.TypeTree.Method.SelectedOverload">
+            <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Analysis.TypeTree.Method.ImplicitCast">
+            <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Analysis.TypeTree.Method.RealizableOverloads">
+            <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Analysis.TypeTree.Method.OverloadsAreInterchangeable">
+            <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Analysis.TypeTree.AtomicWithType">
+            <summary>
+            Tree representing an atomic value.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Analysis.TypeTree.AtomicWithType.#ctor(BagoumLib.Unification.TypeDesignation[])">
+            <summary>
+            Tree representing an atomic value.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Analysis.TypeTree.AtomicWithType.SelectedOverload">
+            <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Analysis.TypeTree.AtomicWithType.ImplicitCast">
+            <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Analysis.TypeTree.Arr.SelectedOverload">
+            <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Analysis.TypeTree.Arr.ImplicitCast">
+            <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Analysis.TypeTree.Arr.RealizableOverloads">
+            <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Analysis.TypeTree.Arr.OverloadsAreInterchangeable">
+            <inheritdoc/>
+        </member>
         <member name="T:Scriptor.ExpressionBoundaryAttribute">
             <summary>
             A reflection method that takes expressions/expression functions as arguments (such as ExTP)
@@ -1149,27 +1191,62 @@
         </member>
         <member name="T:Scriptor.RestrictTypesAttribute">
             <summary>
-            Attribute marking that the `typeIndex`th generic variable in this method should only be allowed
+            Attribute marking that the `typeIndex`th generic type in this method should only be allowed
              to take on one of the provided `possibleTypes`.
+            </summary>
+        </member>
+        <member name="F:Scriptor.RestrictTypesAttribute.typeIndex">
+            <summary>
+            Index of the generic type.
+            </summary>
+        </member>
+        <member name="F:Scriptor.RestrictTypesAttribute.possibleTypes">
+            <summary>
+            Restricted types for the generic.
             </summary>
         </member>
         <member name="M:Scriptor.RestrictTypesAttribute.#ctor(System.Int32,System.Type[])">
             <summary></summary>
         </member>
+        <member name="T:Scriptor.FileLinkAttribute">
+            <summary>
+            Attribute providing information about where in the codebase it was created.
+            </summary>
+        </member>
         <member name="M:Scriptor.FileLinkAttribute.#ctor(System.String,System.String,System.Int32)">
             <summary></summary>
+        </member>
+        <member name="M:Scriptor.FileLinkAttribute.FileLink(System.String)">
+            <summary>
+            Create a link to the attribute's location.
+            </summary>
         </member>
         <member name="T:Scriptor.ConstableAttribute">
             <summary>
             Mark that this function (or all methods in this class) can be converted into a constant expression in BDSL2 reflection.
             </summary>
         </member>
+        <member name="F:Scriptor.ConstableAttribute.constableInAOT">
+            <summary>
+            True if this function/methods can also be converted into a constant expression in AoT compilation contexts.
+            </summary>
+        </member>
         <member name="M:Scriptor.ConstableAttribute.#ctor(System.Boolean)">
             <summary></summary>
+        </member>
+        <member name="T:Scriptor.DontReflectAttribute">
+            <summary>
+            Mark that a specific function/method/class should not be reflected.
+            </summary>
         </member>
         <member name="T:Scriptor.AliasAttribute">
             <summary>
             Attribute marking a reflection alias for this method.
+            </summary>
+        </member>
+        <member name="F:Scriptor.AliasAttribute.alias">
+            <summary>
+            Method alias.
             </summary>
         </member>
         <member name="M:Scriptor.AliasAttribute.#ctor(System.String)">
@@ -1181,6 +1258,11 @@
             <br/>If the assembly is marked, then on a class, Reflect marks that the methods in the class should be reflected.
             </summary>
         </member>
+        <member name="F:Scriptor.ReflectAttribute.returnType">
+            <summary>
+            Optionally, the restriction on return types of reflected functions.
+            </summary>
+        </member>
         <member name="M:Scriptor.ReflectAttribute.#ctor(System.Type,System.String,System.String,System.Int32)">
             <summary></summary>
         </member>
@@ -1189,7 +1271,7 @@
             Attribute marking a reflection method that is automatically applied if none other match.
             </summary>
         </member>
-        <member name="M:Scriptor.FallthroughAttribute.#ctor(System.Int32)">
+        <member name="M:Scriptor.FallthroughAttribute.#ctor">
             <summary></summary>
         </member>
         <member name="T:Scriptor.CreatesInternalScopeAttribute">
@@ -1200,6 +1282,16 @@
              will assign the lexical scope to the constructed properties.
             </summary>
         </member>
+        <member name="F:Scriptor.CreatesInternalScopeAttribute.type">
+            <summary>
+            AutoVarMethod type.
+            </summary>
+        </member>
+        <member name="F:Scriptor.CreatesInternalScopeAttribute.dynamic">
+            <summary>
+            True if the scope is dynamically-accessed.
+            </summary>
+        </member>
         <member name="M:Scriptor.CreatesInternalScopeAttribute.#ctor(System.Int32,System.Boolean)">
             <summary></summary>
         </member>
@@ -1208,12 +1300,22 @@
             (BDSL2) The marked method automatically declared variables in its enclosing lexical scope.
             </summary>
         </member>
+        <member name="F:Scriptor.ExtendsInternalScopeAttribute.type">
+            <summary>
+            AutoVarExtend type.
+            </summary>
+        </member>
         <member name="M:Scriptor.ExtendsInternalScopeAttribute.#ctor(System.Int32)">
             <summary></summary>
         </member>
         <member name="T:Scriptor.AssignsAttribute">
             <summary>
             The marked method is an expression function that modifies some of its arguments.
+            </summary>
+        </member>
+        <member name="P:Scriptor.AssignsAttribute.Indices">
+            <summary>
+            Argument indexes which receive writes.
             </summary>
         </member>
         <member name="M:Scriptor.AssignsAttribute.#ctor(System.Int32[])">
@@ -1235,6 +1337,11 @@
              should be skipped if any of the argument types are int.
             </summary>
         </member>
+        <member name="F:Scriptor.BDSL2MULTIPLY_OPERATORAttribute.isIntValid">
+            <summary>
+            True iff this operator should be used if any generic type maps to int.
+            </summary>
+        </member>
         <member name="M:Scriptor.BDSL2MULTIPLY_OPERATORAttribute.#ctor(System.Boolean)">
             <summary></summary>
         </member>
@@ -1243,17 +1350,60 @@
             (Informational) The marked method is, semantically speaking, an operator.
             </summary>
         </member>
+        <member name="T:Scriptor.WarnOnStrictAttribute">
+            <summary>
+            Marks that using this method should result in a warning.
+            </summary>
+        </member>
+        <member name="F:Scriptor.WarnOnStrictAttribute.strictness">
+            <summary>
+            Only issue a warnbing when parsing strictness is greater than this value.
+            </summary>
+        </member>
+        <member name="M:Scriptor.WarnOnStrictAttribute.#ctor(System.Int32)">
+            <inheritdoc cref="T:Scriptor.WarnOnStrictAttribute"/>
+        </member>
         <member name="T:Scriptor.BDSL1AutoSpecializeAttribute">
             <summary>
             For methods that cannot be specialized by their return type in BDSL1 (eg. equality has type (T,T)->bool),
              automatically specialize the generic type at the provided index with the provided type.
             </summary>
         </member>
+        <member name="F:Scriptor.BDSL1AutoSpecializeAttribute.typeIndex">
+            <summary>
+            Index of the generic type to be mapped.
+            </summary>
+        </member>
+        <member name="F:Scriptor.BDSL1AutoSpecializeAttribute.specializeAs">
+            <summary>
+            Type to which the generic should be mapped.
+            </summary>
+        </member>
         <member name="M:Scriptor.BDSL1AutoSpecializeAttribute.#ctor(System.Int32,System.Type)">
             <summary></summary>
         </member>
+        <member name="T:Scriptor.Compile.AST">
+            <summary>
+            Base class for annotated syntax trees.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.#ctor(Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,Scriptor.Compile.IAST[])">
+            <summary>
+            Base class for annotated syntax trees.
+            </summary>
+        </member>
         <member name="P:Scriptor.Compile.AST.Position">
-            <inheritdoc cref="!:IAST.Position"/>
+            <inheritdoc cref="P:Scriptor.Compile.IDebugAST.Position"/>
+        </member>
+        <member name="P:Scriptor.Compile.AST.CompactPosition">
+            <summary>
+            Position of this AST, printed tersely.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.DebugPosition">
+            <summary>
+            Position of this AST, printed with its scope depth.
+            </summary>
         </member>
         <member name="P:Scriptor.Compile.AST.EnclosingScope">
             <inheritdoc cref="P:Scriptor.Compile.IAST.EnclosingScope"/>
@@ -1281,8 +1431,31 @@
         <member name="P:Scriptor.Compile.AST.Params">
             <inheritdoc cref="P:Scriptor.Compile.IAST.Params"/>
         </member>
+        <member name="P:Scriptor.Compile.AST.Children">
+            <inheritdoc cref="P:Scriptor.Compile.AST.Params"/>
+        </member>
+        <member name="P:Scriptor.Compile.AST.AdditionalTokens">
+            <summary>
+            Additional semantic tokens that should be attached to this AST.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.AddTokens(System.Collections.Generic.IEnumerable{Scriptor.Compile.SemanticToken})">
+            <summary>
+            Extend <see cref="P:Scriptor.Compile.AST.AdditionalTokens"/>.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Diagnostics">
+            <summary>
+            Warnings that should be logged from this AST.
+            </summary>
+        </member>
         <member name="M:Scriptor.Compile.AST.ReplaceScope(Scriptor.Analysis.LexicalScope,Scriptor.Analysis.LexicalScope)">
             <inheritdoc cref="M:Scriptor.Compile.IAST.ReplaceScope(Scriptor.Analysis.LexicalScope,Scriptor.Analysis.LexicalScope)"/>
+        </member>
+        <member name="M:Scriptor.Compile.AST.WillSelectImplicitCast(BagoumLib.Unification.IImplicitTypeConverterInstance)">
+            <summary>
+            Helper for marking the usage of an implicit cast during <see cref="M:BagoumLib.Unification.IMethodTypeTree`1.WillSelectOverload(`0,BagoumLib.Unification.IImplicitTypeConverterInstance,BagoumLib.Unification.Unifier)"/>.
+            </summary>
         </member>
         <member name="M:Scriptor.Compile.AST.WillSelectOverload(Scriptor.Reflection.InvokedMethod,BagoumLib.Unification.IImplicitTypeConverterInstance,BagoumLib.Unification.Unifier)">
             <inheritdoc cref="M:BagoumLib.Unification.IMethodTypeTree`1.WillSelectOverload(`0,BagoumLib.Unification.IImplicitTypeConverterInstance,BagoumLib.Unification.Unifier)"/>
@@ -1313,19 +1486,19 @@
             <inheritdoc cref="M:Scriptor.Compile.IAST.WarnUsage"/>
         </member>
         <member name="M:Scriptor.Compile.AST.ToSymbolTree(System.String)">
-            <inheritdoc cref="!:IAST.ToSymbolTree"/>
+            <inheritdoc cref="M:Scriptor.Compile.IDebugAST.ToSymbolTree(System.String)"/>
         </member>
         <member name="M:Scriptor.Compile.AST._ToSymbolTree(System.String)">
             <inheritdoc cref="M:Scriptor.Compile.AST.ToSymbolTree(System.String)"/>
         </member>
         <member name="M:Scriptor.Compile.AST.ToSemanticTokens">
-            <inheritdoc cref="!:IAST.ToSemanticTokens"/>
+            <inheritdoc cref="M:Scriptor.Compile.IDebugAST.ToSemanticTokens"/>
         </member>
         <member name="M:Scriptor.Compile.AST._ToSemanticTokens">
             <inheritdoc cref="M:Scriptor.Compile.AST.ToSemanticTokens"/>
         </member>
         <member name="M:Scriptor.Compile.AST.NarrowestASTForPosition(Mizuhashi.PositionRange)">
-            <inheritdoc cref="!:IAST.NarrowestASTForPosition"/>
+            <inheritdoc cref="M:Scriptor.Compile.IDebugAST.NarrowestASTForPosition(Mizuhashi.PositionRange)"/>
         </member>
         <member name="M:Scriptor.Compile.AST.FlattenParams(System.Func{Scriptor.Compile.IAST,System.Int32,LanguageServer.VsCode.Contracts.DocumentSymbol})">
             <summary>
@@ -1338,6 +1511,26 @@
             A reference to a declaration of a variable, function, enum value, etc, that is used as a value (eg. in `x`++ or `f`(2)).
             </summary>
         </member>
+        <member name="P:Scriptor.Compile.AST.Reference.NameOnlyPosition">
+            <summary>
+            The position of the reference name, not including its type or import prefix.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Reference.Name">
+            <summary>
+            The name of the reference.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Reference.NameWithImport">
+            <summary>
+            The name of the reference, including its import prefix.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Reference.Value">
+            <summary>
+            The value of the reference (either a variable or a set of possible enum values).
+            </summary>
+        </member>
         <member name="M:Scriptor.Compile.AST.Reference.#ctor(Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,Scriptor.Analysis.ScriptImport,System.String,BagoumLib.Functional.Either{Scriptor.Analysis.VarDecl,System.Collections.Generic.List{System.ValueTuple{System.Type,System.Object}}})">
             <inheritdoc cref="T:Scriptor.Compile.AST.Reference"/>
         </member>
@@ -1348,6 +1541,16 @@
         <member name="P:Scriptor.Compile.AST.Reference.PossibleTypes">
             <inheritdoc cref="P:BagoumLib.Unification.IAtomicTypeTree.PossibleTypes"/>
             <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Compile.AST.Reference.IsConstantDecl(Scriptor.Analysis.VarDecl@)">
+            <summary>
+            Return true iff this is a reference to a constant variable decl.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.Reference.TryGetAsEnum(System.Object@,System.Type@)">
+            <summary>
+            Try to parse this reference as an enum.
+            </summary>
         </member>
         <member name="M:Scriptor.Compile.AST.Reference._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
@@ -1451,6 +1654,9 @@
             <br/>Methods may be generic.
             </summary>
         </member>
+        <member name="P:Scriptor.Compile.AST.MethodCall.Methods">
+            <inheritdoc cref="P:Scriptor.Compile.AST.MethodCall.Overloads"/>
+        </member>
         <member name="P:Scriptor.Compile.AST.MethodCall.Overloads">
             <inheritdoc/>
         </member>
@@ -1476,7 +1682,7 @@
             If true, adds a semantic token representing this method.
             </summary>
         </member>
-        <member name="M:Scriptor.Compile.AST.MethodCall.Make(Mizuhashi.PositionRange,Mizuhashi.PositionRange,Scriptor.Compile.STAnnotater,Scriptor.Reflection.InvokedMethod[],System.Collections.Generic.IEnumerable{Scriptor.Compile.ST},System.Boolean)">
+        <member name="M:Scriptor.Compile.AST.MethodCall.Make(Mizuhashi.PositionRange,Mizuhashi.PositionRange,Scriptor.Compile.STAnnotater,Scriptor.Reflection.InvokedMethod[],Scriptor.Compile.ST[],System.Boolean)">
             <param name="Position">Position of the entire method call, including all arguments (ie. all of `MethodName(arg1, arg2)`)</param>
             <param name="MethodPosition">Position of the method name alone (ie. just `MethodName`)</param>
             <param name="EnclosingScope">The lexical scope in which this function is called. Certain functions may also create a <see cref="P:Scriptor.Compile.AST.LocalScope"/></param>.
@@ -1493,9 +1699,20 @@
         <member name="M:Scriptor.Compile.AST.MethodCall._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
         </member>
+        <member name="M:Scriptor.Compile.AST.MethodCall.SpecializeMethod(Scriptor.Compile.IAST,Mizuhashi.PositionRange,Scriptor.Reflection.IMethodSignature,BagoumLib.Unification.TypeDesignation.Dummy)">
+            <summary>
+            Specialize a generic method so it matches the provided method type `typ`.
+            (If the method is not generic, do nothing.)
+            </summary>
+        </member>
         <member name="M:Scriptor.Compile.AST.MethodCall.RealizeMethod(Scriptor.Compile.IAST,Scriptor.Reflection.IMethodSignature,Scriptor.Expressions.TExArgCtx,System.Func{System.Int32,Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},System.Boolean)">
             <summary>
             Realize a method call as an expression.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.MethodCall.Raise(Scriptor.NotWriteableException)">
+            <summary>
+            Convert a <see cref="T:Scriptor.NotWriteableException"/> into a <see cref="T:Scriptor.ReflectionException"/> pointing to this method.
             </summary>
         </member>
         <member name="M:Scriptor.Compile.AST.MethodCall.Explain">
@@ -1532,6 +1749,8 @@
             <summary>
             An indexing expression `x[i]`.
             </summary>
+            <param name="Position">Position of the entire expression.</param>
+            <param name="EnclosingScope">Enclosing lexical scope.</param>
             <param name="Object">The object to be indexed.</param>
             <param name="Index">The index.</param>
         </member>
@@ -1539,6 +1758,8 @@
             <summary>
             An indexing expression `x[i]`.
             </summary>
+            <param name="Position">Position of the entire expression.</param>
+            <param name="EnclosingScope">Enclosing lexical scope.</param>
             <param name="Object">The object to be indexed.</param>
             <param name="Index">The index.</param>
         </member>
@@ -1550,6 +1771,16 @@
         </member>
         <member name="P:Scriptor.Compile.AST.Indexer.AddMethodSemanticToken">
             <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Compile.AST.PartialInvokedMethod">
+            <summary>
+            A partially-invoked method.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.PartialInvokedMethod.#ctor(Scriptor.Reflection.InvokedMethod,System.Int32)">
+            <summary>
+            A partially-invoked method.
+            </summary>
         </member>
         <member name="P:Scriptor.Compile.AST.PartialInvokedMethod.Method">
             <inheritdoc/>
@@ -1579,6 +1810,11 @@
         </member>
         <member name="P:Scriptor.Compile.AST.PartialLambdaCall.SelectedOverload">
             <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Compile.AST.PartialLambdaCall.MethodPosition">
+            <summary>
+            Position of the method name.
+            </summary>
         </member>
         <member name="M:Scriptor.Compile.AST.PartialLambdaCall._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
@@ -1615,6 +1851,9 @@
         <member name="P:Scriptor.Compile.AST.LambdaCall.SelectedOverload">
             <inheritdoc/>
         </member>
+        <member name="P:Scriptor.Compile.AST.LambdaCall.MethodPosition">
+            <inheritdoc cref="P:Scriptor.Compile.AST.PartialLambdaCall.MethodPosition"/>
+        </member>
         <member name="M:Scriptor.Compile.AST.LambdaCall._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
         </member>
@@ -1641,6 +1880,12 @@
         </member>
         <member name="P:Scriptor.Compile.AST.PartialMethodCall.SelectedOverload">
             <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Compile.AST.PartialMethodCall.MethodPosition">
+            <inheritdoc cref="P:Scriptor.Compile.AST.PartialLambdaCall.MethodPosition"/>
+        </member>
+        <member name="M:Scriptor.Compile.AST.PartialMethodCall.#ctor(Mizuhashi.PositionRange,Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,Scriptor.Reflection.InvokedMethod[],Scriptor.Compile.IAST[])">
+            <inheritdoc cref="T:Scriptor.Compile.AST.PartialMethodCall"/>
         </member>
         <member name="M:Scriptor.Compile.AST.PartialMethodCall._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
@@ -1675,8 +1920,14 @@
         <member name="P:Scriptor.Compile.AST.PartialScriptFunctionCall.RealizableOverloads">
             <inheritdoc/>
         </member>
+        <member name="P:Scriptor.Compile.AST.PartialScriptFunctionCall.NameWithImport">
+            <inheritdoc cref="P:Scriptor.Compile.AST.ScriptFunctionCall.NameWithImport"/>
+        </member>
         <member name="P:Scriptor.Compile.AST.PartialScriptFunctionCall.SelectedOverload">
             <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Compile.AST.PartialScriptFunctionCall.IsDynamicInvocation">
+            <inheritdoc cref="P:Scriptor.Compile.AST.IScriptFnCall.IsDynamicInvocation"/>
         </member>
         <member name="M:Scriptor.Compile.AST.PartialScriptFunctionCall._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
@@ -1690,6 +1941,51 @@
         <member name="M:Scriptor.Compile.AST.PartialScriptFunctionCall._ToSemanticTokens">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Compile.AST.IScriptFnCall">
+            <summary>
+            Common interface for script function calls.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.IScriptFnCall.Scope">
+            <inheritdoc cref="P:Scriptor.Compile.AST.Scope"/>
+        </member>
+        <member name="P:Scriptor.Compile.AST.IScriptFnCall.InImport">
+            <summary>
+            The import in which this script function is defined.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.IScriptFnCall.Definition">
+            <summary>
+            The definition of this script function.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.IScriptFnCall.IsDynamicInvocation">
+            <summary>
+            True if this function is called dynamically.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.IScriptFnCall.RaiseEf(Scriptor.Compile.AST.IScriptFnCall,Scriptor.Expressions.TExArgCtx)">
+            <summary>
+            Return `tac.EnvFrame.Parent.Parent...` with the correct number of .Parents to match the scope of
+             the function defintion.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.IScriptFnCall.RaiseEfAndGetParams(Scriptor.Compile.AST.IScriptFnCall,Scriptor.Expressions.TExArgCtx,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression}@)">
+            <summary>
+            <see cref="M:Scriptor.Compile.AST.IScriptFnCall.RaiseEf(Scriptor.Compile.AST.IScriptFnCall,Scriptor.Expressions.TExArgCtx)"/> and also return the parameters of this function definition
+             executed over `tac`.
+            </summary>
+        </member>
+        <member name="T:Scriptor.Compile.AST.ScriptFunctionCall">
+            <summary>
+            An invocation of a script function.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.ScriptFunctionCall.#ctor(Mizuhashi.PositionRange,Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,Scriptor.Analysis.ScriptImport,Scriptor.Analysis.ScriptFnDecl,System.Boolean,Scriptor.Compile.IAST[])">
+            <summary>
+            An invocation of a script function.
+            </summary>
+        </member>
         <member name="P:Scriptor.Compile.AST.ScriptFunctionCall.Overloads">
             <inheritdoc/>
         </member>
@@ -1698,6 +1994,11 @@
         </member>
         <member name="P:Scriptor.Compile.AST.ScriptFunctionCall.RealizableOverloads">
             <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Compile.AST.ScriptFunctionCall.NameWithImport">
+            <summary>
+            The name of this script function with the import prefix.
+            </summary>
         </member>
         <member name="P:Scriptor.Compile.AST.ScriptFunctionCall.SelectedOverload">
             <inheritdoc/>
@@ -1714,6 +2015,16 @@
         <member name="M:Scriptor.Compile.AST.ScriptFunctionCall._ToSemanticTokens">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Compile.AST.ScriptFunctionDef">
+            <summary>
+            The definition of a script function in source code.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.ScriptFunctionDef.#ctor(Mizuhashi.PositionRange,System.String,Scriptor.Analysis.LexicalScope,Scriptor.Analysis.LexicalScope,Scriptor.Analysis.ScriptFnDecl,Scriptor.Compile.AST.Block)">
+            <summary>
+            The definition of a script function in source code.
+            </summary>
+        </member>
         <member name="P:Scriptor.Compile.AST.ScriptFunctionDef.Overloads">
             <inheritdoc/>
         </member>
@@ -1728,6 +2039,16 @@
         </member>
         <member name="M:Scriptor.Compile.AST.ScriptFunctionDef._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Compile.AST.ScriptFunctionDef.CompileFuncType">
+            <summary>
+            Get the Func{T1,T2...TR} type of this function.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.ScriptFunctionDef.CompileFunc(System.Type)">
+            <summary>
+            Compile this function into a Func of type <see cref="M:Scriptor.Compile.AST.ScriptFunctionDef.CompileFuncType"/>.
+            </summary>
         </member>
         <member name="M:Scriptor.Compile.AST.ScriptFunctionDef.Explain">
             <inheritdoc/>
@@ -1786,6 +2107,9 @@
         <member name="P:Scriptor.Compile.AST.Conditional.SelectedOverload">
             <inheritdoc/>
         </member>
+        <member name="M:Scriptor.Compile.AST.Conditional.#ctor(Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,System.Boolean,Scriptor.Compile.IAST,Scriptor.Compile.IAST,Scriptor.Compile.IAST)">
+            <inheritdoc cref="T:Scriptor.Compile.AST.Conditional"/>
+        </member>
         <member name="M:Scriptor.Compile.AST.Conditional._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
         </member>
@@ -1814,6 +2138,26 @@
         </member>
         <member name="P:Scriptor.Compile.AST.Loop.SelectedOverload">
             <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Loop.Initializer">
+            <summary>
+            For loop initializer (optional).
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Loop.Condition">
+            <summary>
+            For/while loop condition (optional).
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Loop.Finalizer">
+            <summary>
+            For loop end-of-loop updater (optional).
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Loop.Body">
+            <summary>
+            Loop body.
+            </summary>
         </member>
         <member name="M:Scriptor.Compile.AST.Loop.#ctor(Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,Scriptor.Analysis.LexicalScope,Scriptor.Compile.IAST,Scriptor.Compile.IAST,Scriptor.Compile.IAST,Scriptor.Compile.IAST)">
             <summary>
@@ -1894,6 +2238,11 @@
         <member name="M:Scriptor.Compile.AST.Break._ToSemanticTokens">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Compile.AST.Block">
+            <summary>
+            A block expression.
+            </summary>
+        </member>
         <member name="P:Scriptor.Compile.AST.Block.Overloads">
             <inheritdoc/>
         </member>
@@ -1906,6 +2255,16 @@
         <member name="P:Scriptor.Compile.AST.Block.SelectedOverload">
             <inheritdoc/>
         </member>
+        <member name="P:Scriptor.Compile.AST.Block.BlockParams">
+            <summary>
+            The implicit arguments provided to this block, as top-level arguments or function parameters.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Block.DiscardReturnValue">
+            <summary>
+            If true, ignore the return value of the nested ASTs.
+            </summary>
+        </member>
         <member name="P:Scriptor.Compile.AST.Block.EndWithLabel">
             <summary>
             A label placed right before envframe freeing and returns.
@@ -1916,11 +2275,24 @@
             The cast applied to the last argument of the block (False by default).
             </summary>
         </member>
+        <member name="M:Scriptor.Compile.AST.Block.#ctor(Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,Scriptor.Analysis.LexicalScope,Scriptor.Compile.IAST[])">
+            <inheritdoc cref="T:Scriptor.Compile.AST.Block"/>
+        </member>
+        <member name="M:Scriptor.Compile.AST.Block.WithFunctionParams(System.ValueTuple{Scriptor.Analysis.VarDecl,Scriptor.Analysis.ImplicitArgDecl}[])">
+            <summary>
+            Set <see cref="P:Scriptor.Compile.AST.Block.BlockParams"/>.
+            </summary>
+        </member>
         <member name="M:Scriptor.Compile.AST.Block.FinalizeUnifiers(BagoumLib.Unification.Unifier)">
             <inheritdoc/>
         </member>
         <member name="M:Scriptor.Compile.AST.Block._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Compile.AST.Block.MakeExpressionBlock(Scriptor.Compile.AST,Scriptor.Analysis.LexicalScope,Scriptor.Expressions.TExArgCtx,System.Func{Scriptor.Expressions.TExArgCtx,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression}})">
+            <summary>
+            Create an expression block. If required by the scope, create an environment frame which is disposed at the end of the block.
+            </summary>
         </member>
         <member name="M:Scriptor.Compile.AST.Block.Explain">
             <inheritdoc/>
@@ -1930,6 +2302,11 @@
         </member>
         <member name="M:Scriptor.Compile.AST.Block.DebugPrint">
             <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Compile.AST.Array">
+            <summary>
+            An array {a,b,...c}.
+            </summary>
         </member>
         <member name="P:Scriptor.Compile.AST.Array.Overloads">
             <inheritdoc/>
@@ -1943,6 +2320,9 @@
         <member name="P:Scriptor.Compile.AST.Array.SelectedOverload">
             <inheritdoc/>
         </member>
+        <member name="M:Scriptor.Compile.AST.Array.#ctor(Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,System.Type,Scriptor.Compile.IAST[])">
+            <inheritdoc cref="T:Scriptor.Compile.AST.Array"/>
+        </member>
         <member name="M:Scriptor.Compile.AST.Array._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
         </member>
@@ -1954,6 +2334,11 @@
         </member>
         <member name="M:Scriptor.Compile.AST.Array.DebugPrint">
             <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Compile.AST.Tuple">
+            <summary>
+            A tuple (a,b,...c).
+            </summary>
         </member>
         <member name="P:Scriptor.Compile.AST.Tuple.Overloads">
             <inheritdoc/>
@@ -1967,6 +2352,9 @@
         <member name="P:Scriptor.Compile.AST.Tuple.SelectedOverload">
             <inheritdoc/>
         </member>
+        <member name="M:Scriptor.Compile.AST.Tuple.#ctor(Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,Scriptor.Compile.IAST[])">
+            <inheritdoc cref="T:Scriptor.Compile.AST.Tuple"/>
+        </member>
         <member name="M:Scriptor.Compile.AST.Tuple._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
         </member>
@@ -1979,11 +2367,29 @@
         <member name="M:Scriptor.Compile.AST.Tuple.DebugPrint">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Compile.AST.IAnyTypedValueAST">
+            <summary>
+            Interface for ASTs representing typed values.
+            </summary>
+        </member>
+        <member name="T:Scriptor.Compile.AST.Number">
+            <summary>
+            A number, such as `10` or `5.4f` or `3.`. Can be a float or int type.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Number.Value">
+            <summary>
+            The value of the number as a float.
+            </summary>
+        </member>
         <member name="P:Scriptor.Compile.AST.Number.PossibleTypes">
             <inheritdoc/>
         </member>
         <member name="P:Scriptor.Compile.AST.Number.SelectedOverload">
             <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Compile.AST.Number.#ctor(Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,System.String)">
+            <inheritdoc cref="T:Scriptor.Compile.AST.Number"/>
         </member>
         <member name="M:Scriptor.Compile.AST.Number._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
@@ -1999,6 +2405,28 @@
         </member>
         <member name="M:Scriptor.Compile.AST.Number.DebugPrint">
             <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Compile.AST.DefaultValue">
+            <summary>
+            A default value, which can be a default function argument if `AsFunctionArg` is set,
+            an empty expression if void-typed, or a default(T) expression otherwise.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.DefaultValue.#ctor(Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,System.Type,System.Boolean)">
+            <summary>
+            A default value, which can be a default function argument if `AsFunctionArg` is set,
+            an empty expression if void-typed, or a default(T) expression otherwise.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.DefaultValue.TokenType">
+            <summary>
+            Semantic type of this token.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.DefaultValue.Description">
+            <summary>
+            Description of this expression. Used for void-typed empty expressions.
+            </summary>
         </member>
         <member name="P:Scriptor.Compile.AST.DefaultValue.PossibleTypes">
             <inheritdoc/>
@@ -2019,8 +2447,17 @@
             <inheritdoc/>
         </member>
         <member name="M:Scriptor.Compile.AST.DefaultValue.NarrowestASTForPosition(Mizuhashi.PositionRange)">
-            <inheritdoc/>
-            <inheritdoc/>
+            <inheritdoc cref="M:Scriptor.Compile.IDebugAST.NarrowestASTForPosition(Mizuhashi.PositionRange)"/>
+        </member>
+        <member name="T:Scriptor.Compile.AST.TypedValue`1">
+            <summary>
+            A known value with a fixed type.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.TypedValue`1.#ctor(Mizuhashi.PositionRange,Scriptor.Analysis.LexicalScope,`0,LanguageServer.VsCode.Contracts.SymbolKind)">
+            <summary>
+            A known value with a fixed type.
+            </summary>
         </member>
         <member name="P:Scriptor.Compile.AST.TypedValue`1.PossibleTypes">
             <inheritdoc/>
@@ -2042,6 +2479,16 @@
         </member>
         <member name="M:Scriptor.Compile.AST.TypedValue`1.DebugPrint">
             <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Compile.AST.InvokedMacro">
+            <summary>
+            A parent AST for a macro invocation.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.InvokedMacro.#ctor(Mizuhashi.PositionRange,Mizuhashi.PositionRange,Scriptor.Analysis.MacroDecl,Scriptor.Compile.IAST)">
+            <summary>
+            A parent AST for a macro invocation.
+            </summary>
         </member>
         <member name="P:Scriptor.Compile.AST.InvokedMacro.Overloads">
             <inheritdoc/>
@@ -2067,6 +2514,16 @@
         <member name="M:Scriptor.Compile.AST.InvokedMacro._ToSemanticTokens">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Compile.AST.InstanceFailure">
+            <summary>
+            An error AST produced when an instance field or method fails to parse.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.InstanceFailure.#ctor(Scriptor.ReflectionException,Scriptor.Analysis.LexicalScope,Scriptor.Compile.IAST)">
+            <summary>
+            An error AST produced when an instance field or method fails to parse.
+            </summary>
+        </member>
         <member name="P:Scriptor.Compile.AST.InstanceFailure.Overloads">
             <inheritdoc/>
         </member>
@@ -2091,6 +2548,16 @@
         <member name="M:Scriptor.Compile.AST.InstanceFailure._RealizeWithoutCast(Scriptor.Expressions.TExArgCtx)">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Compile.AST.Failure">
+            <summary>
+            Error AST for any exceptions.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Failure.Exc">
+            <summary>
+            Exception causing the failure.
+            </summary>
+        </member>
         <member name="P:Scriptor.Compile.AST.Failure.PossibleTypes">
             <inheritdoc/>
         </member>
@@ -2109,6 +2576,19 @@
             Completion information for language server.
             True if this error was due to a type that could not be parsed.
             </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Failure.ImportedScript">
+            <summary>
+            The script import related to this error, if applicable.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.AST.Failure.IsImportedScriptMember">
+            <summary>
+            True if this error relates to an imported script member.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.AST.Failure.#ctor(Scriptor.ReflectionException,Scriptor.Analysis.LexicalScope,Scriptor.Compile.IAST[])">
+            <inheritdoc cref="T:Scriptor.Compile.AST.Failure"/>
         </member>
         <member name="M:Scriptor.Compile.AST.Failure.FirstPassExceptions">
             <inheritdoc/>
@@ -2257,6 +2737,11 @@
         <member name="M:Scriptor.Compile.DefaultLangCustomizer.Scriptor#Compile#ILangCustomizer#FromMethod(Scriptor.Reflection.IMethodSignature,Mizuhashi.PositionRange,System.String,System.Type)">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Compile.IAST">
+            <summary>
+            Base interface for annotated syntax trees.
+            </summary>
+        </member>
         <member name="P:Scriptor.Compile.IAST.Params">
             <summary>
             All ASTs that are direct children of this.
@@ -2297,9 +2782,22 @@
             (Stage 2) A function called on the root AST to typecheck the entire structure.
             </summary>
         </member>
+        <member name="M:Scriptor.Compile.IAST._EnrichError(BagoumLib.Unification.TypeUnifyErr,System.Nullable{Mizuhashi.PositionRange})">
+            <summary>
+            Provide a human-readable message about a <see cref="T:BagoumLib.Unification.TypeUnifyErr"/>.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.IAST.EnrichError(BagoumLib.Unification.TypeUnifyErr,System.Nullable{Mizuhashi.PositionRange})">
+            <inheritdoc cref="M:Scriptor.Compile.IAST._EnrichError(BagoumLib.Unification.TypeUnifyErr,System.Nullable{Mizuhashi.PositionRange})"/>
+        </member>
         <member name="M:Scriptor.Compile.IAST.Verify">
             <summary>
             (Stage 3) Verify that types, declarations, etc. are sound, and make simplifications/specializations based on the full AST context.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.IAST.VerifyChildren(Scriptor.Compile.IAST)">
+            <summary>
+            Execute <see cref="M:Scriptor.Compile.IAST.Verify"/> over child ASTs.
             </summary>
         </member>
         <member name="M:Scriptor.Compile.IAST.ReplaceScope(Scriptor.Analysis.LexicalScope,Scriptor.Analysis.LexicalScope)">
@@ -2310,8 +2808,18 @@
         <member name="M:Scriptor.Compile.IAST.Realize(Scriptor.Expressions.TExArgCtx)">
             <summary>
             (Stage 4) Create an executable script out of this AST. Specifically, if the return type provided to
-             <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier,BagoumLib.Functional.Either{BagoumLib.Unification.IImplicitTypeConverter,System.Boolean},System.Boolean)"/> is T, then this function returns a TEx&lt;T&gt;,
-             which the caller can be compile into a delegate with any top-level arguments.
+             <see cref="M:BagoumLib.Unification.ITypeTree.ResolveUnifiers(BagoumLib.Unification.TypeDesignation,BagoumLib.Unification.TypeResolver,BagoumLib.Unification.Unifier)"/> is T,
+             then this function returns a TEx&lt;T&gt;, which the caller can be compile into a delegate with any top-level arguments.
+            </summary>
+        </member>
+        <member name="T:Scriptor.Compile.IMethodAST`1">
+            <summary>
+            Interfaces for method ASTs.
+            </summary>
+        </member>
+        <member name="T:Scriptor.Compile.IDebugAST">
+            <summary>
+            An AST providing debug information.
             </summary>
         </member>
         <member name="P:Scriptor.Compile.IDebugAST.Position">
@@ -2319,6 +2827,9 @@
             Position of the code that will generate this object.
             <br/>This is used for debugging/logging/error messaging.
             </summary>
+        </member>
+        <member name="P:Scriptor.Compile.IDebugAST.Children">
+            <inheritdoc cref="P:Scriptor.Compile.IAST.Params"/>
         </member>
         <member name="M:Scriptor.Compile.IDebugAST.NarrowestASTForPosition(Mizuhashi.PositionRange)">
             <summary>
@@ -2472,6 +2983,21 @@
             Return a TypeDesignation representing a C# Func type (or Action type if typeArgs[^1] = void).
             </summary>
         </member>
+        <member name="T:Scriptor.Compile.STAnnotater">
+            <summary>
+            Record containing state information for annotating an ST into an AST.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.STAnnotater.#ctor(Scriptor.Analysis.LexicalScope,System.Collections.Generic.Dictionary{System.String,Scriptor.Compile.ST})">
+            <summary>
+            Record containing state information for annotating an ST into an AST.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.STAnnotater.AnnotateAll(Scriptor.Compile.ST[])">
+            <summary>
+            Annotate all the provided arguments with this annotater.
+            </summary>
+        </member>
         <member name="T:Scriptor.Compile.ST">
             <summary>
             A syntax tree formed by parsing.
@@ -2484,6 +3010,11 @@
             A syntax tree formed by parsing.
             <br/>The syntax tree has no knowledge of bindings or types that are not explicitly declared,
             but it can be transformed into an <see cref="T:Scriptor.Compile.IAST"/> that does.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Compile.ST.Diagnostics">
+            <summary>
+            Diagnostics that should be applied to the resultant AST.
             </summary>
         </member>
         <member name="M:Scriptor.Compile.ST._AnnotateInner(Scriptor.Compile.STAnnotater)">
@@ -2522,6 +3053,14 @@
         <member name="P:Scriptor.Compile.ST.Ident.Generic">
             <summary>Whether this identifier is generic, ie. contains &lt;&gt; or array markings []. A generic identifier cannot be a variable.</summary>
         </member>
+        <member name="P:Scriptor.Compile.ST.Ident.KnownType">
+            <summary>
+            The token representing the explicitly-declared type of this identifier.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.ST.Ident.#ctor(Scriptor.Definition.Lexer.Token,System.Nullable{Scriptor.Definition.Lexer.Token})">
+            <inheritdoc cref="T:Scriptor.Compile.ST.Ident"/>
+        </member>
         <member name="M:Scriptor.Compile.ST.Ident.TryFindVariable(Mizuhashi.PositionRange,Scriptor.Compile.ST.Ident,Scriptor.Analysis.ScriptImport,Scriptor.Analysis.LexicalScope)">
             <summary>
             Try to reference the variable with name `id`, defined in the scope of `inImport` (if provided)
@@ -2550,6 +3089,16 @@
         </member>
         <member name="M:Scriptor.Compile.ST.FnIdent.DebugPrint">
             <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Compile.ST.Import">
+            <summary>
+            An `import` statement that brings some other script into the namespace.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.ST.Import.#ctor(Mizuhashi.PositionRange,Scriptor.Definition.Lexer.Token,System.Nullable{System.ValueTuple{Mizuhashi.PositionRange,Scriptor.Definition.Lexer.Token}},System.Nullable{System.ValueTuple{Mizuhashi.PositionRange,Scriptor.Definition.Lexer.Token}})">
+            <summary>
+            An `import` statement that brings some other script into the namespace.
+            </summary>
         </member>
         <member name="M:Scriptor.Compile.ST.Import._AnnotateInner(Scriptor.Compile.STAnnotater)">
             <inheritdoc/>
@@ -2618,6 +3167,11 @@
         <member name="F:Scriptor.Compile.ST.VarDeclAssign.VarInitialize">
             <inheritdoc cref="M:Scriptor.Math.ExMAssign.VariableInitialize``1(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``0})"/>
         </member>
+        <member name="P:Scriptor.Compile.ST.VarDeclAssign.ConstKwPos">
+            <summary>
+            Location of the `const` keyword before the declaration.
+            </summary>
+        </member>
         <member name="M:Scriptor.Compile.ST.VarDeclAssign._AnnotateInner(Scriptor.Compile.STAnnotater)">
             <inheritdoc/>
         </member>
@@ -2654,7 +3208,7 @@
             or `x` may be a variable, in which case this is an instance function.
             </summary>
         </member>
-        <member name="M:Scriptor.Compile.ST.MemberFunction.#ctor(Mizuhashi.PositionRange,Scriptor.Compile.ST,Scriptor.Compile.ST.Ident,System.Collections.Generic.List{Scriptor.Compile.ST})">
+        <member name="M:Scriptor.Compile.ST.MemberFunction.#ctor(Mizuhashi.PositionRange,Scriptor.Compile.ST,Scriptor.Compile.ST.Ident,Scriptor.Compile.ST[])">
             <summary>
             A member function call `x.f(y)`.
             `x` may be an import name, in which case this is an imported script function,
@@ -2667,6 +3221,12 @@
         </member>
         <member name="M:Scriptor.Compile.ST.MemberFunction.DebugPrint">
             <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Compile.ST.Indexer">
+            <inheritdoc cref="T:Scriptor.Compile.AST.Indexer"/>
+        </member>
+        <member name="M:Scriptor.Compile.ST.Indexer.#ctor(Scriptor.Compile.ST,Mizuhashi.PositionRange,Scriptor.Compile.ST,Mizuhashi.PositionRange)">
+            <inheritdoc cref="T:Scriptor.Compile.AST.Indexer"/>
         </member>
         <member name="M:Scriptor.Compile.ST.Indexer._AnnotateInner(Scriptor.Compile.STAnnotater)">
             <inheritdoc/>
@@ -2698,11 +3258,26 @@
             <br/>If there is no such script function, return null.
             </summary>
         </member>
+        <member name="M:Scriptor.Compile.ST.FunctionCall.NoMethodFoundErr(System.String,Scriptor.Analysis.LexicalScope)">
+            <summary>
+            Create an error string for the method by the given name not being found.
+            </summary>
+        </member>
         <member name="M:Scriptor.Compile.ST.FunctionCall._AnnotateInner(Scriptor.Compile.STAnnotater)">
             <inheritdoc/>
         </member>
         <member name="M:Scriptor.Compile.ST.FunctionCall.DebugPrint">
             <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Compile.ST.Constructor">
+            <summary>
+            A `new Type(args)` method call.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.ST.Constructor.#ctor(Mizuhashi.PositionRange,Mizuhashi.PositionRange,Scriptor.Definition.Lexer.Token,Scriptor.Compile.ST[])">
+            <summary>
+            A `new Type(args)` method call.
+            </summary>
         </member>
         <member name="M:Scriptor.Compile.ST.Constructor._AnnotateInner(Scriptor.Compile.STAnnotater)">
             <inheritdoc/>
@@ -2748,17 +3323,44 @@
         <member name="M:Scriptor.Compile.ST.CurriedFunctionCall.DebugPrint">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Compile.ST.TypeAs">
+            <inheritdoc cref="T:Scriptor.Compile.AST.TypeAs"/>
+        </member>
+        <member name="M:Scriptor.Compile.ST.TypeAs.#ctor(Scriptor.Compile.ST,Mizuhashi.PositionRange,Scriptor.Compile.ST)">
+            <inheritdoc cref="T:Scriptor.Compile.AST.TypeAs"/>
+        </member>
         <member name="M:Scriptor.Compile.ST.TypeAs._AnnotateInner(Scriptor.Compile.STAnnotater)">
             <inheritdoc/>
         </member>
         <member name="M:Scriptor.Compile.ST.TypeAs.DebugPrint">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Compile.ST.MacroDef">
+            <summary>
+            Definition of a macro.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.ST.MacroDef.#ctor(Scriptor.Definition.Lexer.Token,Scriptor.Definition.Lexer.Token,System.Collections.Generic.List{System.ValueTuple{Scriptor.Definition.Lexer.Token,System.Nullable{System.ValueTuple{Scriptor.Definition.Lexer.Token,Scriptor.Compile.ST}}}},Scriptor.Compile.ST.Block)">
+            <summary>
+            Definition of a macro.
+            </summary>
+        </member>
         <member name="M:Scriptor.Compile.ST.MacroDef._AnnotateInner(Scriptor.Compile.STAnnotater)">
             <inheritdoc/>
         </member>
+        <member name="M:Scriptor.Compile.ST.MacroDef.AnnotateAtCallsite(Mizuhashi.PositionRange,Mizuhashi.PositionRange,Scriptor.Analysis.MacroDecl,Scriptor.Compile.STAnnotater,System.Collections.Generic.IReadOnlyList{Scriptor.Compile.ST})">
+            <summary>
+            Expand a macro at a target location in the source code.
+            </summary>
+        </member>
         <member name="M:Scriptor.Compile.ST.MacroDef.DebugPrint">
             <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Compile.ST.FunctionDef">
+            <inheritdoc cref="T:Scriptor.Compile.AST.ScriptFunctionDef"/>
+        </member>
+        <member name="M:Scriptor.Compile.ST.FunctionDef.#ctor(Scriptor.Definition.Lexer.Token,Scriptor.Definition.Lexer.Token,System.Collections.Generic.List{System.ValueTuple{System.ValueTuple{Scriptor.Definition.Lexer.Token,System.Nullable{Scriptor.Definition.Lexer.Token}},System.Nullable{System.ValueTuple{Scriptor.Definition.Lexer.Token,Scriptor.Compile.ST}}}},System.Nullable{Scriptor.Definition.Lexer.Token},Scriptor.Compile.ST.Block)">
+            <inheritdoc cref="T:Scriptor.Compile.AST.ScriptFunctionDef"/>
         </member>
         <member name="P:Scriptor.Compile.ST.FunctionDef.ConstKwPos">
             <summary>
@@ -2781,8 +3383,21 @@
             A block of statements.
             </summary>
         </member>
+        <member name="M:Scriptor.Compile.ST.Block.#ctor(System.Collections.Generic.IReadOnlyList{Scriptor.Compile.ST})">
+            <inheritdoc cref="T:Scriptor.Compile.AST.Block"/>
+        </member>
         <member name="M:Scriptor.Compile.ST.Block._AnnotateInner(Scriptor.Compile.STAnnotater)">
             <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Compile.ST.Block.AnnotateWithParameters(Scriptor.Compile.STAnnotater,Scriptor.Reflection.IDelegateArg[])">
+            <summary>
+            Annotate this block as a top-level block with script arguments.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Compile.ST.Block.AnnotateWithParameters(Scriptor.Compile.STAnnotater,Scriptor.Analysis.ImplicitArgDecl[])">
+            <summary>
+            Annotate this block as a top-level or function body block with implicit arguments.
+            </summary>
         </member>
         <member name="M:Scriptor.Compile.ST.Block.DebugPrint">
             <inheritdoc/>
@@ -2895,6 +3510,11 @@
             A fixed value of a type not subject to type auto-determination, such as strings, but not numbers.
             </summary>
         </member>
+        <member name="P:Scriptor.Compile.ST.TypedValue`1.Kind">
+            <summary>
+            The symbol type of this value.
+            </summary>
+        </member>
         <member name="M:Scriptor.Compile.ST.TypedValue`1._AnnotateInner(Scriptor.Compile.STAnnotater)">
             <inheritdoc/>
         </member>
@@ -2938,7 +3558,12 @@
             Parser for BDSL2.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:Scriptor.Definition.LangParser.SoftFailOnUnmatchedLString" -->
+        <member name="P:Scriptor.Definition.LangParser.SoftFailOnUnmatchedLString">
+            <summary>
+            If true, LStrings not found via <see cref="M:Scriptor.Compile.ILangCustomizer.TryFindLocalizedStringReference(System.String)"/>
+             will be treated as unknown strings rather than parse errors.
+            </summary>
+        </member>
         <member name="M:Scriptor.Definition.LangParser.TypeFromString(System.String)">
             <summary>
             Try to parse a string as a C# type; otherwise, return an error string.
@@ -3013,6 +3638,21 @@
         <member name="M:Scriptor.Definition.LangParser.TypeDef.Array.TryCompile">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Definition.LexerMetadata">
+            <summary>
+            Metadata output by the lexer but not compiled to the ST.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Definition.LexerMetadata.Comments">
+            <summary>
+            All comments in the source code.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.LexerMetadata.AddComment(Scriptor.Definition.Lexer.Token)">
+            <summary>
+            Store a comment.
+            </summary>
+        </member>
         <member name="T:Scriptor.Definition.Lexer">
             <summary>
             Lexer for BDSL2.
@@ -3021,6 +3661,11 @@
         <member name="T:Scriptor.Definition.Lexer.TokenFlags">
             <summary>
             A set of flags describing lexical features about the token.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Definition.Lexer.TokenFlags.None">
+            <summary>
+            No flags.
             </summary>
         </member>
         <member name="F:Scriptor.Definition.Lexer.TokenFlags.PrecededByNewline">
@@ -3125,6 +3770,16 @@
             Close brace, }
             </summary>
         </member>
+        <member name="F:Scriptor.Definition.Lexer.TokenType.Comma">
+            <summary>
+            Comma ,
+            </summary>
+        </member>
+        <member name="F:Scriptor.Definition.Lexer.TokenType.Semicolon">
+            <summary>
+            Semicolon ;
+            </summary>
+        </member>
         <member name="F:Scriptor.Definition.Lexer.TokenType.Identifier">
             <summary>
             An identifier that may be for a variable or method or class or type, etc.
@@ -3162,6 +3817,16 @@
             Localized strings, prefixed with :.
             </summary>
         </member>
+        <member name="T:Scriptor.Definition.Lexer.Token">
+            <summary>
+            A token produced by the lexer.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Definition.Lexer.Token.Content">
+            <summary>
+            String content of the token.
+            </summary>
+        </member>
         <member name="P:Scriptor.Definition.Lexer.Token.Position">
             <summary>
             The position of this token in the source string.
@@ -3178,6 +3843,53 @@
             The starting index of this token in the source string.
             </summary>
         </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.#ctor(Scriptor.Definition.Lexer.TokenType,Mizuhashi.Position,System.Text.RegularExpressions.Match)">
+            <inheritdoc cref="T:Scriptor.Definition.Lexer.Token"/>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.#ctor(Scriptor.Definition.Lexer.TokenType,Mizuhashi.Position,System.String)">
+            <inheritdoc cref="T:Scriptor.Definition.Lexer.Token"/>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.#ctor(Scriptor.Definition.Lexer.TokenType,Scriptor.Definition.Lexer.TokenFlags,Mizuhashi.Position,System.String)">
+            <inheritdoc cref="T:Scriptor.Definition.Lexer.Token"/>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.#ctor(Scriptor.Definition.Lexer.TokenType,Mizuhashi.PositionRange,System.String)">
+            <inheritdoc cref="T:Scriptor.Definition.Lexer.Token"/>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.#ctor(Scriptor.Definition.Lexer.TokenType,Scriptor.Definition.Lexer.TokenFlags,Mizuhashi.PositionRange,System.String)">
+            <inheritdoc cref="T:Scriptor.Definition.Lexer.Token"/>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.WithFlags(Scriptor.Definition.Lexer.TokenFlags)">
+            <summary>
+            Create a new token by combining this token's flags with `flags`.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.WithType(Scriptor.Definition.Lexer.TokenType)">
+            <summary>
+            Create a new token with a different type from this token.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.Equals(Scriptor.Definition.Lexer.Token)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.op_Equality(Scriptor.Definition.Lexer.Token,Scriptor.Definition.Lexer.Token)">
+            <summary>
+            Equality operator
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.Token.op_Inequality(Scriptor.Definition.Lexer.Token,Scriptor.Definition.Lexer.Token)">
+            <summary>
+            Inequality operator
+            </summary>
+        </member>
         <member name="M:Scriptor.Definition.Lexer.Lex(System.String@,Scriptor.Definition.LexerMetadata@)">
             <summary>
             Lex the string into a sequence of tokens, discarding whitespace/newlines
@@ -3191,6 +3903,70 @@
         </member>
         <member name="M:Scriptor.Definition.Lexer.Lex(System.String@,Mizuhashi.InputStream{Scriptor.Definition.Lexer.Token}@,Scriptor.Definition.LexerMetadata@)">
             <inheritdoc cref="M:Scriptor.Definition.Lexer.Lex(System.String@,Scriptor.Definition.LexerMetadata@)"/>
+        </member>
+        <member name="T:Scriptor.Definition.Lexer.TokenWitnessCreator">
+            <summary>
+            Implementation of <see cref="T:Mizuhashi.ITokenWitnessCreator`1"/> for lexer tokens.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.TokenWitnessCreator.#ctor(System.String)">
+            <summary>
+            Implementation of <see cref="T:Mizuhashi.ITokenWitnessCreator`1"/> for lexer tokens.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.TokenWitnessCreator.Create(Mizuhashi.InputStream{Scriptor.Definition.Lexer.Token})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.TokenOfType(Scriptor.Definition.Lexer.TokenType)">
+            <summary>
+            Parse a token of the provided type.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.TokenOfTypes(Scriptor.Definition.Lexer.TokenType[])">
+            <summary>
+            Parse a token of any of the provided types.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.TokenOfValue(System.String)">
+            <summary>
+            Parse a token with the given string content.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.TokenOfTypeValue(Scriptor.Definition.Lexer.TokenType,System.String)">
+            <summary>
+            Parse a token of the provided type and with the given string content.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.TokenOfTypeValues(Scriptor.Definition.Lexer.TokenType,System.String[])">
+            <summary>
+            Parse a token of the provided type and with the given string content.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.ExpectNoFlag(System.String,Scriptor.Definition.Lexer.TokenFlags)">
+            <summary>
+            Helper to create a parser error for when a flag is not expected.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Definition.Lexer.TokenOfTypeValueFatalNotFlag(Scriptor.Definition.Lexer.TokenType,System.String,Scriptor.Definition.Lexer.TokenFlags,System.String)">
+            <summary>
+            Parse a token of the provided type and with the given string content but NOT marked with the given flag.
+            If the type/content matches but the flag does not, then fail fatally.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Definition.Lexer.Ident">
+            <summary>
+            Parse an identifier token.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Definition.Lexer.Num">
+            <summary>
+            Parse a number token.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Definition.Lexer.ILWhitespace1">
+            <summary>
+            Parse (nonzero) inline whitespace.
+            </summary>
         </member>
         <member name="T:Scriptor.AOTMode">
             <summary>
@@ -3210,6 +3986,21 @@
         <member name="F:Scriptor.AOTMode.Load">
             <summary>
             In an AOT context, loading pre-compiled expressions.
+            </summary>
+        </member>
+        <member name="T:Scriptor.ExMode">
+            <summary>
+            The mode by which a <see cref="T:Scriptor.Expressions.TEx`1"/> parameter is passed.
+            </summary>
+        </member>
+        <member name="F:Scriptor.ExMode.Parameter">
+            <summary>
+            By value (default).
+            </summary>
+        </member>
+        <member name="F:Scriptor.ExMode.RefParameter">
+            <summary>
+            By reference (in/out/ref).
             </summary>
         </member>
         <member name="T:Scriptor.MethodFlags">
@@ -3238,9 +4029,41 @@
             An exception thrown due incorrect compile-time behavior.
             </summary>
         </member>
+        <member name="M:Scriptor.StaticException.#ctor(System.String)">
+            <inheritdoc cref="T:Scriptor.StaticException"/>
+        </member>
         <member name="T:Scriptor.ReflectionException">
             <summary>
             An exception thrown due to problems in reflection or script parsing.
+            </summary>
+        </member>
+        <member name="P:Scriptor.ReflectionException.Position">
+            <summary>
+            Position in the source code causing the exception.
+            </summary>
+        </member>
+        <member name="P:Scriptor.ReflectionException.HighlightedPosition">
+            <summary>
+            A highlighted subrange of <see cref="P:Scriptor.ReflectionException.Position"/>.
+            </summary>
+        </member>
+        <member name="P:Scriptor.ReflectionException.MessageWithoutPosition">
+            <summary>
+            The exception message, not including the position.
+            </summary>
+        </member>
+        <member name="M:Scriptor.ReflectionException.#ctor(Mizuhashi.PositionRange,System.String,System.Exception)">
+            <inheritdoc cref="T:Scriptor.ReflectionException"/>
+        </member>
+        <member name="M:Scriptor.ReflectionException.#ctor(Mizuhashi.PositionRange,Mizuhashi.PositionRange,System.String,System.Exception)">
+            <inheritdoc cref="T:Scriptor.ReflectionException"/>
+        </member>
+        <member name="M:Scriptor.ReflectionException.Make(Mizuhashi.PositionRange,System.Nullable{Mizuhashi.PositionRange},System.String,System.Exception)">
+            <inheritdoc cref="T:Scriptor.ReflectionException"/>
+        </member>
+        <member name="M:Scriptor.ReflectionException.Copy(System.Exception)">
+            <summary>
+            Duplicate this exception.
             </summary>
         </member>
         <member name="T:Scriptor.BadTypeException">
@@ -3248,10 +4071,38 @@
             An exception thrown when the type of an expression is incorrect.
             </summary>
         </member>
+        <member name="M:Scriptor.BadTypeException.#ctor(System.String)">
+            <inheritdoc cref="T:Scriptor.BadTypeException"/>
+        </member>
+        <member name="M:Scriptor.BadTypeException.#ctor(System.String,System.Exception)">
+            <inheritdoc cref="T:Scriptor.BadTypeException"/>
+        </member>
         <member name="T:Scriptor.CompileException">
             <summary>
             An exception thrown due a failure in expression compilation.
             </summary>
+        </member>
+        <member name="M:Scriptor.CompileException.#ctor(System.String)">
+            <inheritdoc cref="T:Scriptor.CompileException"/>
+        </member>
+        <member name="M:Scriptor.CompileException.#ctor(System.String,System.Exception)">
+            <inheritdoc cref="T:Scriptor.CompileException"/>
+        </member>
+        <member name="T:Scriptor.NotWriteableException">
+            <summary>
+            An exception thrown when script code attempts to write to a nonwriteable expression.
+            </summary>
+        </member>
+        <member name="P:Scriptor.NotWriteableException.ArgIndex">
+            <summary>
+            Index of the argument in the relevant context.
+            </summary>
+        </member>
+        <member name="M:Scriptor.NotWriteableException.#ctor(System.Int32,System.String)">
+            <inheritdoc cref="T:Scriptor.NotWriteableException"/>
+        </member>
+        <member name="M:Scriptor.NotWriteableException.#ctor(System.Int32,System.String,System.Exception)">
+            <inheritdoc cref="T:Scriptor.NotWriteableException"/>
         </member>
         <member name="T:Scriptor.Expressions.ExBakeTracker">
             <summary>
@@ -3364,6 +4215,60 @@
             Expression helpers for mathematical operations.
             </summary>
         </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.hpi">
+            <inheritdoc cref="F:BagoumLib.Mathematics.BMath.HPI"/>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.pi">
+            <inheritdoc cref="F:BagoumLib.Mathematics.BMath.PI"/>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.npi">
+            <summary>Negative pi</summary>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.tau">
+            <inheritdoc cref="F:BagoumLib.Mathematics.BMath.TAU"/>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.twau">
+            <inheritdoc cref="F:BagoumLib.Mathematics.BMath.TWAU"/>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.degRad">
+            <inheritdoc cref="F:BagoumLib.Mathematics.BMath.degRad"/>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.radDeg">
+            <inheritdoc cref="F:BagoumLib.Mathematics.BMath.radDeg"/>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.phi">
+            <inheritdoc cref="F:BagoumLib.Mathematics.BMath.PHI"/>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.iphi">
+            <inheritdoc cref="F:BagoumLib.Mathematics.BMath.IPHI"/>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.iphi360">
+            <summary>360 / phi</summary>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.E0">
+            <summary>0f</summary>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.E05">
+            <summary>0.5f</summary>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.E025">
+            <summary>0.25f</summary>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.E1">
+            <summary>1f</summary>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.E2">
+            <summary>2f</summary>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.EN1">
+            <summary>-1f</summary>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.EN2">
+            <summary>-2f</summary>
+        </member>
+        <member name="F:Scriptor.Expressions.ExMHelpers.EN05">
+            <summary>-0.5f</summary>
+        </member>
         <member name="M:Scriptor.Expressions.ExMHelpers.ExC(System.Object)">
             <inheritdoc cref="M:System.Linq.Expressions.Expression.Constant(System.Object)"/>
         </member>
@@ -3391,10 +4296,131 @@
             Base class for <see cref="T:Scriptor.Expressions.TEx`1"/> used for type constraints.
             </summary>
         </member>
-        <member name="M:Scriptor.Expressions.TEx.Resolve``3(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},System.Func{Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},System.Linq.Expressions.Expression})">
+        <member name="P:Scriptor.Expressions.TEx.SpecialTypeHandler">
             <summary>
-            Copy the provided expressions into temporary variables that can be reused without recalculating the expression.
+            Injected handler that coverts a data type (eg. typeof(float)) and an expression into a specialized TEx subtype.
             </summary>
+        </member>
+        <member name="F:Scriptor.Expressions.TEx.ex">
+            <summary>
+            Expression around which this is wrapped.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Expressions.TEx.type">
+            <summary>
+            Type of this expression, eg. typeof(float).
+            </summary>
+            
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.#ctor(System.Linq.Expressions.Expression)">
+            <inheritdoc cref="T:Scriptor.Expressions.TEx"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.TExTypeMatches(System.Type,System.Type)">
+            <summary>
+            Return whether or not a content type matches a TEx type wrapper.
+            </summary>
+            <param name="basicType">eg. typeof(float)</param>
+            <param name="texType">eg. typeof(TEx{float})</param>
+            <returns></returns>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.MakeParameter``1(System.Boolean,System.String)">
+            <summary>
+            Create a TEx representing a parameter.
+            </summary>
+            <typeparam name="T">Type of variable, eg. typeof(float)</typeparam>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.#ctor(Scriptor.ExMode,System.Type,System.String)">
+            <summary>
+            Create a TEx and a backing ParameterExpression.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.op_Implicit(System.Linq.Expressions.Expression)~Scriptor.Expressions.TEx">
+            <summary>
+            Create a TEx from an expression.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.op_Implicit(Scriptor.Expressions.TEx)~System.Linq.Expressions.Expression">
+            <summary>
+            Get the expression wrapped within a TEx.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.op_Implicit(Scriptor.Expressions.TEx)~System.Linq.Expressions.ParameterExpression">
+            <summary>
+            Unsafely convert the wrapped expression into a ParameterExpression.
+            </summary>
+        </member>
+        <member name="T:Scriptor.Expressions.TEx.ResolveArg">
+            <summary>
+            Configuration for copying a repeat expression.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Expressions.TEx.ResolveArg.ex">
+            <summary>
+            Source expression.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Expressions.TEx.ResolveArg.reqCopy">
+            <summary>
+            Whether or not the expression needs to be compiled.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Expressions.TEx.ResolveArg.name">
+            <summary>
+            Name of the expression.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.ResolveArg.#ctor(System.Linq.Expressions.Expression,System.Boolean,System.String)">
+            <inheritdoc cref="T:Scriptor.Expressions.TEx.ResolveArg"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.ResolveArg.op_Implicit(Scriptor.Expressions.TEx)~Scriptor.Expressions.TEx.ResolveArg">
+            <inheritdoc cref="T:Scriptor.Expressions.TEx.ResolveArg"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.ResolveArg.op_Implicit(System.Linq.Expressions.Expression)~Scriptor.Expressions.TEx.ResolveArg">
+            <inheritdoc cref="T:Scriptor.Expressions.TEx.ResolveArg"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.ResolveCopy(System.Func{System.Linq.Expressions.Expression[],System.Linq.Expressions.Expression},Scriptor.Expressions.TEx.ResolveArg[])">
+            <summary>
+            Create a block expression representing the invocation of `func(args)`, where the arguments
+             are stored in block parameters if they need to be copied before use.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.ResolveFieldsMaybeDeconstructNew(System.Func{System.Linq.Expressions.Expression[],System.Linq.Expressions.Expression},Scriptor.Expressions.TEx.ResolveArg,System.Boolean,System.String[])">
+            <summary>
+            Create a block expression representing the invocation of `func(arg.fields[0], arg.fields[1]...)`.
+            If `arg` is a `new Type(nargs)` expression, then remove the `new` call and instead invoke `func(nargs)`,
+             where the values in `nargs` are stored in block parameters if `singleUse` is false.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.ResolveF(Scriptor.Expressions.TEx{System.Single},System.Func{Scriptor.Expressions.TEx{System.Single},System.Linq.Expressions.Expression})">
+            <inheritdoc cref="M:Scriptor.Expressions.TEx.ResolveCopy(System.Func{System.Linq.Expressions.Expression[],System.Linq.Expressions.Expression},Scriptor.Expressions.TEx.ResolveArg[])"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.Resolve``1(Scriptor.Expressions.TEx{``0},System.Func{Scriptor.Expressions.TEx{``0},System.Linq.Expressions.Expression})">
+            <inheritdoc cref="M:Scriptor.Expressions.TEx.ResolveCopy(System.Func{System.Linq.Expressions.Expression[],System.Linq.Expressions.Expression},Scriptor.Expressions.TEx.ResolveArg[])"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.Resolve``2(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},System.Func{Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},System.Linq.Expressions.Expression})">
+            <inheritdoc cref="M:Scriptor.Expressions.TEx.ResolveCopy(System.Func{System.Linq.Expressions.Expression[],System.Linq.Expressions.Expression},Scriptor.Expressions.TEx.ResolveArg[])"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.Resolve``3(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},System.Func{Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},System.Linq.Expressions.Expression})">
+            <inheritdoc cref="M:Scriptor.Expressions.TEx.ResolveCopy(System.Func{System.Linq.Expressions.Expression[],System.Linq.Expressions.Expression},Scriptor.Expressions.TEx.ResolveArg[])"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.Resolve``4(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},Scriptor.Expressions.TEx{``3},System.Func{Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},Scriptor.Expressions.TEx{``3},System.Linq.Expressions.Expression})">
+            <inheritdoc cref="M:Scriptor.Expressions.TEx.ResolveCopy(System.Func{System.Linq.Expressions.Expression[],System.Linq.Expressions.Expression},Scriptor.Expressions.TEx.ResolveArg[])"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.Resolve``5(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},Scriptor.Expressions.TEx{``3},Scriptor.Expressions.TEx{``4},System.Func{Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},Scriptor.Expressions.TEx{``3},Scriptor.Expressions.TEx{``4},System.Linq.Expressions.Expression})">
+            <inheritdoc cref="M:Scriptor.Expressions.TEx.ResolveCopy(System.Func{System.Linq.Expressions.Expression[],System.Linq.Expressions.Expression},Scriptor.Expressions.TEx.ResolveArg[])"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.Resolve``6(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},Scriptor.Expressions.TEx{``3},Scriptor.Expressions.TEx{``4},Scriptor.Expressions.TEx{``5},System.Func{Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},Scriptor.Expressions.TEx{``3},Scriptor.Expressions.TEx{``4},Scriptor.Expressions.TEx{``5},System.Linq.Expressions.Expression})">
+            <inheritdoc cref="M:Scriptor.Expressions.TEx.ResolveCopy(System.Func{System.Linq.Expressions.Expression[],System.Linq.Expressions.Expression},Scriptor.Expressions.TEx.ResolveArg[])"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.Resolve``7(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},Scriptor.Expressions.TEx{``3},Scriptor.Expressions.TEx{``4},Scriptor.Expressions.TEx{``5},Scriptor.Expressions.TEx{``6},System.Func{Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``1},Scriptor.Expressions.TEx{``2},Scriptor.Expressions.TEx{``3},Scriptor.Expressions.TEx{``4},Scriptor.Expressions.TEx{``5},Scriptor.Expressions.TEx{``6},System.Linq.Expressions.Expression})">
+            <inheritdoc cref="M:Scriptor.Expressions.TEx.ResolveCopy(System.Func{System.Linq.Expressions.Expression[],System.Linq.Expressions.Expression},Scriptor.Expressions.TEx.ResolveArg[])"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx.RequiresCopyOnRepeat(System.Linq.Expressions.Expression)">
+            <summary>
+            Return whether or not an expression must be copied into a block parameter if it is used multiple types.
+            </summary>
+            <param name="e"></param>
+            <returns></returns>
         </member>
         <member name="T:Scriptor.Expressions.TEx`1">
             <summary>
@@ -3404,6 +4430,21 @@
             By default, creates a ParameterExpression.
             </summary>
             <typeparam name="T">Type of expression eg(float).</typeparam>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx`1.#ctor">
+            <inheritdoc cref="T:Scriptor.Expressions.TEx`1"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx`1.#ctor(System.Linq.Expressions.Expression)">
+            <inheritdoc cref="T:Scriptor.Expressions.TEx`1"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx`1.#ctor(Scriptor.ExMode,System.String)">
+            <inheritdoc cref="T:Scriptor.Expressions.TEx`1"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx`1.op_Implicit(System.Linq.Expressions.Expression)~Scriptor.Expressions.TEx{`0}">
+            <inheritdoc cref="T:Scriptor.Expressions.TEx`1"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TEx`1.op_Implicit(`0)~Scriptor.Expressions.TEx{`0}">
+            <inheritdoc cref="T:Scriptor.Expressions.TEx`1"/>
         </member>
         <member name="T:Scriptor.Expressions.TExArgCtx">
             <summary>
@@ -3415,7 +4456,12 @@
         </member>
         <member name="T:Scriptor.Expressions.TExArgCtx.RootCtx">
             <summary>
-            Context that is shared by any copies of this.
+            Context that is shared by any copies of <see cref="T:Scriptor.Expressions.TExArgCtx"/>.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Expressions.TExArgCtx.RootCtx.Scope">
+            <summary>
+            All active lexical scopes through which this expression context is being passed.
             </summary>
         </member>
         <member name="P:Scriptor.Expressions.TExArgCtx.RootCtx.AliasStack">
@@ -3453,6 +4499,143 @@
         </member>
         <member name="M:Scriptor.Expressions.TExArgCtx.Proxy(System.Object)">
             <inheritdoc cref="M:Scriptor.Expressions.TExArgCtx.Proxy``1(``0)"/>
+        </member>
+        <member name="T:Scriptor.Expressions.TExArgCtx.Arg">
+            <summary>
+            An argument provided to the expression being compiled. Might be a parameter, function argument, implicit, etc.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Expressions.TExArgCtx.Arg.name">
+            <summary>
+            Argument name.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Expressions.TExArgCtx.Arg.texType">
+            <summary>
+            Type of the expression, eg. typeof(TEx{float}).
+            </summary>
+        </member>
+        <member name="F:Scriptor.Expressions.TExArgCtx.Arg.expr">
+            <summary>
+            Expression representing the argument.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Expressions.TExArgCtx.Arg.hasTypePriority">
+            <summary>
+            True if this expression should be prioritized when querying variables by type.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.Arg.FromTEx(System.String,Scriptor.Expressions.TEx,System.Boolean)">
+            <summary>
+            Create an <see cref="T:Scriptor.Expressions.TExArgCtx.Arg"/> from a <see cref="T:Scriptor.Expressions.TEx`1"/>.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.Let(System.String,System.Linq.Expressions.Expression)">
+            <summary>
+            Temporarily add a variable to <see cref="T:Scriptor.Expressions.TExArgCtx.RootCtx"/>.<see cref="P:Scriptor.Expressions.TExArgCtx.RootCtx.AliasStack"/>.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Expressions.TExArgCtx.Args">
+            <summary>
+            Arguments provided to this TExArgCtx. Does not carry parent arguments.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Expressions.TExArgCtx.Parent">
+            <summary>
+            Contains the base TExArgCtx from which this was copied
+             (if this is a copy with extra arguments).
+            </summary>
+        </member>
+        <member name="P:Scriptor.Expressions.TExArgCtx.Ctx">
+            <inheritdoc cref="T:Scriptor.Expressions.TExArgCtx.RootCtx"/>
+        </member>
+        <member name="P:Scriptor.Expressions.TExArgCtx.FloatVal">
+            <summary>
+            Get the linked expression representing the (most-priotized) float argument.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Expressions.TExArgCtx.EnvFrame">
+            <summary>
+            Get the linked expression representing the environment frame argument.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.#ctor(Scriptor.Expressions.TExArgCtx.Arg[])">
+            <inheritdoc cref="T:Scriptor.Expressions.TExArgCtx"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.#ctor(Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TExArgCtx.Arg[])">
+            <inheritdoc cref="T:Scriptor.Expressions.TExArgCtx"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.GetByName``1(System.String)">
+            <summary>
+            Get the argument of a specific name and type. Fails if not found.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.MaybeGetByName``1(System.String)">
+            <summary>
+            Try to get the argument of a specific name and type. Returns null if not found.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.GetByName(System.Type,System.String)">
+            <inheritdoc cref="M:Scriptor.Expressions.TExArgCtx.GetByName``1(System.String)"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.MaybeGetByName(System.Type,System.String)">
+            <inheritdoc cref="M:Scriptor.Expressions.TExArgCtx.MaybeGetByName``1(System.String)"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.GetByType``1(System.Int32@)">
+            <inheritdoc cref="M:Scriptor.Expressions.TExArgCtx.GetByType``1"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.GetByType``1">
+            <summary>
+            Get the most-prioritized argument of a certain type. Throws if none exists.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.MaybeGetByType``1(System.Int32@)">
+            <summary>
+            Try to get the most-prioritized argument of a certain type. Returns null if none exists.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.GetByExprType``1(System.Int32@)">
+            <inheritdoc cref="M:Scriptor.Expressions.TExArgCtx.GetByExprType``1"/>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.GetByExprType``1">
+            <summary>
+            Get the most-prioritized argument of a certain TEx type. Throws if none exists.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.MaybeGetByExprType``1(System.Int32@)">
+            <summary>
+            Try to get the most-prioritized argument of a certain TEx type. Returns null if none exists.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.MakeCopyWith(System.Int32,Scriptor.Expressions.TExArgCtx.Arg)">
+            <summary>
+            Derive a child TExArgCtx from this one, replacing the `idx`'th argument with `newArg`.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.MakeCopyForType``1(Scriptor.Expressions.TEx{``0}@,Scriptor.Expressions.TEx{``0}@)">
+            <summary>
+            Derive a child TExArgCtx from this one, replacing the first argument of type T with a new argument.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.MakeCopyForType``1(Scriptor.Expressions.TEx{``0})">
+            <summary>
+            Derive a child TExArgCtx from this one, replacing the first argument of type T with `newEx`.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.MakeCopyForExType``1(``0@,``0@)">
+            <summary>
+            Derive a child TExArgCtx from this one, replacing the first argument of TEx type T with a new argument.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.MakeCopyForExType``1(``0)">
+            <summary>
+            Derive a child TExArgCtx from this one, replacing the first argument of TEx type T with `newEx`.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Expressions.TExArgCtx.Append(System.String,Scriptor.Expressions.TEx,System.Boolean)">
+            <summary>
+            Derive a copy TExArgCtx from this one, adding a new argument at the end of <see cref="F:Scriptor.Expressions.TExArgCtx.Args"/>.
+            </summary>
         </member>
         <member name="T:Scriptor.Expressions.TExExtensions">
             <summary>
@@ -3569,9 +4752,22 @@
              determined type t using reflection.
             </summary>
         </member>
+        <member name="T:Scriptor.IDebugPrint">
+            <summary>
+            An AST that can be printed in a readable manner.
+            </summary>
+        </member>
         <member name="M:Scriptor.IDebugPrint.DebugPrint">
             <summary>
             Print a readable description of the entire AST.
+            </summary>
+        </member>
+        <member name="M:Scriptor.IDebugPrint.DebugPrintStringify">
+            <inheritdoc cref="M:Scriptor.IDebugPrint.DebugPrint"/>
+        </member>
+        <member name="M:Scriptor.IDebugPrint.PrintArgs(System.Collections.Generic.IReadOnlyList{Scriptor.IDebugPrint},System.String)">
+            <summary>
+            Helper function for printing arguments with a separator.
             </summary>
         </member>
         <member name="T:Scriptor.Math.ExMAssign">
@@ -3590,9 +4786,47 @@
             Assign x = y. Used only for variable initialization.
             </summary>
         </member>
+        <member name="M:Scriptor.Math.ExMAssign.AddAssign``1(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``0})">
+            <summary>x += y</summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMAssign.SubAssign``1(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``0})">
+            <summary>x -= y</summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMAssign.MulAssign``1(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``0})">
+            <summary>x *= y</summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMAssign.DivAssign``1(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``0})">
+            <summary>x /= y</summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMAssign.ModAssign``1(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``0})">
+            <summary>x %= y</summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMAssign.AndAssign``1(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``0})">
+            <summary>x &amp;= y</summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMAssign.OrAssign``1(Scriptor.Expressions.TEx{``0},Scriptor.Expressions.TEx{``0})">
+            <summary>x |= y</summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMAssign.PostIncrement``1(Scriptor.Expressions.TEx{``0})">
+            <summary>x++</summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMAssign.PreIncrement``1(Scriptor.Expressions.TEx{``0})">
+            <summary>++x</summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMAssign.PostDecrement``1(Scriptor.Expressions.TEx{``0})">
+            <summary>x--</summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMAssign.PreDecrement``1(Scriptor.Expressions.TEx{``0})">
+            <summary>--x</summary>
+        </member>
         <member name="T:Scriptor.Math.ExMOperators">
             <summary>
             Functions that are operators in BDSL2.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Math.ExMOperators.ReturnSame``1(Scriptor.Expressions.TEx{``0})">
+            <summary>
+            Returns x.
             </summary>
         </member>
         <member name="M:Scriptor.Math.ExMOperators.Negate``1(Scriptor.Expressions.TEx{``0})">
@@ -3815,6 +5049,11 @@
         <member name="M:Scriptor.Reflection.DelegateArg`1.MakeImplicitArgDecl">
             <inheritdoc/>
         </member>
+        <member name="T:Scriptor.Reflection.IMethodSignature">
+            <summary>
+            An annotated type member signature.
+            </summary>
+        </member>
         <member name="P:Scriptor.Reflection.IMethodSignature.SharedType">
             <summary>
             Get a representation of this method's type. This should not directly be used for unification, as
@@ -3872,14 +5111,29 @@
             Show the signature of this method, including type restrictions.
             </summary>
         </member>
+        <member name="M:Scriptor.Reflection.IMethodSignature.AsSignatureWithParamMod(System.Func{BagoumLib.Reflection.NamedParam,System.Int32,System.String})">
+            <summary>
+            Print the signature of this method with custom rendering for each parameter.
+            </summary>
+        </member>
         <member name="P:Scriptor.Reflection.IMethodSignature.TypeOnlySignature">
             <summary>
             Show the signature of this method, only including types and not names.
             </summary>
         </member>
+        <member name="M:Scriptor.Reflection.IMethodSignature.Call(System.String)">
+            <summary>
+            Create an <see cref="T:Scriptor.Reflection.InvokedMethod"/> representing calling this method with a given alias.
+            </summary>
+        </member>
         <member name="M:Scriptor.Reflection.IMethodSignature.GetAttribute``1">
             <summary>
             Get an attribute defined on the method.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.IMethodSignature.ImplicitTypeConvKind">
+            <summary>
+            The kind of conversion this method creates if used as a type converter.
             </summary>
         </member>
         <member name="M:Scriptor.Reflection.IMethodSignature.Invoke(System.Object[])">
@@ -3912,7 +5166,6 @@
             <summary>
             (Informational) The name of this method.
             </summary>
-            <returns></returns>
         </member>
         <member name="T:Scriptor.Reflection.ScopedConversionKind">
             <summary>
@@ -3935,7 +5188,7 @@
         </member>
         <member name="F:Scriptor.Reflection.ScopedConversionKind.Trivial">
             <summary>
-            A conversion method not interfacing with expressions, such as GenCtxProperty[] to GenCtxProperties{X}.
+            A conversion method not interfacing with expressions, such as GenCtxProperty[] to GenCtxProperties{X}. No local scope is required.
             </summary>
         </member>
         <member name="T:Scriptor.Reflection.IScopedTypeConverter">
@@ -3951,8 +5204,45 @@
         <member name="P:Scriptor.Reflection.IScopedTypeConverter.Kind">
             <inheritdoc cref="T:Scriptor.Reflection.ScopedConversionKind"/>
         </member>
+        <member name="T:Scriptor.Reflection.ITypeConvWithInstance">
+            <summary>
+            An implicit type converter whose instances can be exclusively consumed by single users.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.ITypeConvWithInstance.SharedMethodType">
+            <summary>
+            The common method type, with generics, for this type converter.
+            The <see cref="T:BagoumLib.Unification.TypeDesignation.Variable"/> instances in this should not be mapped.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.ITypeConvWithInstance.SetNextInstance(BagoumLib.Unification.IImplicitTypeConverterInstance)">
+            <summary>
+            Set a new <see cref="P:BagoumLib.Unification.IImplicitTypeConverter.NextInstance"/>.
+            </summary>
+        </member>
+        <member name="T:Scriptor.Reflection.ITypeConvWithInstance.Instance">
+            <inheritdoc cref="T:BagoumLib.Unification.IImplicitTypeConverterInstance"/>
+        </member>
+        <member name="P:Scriptor.Reflection.ITypeConvWithInstance.Instance.MethodType">
+            <summary>
+            The method type from <see cref="P:Scriptor.Reflection.ITypeConvWithInstance.Instance.Converter"/> recreated with local variables.
+            </summary>
+        </member>
         <member name="P:Scriptor.Reflection.ITypeConvWithInstance.Instance.Generic">
             <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Reflection.ITypeConvWithInstance.Instance.#ctor(Scriptor.Reflection.ITypeConvWithInstance)">
+            <inheritdoc cref="T:BagoumLib.Unification.IImplicitTypeConverterInstance"/>
+        </member>
+        <member name="M:Scriptor.Reflection.ITypeConvWithInstance.Instance.MarkUsed">
+            <summary>
+            Mark that this instance has been consumed and should not be used by any other consumers.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.ITypeConvWithInstance.Instance.Realize(BagoumLib.Unification.Unifier)">
+            <summary>
+            Finalize this conversion as a <see cref="T:BagoumLib.Unification.RealizedImplicitCast"/>.
+            </summary>
         </member>
         <member name="T:Scriptor.Reflection.FixedImplicitTypeConv">
             <summary>
@@ -3962,12 +5252,78 @@
              Func&lt;TExArgCtx, TEx&gt;, can result in the method type having variables.
         </member>
         <member name="P:Scriptor.Reflection.FixedImplicitTypeConv.MethodType">
+            <inheritdoc cref="P:Scriptor.Reflection.ITypeConvWithInstance.SharedMethodType"/>
+        </member>
+        <member name="P:Scriptor.Reflection.FixedImplicitTypeConv.ScopeArgs">
+            <summary>
+            Implcicit arguments provided by the conversion.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.FixedImplicitTypeConv.Kind">
+            <inheritdoc cref="T:Scriptor.Reflection.ScopedConversionKind"/>
+        </member>
+        <member name="P:Scriptor.Reflection.FixedImplicitTypeConv.NextInstance">
             <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Reflection.FixedImplicitTypeConv.SetNextInstance(BagoumLib.Unification.IImplicitTypeConverterInstance)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Reflection.FixedImplicitTypeConv.Convert(Scriptor.Compile.IAST,System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},Scriptor.Expressions.TExArgCtx)">
+            <summary>
+            Apply this conversion to an expression.
+            </summary>
         </member>
         <member name="T:Scriptor.Reflection.FixedImplicitTypeConv`2">
             <summary>
             Implicit type conversion from type T to type R.
             </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.FixedImplicitTypeConv`2.MethodType">
+            <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Reflection.FixedImplicitTypeConv`2.#ctor(System.Linq.Expressions.Expression{System.Func{`0,`1}},System.Boolean)">
+            <inheritdoc cref="T:Scriptor.Reflection.FixedImplicitTypeConv"/>
+        </member>
+        <member name="M:Scriptor.Reflection.FixedImplicitTypeConv`2.#ctor(System.Func{System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx{`1}}})">
+            <inheritdoc cref="T:Scriptor.Reflection.FixedImplicitTypeConv"/>
+        </member>
+        <member name="M:Scriptor.Reflection.FixedImplicitTypeConv`2.FromFn(System.Linq.Expressions.Expression{System.Func{`0,`1}},Scriptor.Reflection.ScopedConversionKind,System.Boolean)">
+            <summary>
+            Create a <see cref="T:Scriptor.Reflection.FixedImplicitTypeConv"/> from a function.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.FixedImplicitTypeConv`2.Convert(Scriptor.Compile.IAST,System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},Scriptor.Expressions.TExArgCtx)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Scriptor.Reflection.GenericTypeConv1">
+            <summary>
+            Implicit type conversions with one generic type.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.GenericTypeConv1.SharedMethodType">
+            <inheritdoc cref="P:Scriptor.Reflection.ITypeConvWithInstance.SharedMethodType"/>
+        </member>
+        <member name="P:Scriptor.Reflection.GenericTypeConv1.ScopeArgs">
+            <inheritdoc cref="P:Scriptor.Reflection.FixedImplicitTypeConv.ScopeArgs"/>
+        </member>
+        <member name="P:Scriptor.Reflection.GenericTypeConv1.Kind">
+            <inheritdoc cref="P:Scriptor.Reflection.FixedImplicitTypeConv.Kind"/>
+        </member>
+        <member name="P:Scriptor.Reflection.GenericTypeConv1.NextInstance">
+            <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Reflection.GenericTypeConv1.SetNextInstance(BagoumLib.Unification.IImplicitTypeConverterInstance)">
+            <inheritdoc/>
+            
+        </member>
+        <member name="M:Scriptor.Reflection.GenericTypeConv1.#ctor(BagoumLib.Unification.TypeDesignation.Dummy)">
+            <inheritdoc cref="T:Scriptor.Reflection.GenericTypeConv1"/>
+        </member>
+        <member name="M:Scriptor.Reflection.GenericTypeConv1.Convert``1(Scriptor.Compile.IAST,System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},Scriptor.Expressions.TExArgCtx)">
+            <inheritdoc cref="M:Scriptor.Reflection.FixedImplicitTypeConv.Convert(Scriptor.Compile.IAST,System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},Scriptor.Expressions.TExArgCtx)"/>
+        </member>
+        <member name="M:Scriptor.Reflection.GenericTypeConv1.ConvertForType(System.Type,Scriptor.Compile.IAST,System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},Scriptor.Expressions.TExArgCtx)">
+            <inheritdoc cref="M:Scriptor.Reflection.FixedImplicitTypeConv.Convert(Scriptor.Compile.IAST,System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},Scriptor.Expressions.TExArgCtx)"/>
         </member>
         <member name="T:Scriptor.Reflection.SingletonToArrayConv">
             <summary>
@@ -3979,15 +5335,46 @@
             Implicit converter that converts a singleton into an array.
             </summary>
         </member>
+        <member name="M:Scriptor.Reflection.SingletonToArrayConv.Convert``1(Scriptor.Compile.IAST,System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},Scriptor.Expressions.TExArgCtx)">
+            <inheritdoc/>
+        </member>
         <member name="T:Scriptor.Reflection.MethodConv1">
             <summary>
             Implicit converter that uses a method to convert an input into an output.
             </summary>
         </member>
+        <member name="P:Scriptor.Reflection.MethodConv1.MethodType">
+            <inheritdoc/>
+        </member>
+        <member name="P:Scriptor.Reflection.MethodConv1.Mi">
+            <summary>
+            The method used for conversion.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.MethodConv1.#ctor(Scriptor.Reflection.MethodSignature)">
+            <inheritdoc cref="T:Scriptor.Reflection.MethodConv1"/>
+        </member>
+        <member name="M:Scriptor.Reflection.MethodConv1.Convert(Scriptor.Compile.IAST,System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},Scriptor.Expressions.TExArgCtx)">
+            <inheritdoc/>
+        </member>
         <member name="T:Scriptor.Reflection.GenericMethodConv1">
             <summary>
             Implicit converter that uses a generic method to convert an input into an output.
             </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.GenericMethodConv1.GMi">
+            <summary>
+            The generic method used for conversion.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.GenericMethodConv1.#ctor(Scriptor.Reflection.GenericMethodSignature)">
+            <inheritdoc cref="T:Scriptor.Reflection.GenericMethodConv1"/>
+        </member>
+        <member name="M:Scriptor.Reflection.GenericMethodConv1.Convert``1(Scriptor.Compile.IAST,System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},Scriptor.Expressions.TExArgCtx)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Scriptor.Reflection.GenericMethodConv1.ConvertForType(System.Type,Scriptor.Compile.IAST,System.Func{Scriptor.Expressions.TExArgCtx,Scriptor.Expressions.TEx},Scriptor.Expressions.TExArgCtx)">
+            <inheritdoc/>
         </member>
         <member name="T:Scriptor.Reflection.InvokedMethod">
             <summary>
@@ -4010,6 +5397,29 @@
         <member name="P:Scriptor.Reflection.InvokedMethod.CalledAs">
             <summary>
             The name by which the user called the method (which may be an alias).
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.InvokedMethod.Params">
+            <inheritdoc cref="P:Scriptor.Reflection.IMethodSignature.Params"/>
+        </member>
+        <member name="P:Scriptor.Reflection.InvokedMethod.SimpleName">
+            <summary>
+            The simple name of this method (`T` for constructors) and <see cref="P:Scriptor.Reflection.InvokedMethod.CalledAs"/>.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.InvokedMethod.Name">
+            <summary>
+            The name of this method (`new T` for constructors) and <see cref="P:Scriptor.Reflection.InvokedMethod.CalledAs"/>.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.InvokedMethod.TypeEnclosedName">
+            <summary>
+            <see cref="P:Scriptor.Reflection.InvokedMethod.Name"/> prefixed with the enclosing type name (if not a constructor).
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.InvokedMethod.FileLink">
+            <summary>
+            A file link to the method.
             </summary>
         </member>
         <member name="M:Scriptor.Reflection.InvokedMethod.ToString">
@@ -4065,6 +5475,9 @@
         </member>
         <member name="P:Scriptor.Reflection.MethodSignature.SharedGenericTypes">
             <inheritdoc cref="P:Scriptor.Reflection.IGenericMethodSignature.SharedGenericTypes"/>
+        </member>
+        <member name="M:Scriptor.Reflection.MethodSignature.#ctor(BagoumLib.Reflection.TypeMember,BagoumLib.Reflection.NamedParam[])">
+            <inheritdoc cref="T:Scriptor.Reflection.MethodSignature"/>
         </member>
         <member name="M:Scriptor.Reflection.MethodSignature.CheckHiddenReturnType(System.Type)">
             <summary>
@@ -4128,15 +5541,21 @@
         <member name="M:Scriptor.Reflection.MethodSignature.Call(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:Scriptor.Reflection.MethodSignature.Get(System.Reflection.MemberInfo)">
+        <member name="M:Scriptor.Reflection.MethodSignature.AsFunc(System.Boolean)">
             <summary>
-            Returns a <see cref="T:Scriptor.Reflection.MethodSignature"/> or <see cref="T:Scriptor.Reflection.GenericMethodSignature"/> for this method.
+            Create a Func or Action representing invoking this method.
             </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.MethodSignature.Get(System.Reflection.MemberInfo)">
+            <inheritdoc cref="M:Scriptor.Reflection.MethodSignature.MaybeGet(System.Reflection.MemberInfo)"/>
         </member>
         <member name="M:Scriptor.Reflection.MethodSignature.MaybeGet(System.Reflection.MemberInfo)">
             <summary>
-            Returns a <see cref="T:Scriptor.Reflection.MethodSignature"/> or <see cref="T:Scriptor.Reflection.GenericMethodSignature"/> for this method.
+            Returns a <see cref="T:Scriptor.Reflection.MethodSignature"/> or <see cref="T:Scriptor.Reflection.GenericMethodSignature"/> for the method.
             </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.MethodSignature.Get(BagoumLib.Reflection.TypeMember)">
+            <inheritdoc cref="M:Scriptor.Reflection.MethodSignature.MaybeGet(System.Reflection.MemberInfo)"/>
         </member>
         <member name="P:Scriptor.Reflection.MethodSignature.ImplicitTypeConvKind">
             <inheritdoc/>
@@ -4166,9 +5585,19 @@
         <member name="M:Scriptor.Reflection.GenericMethodSignature.#ctor(BagoumLib.Reflection.TypeMember.Method,BagoumLib.Reflection.NamedParam[])">
             <inheritdoc cref="T:Scriptor.Reflection.MethodSignature"/>
         </member>
+        <member name="P:Scriptor.Reflection.GenericMethodSignature.Minf">
+            <summary>
+            Same as <see cref="P:Scriptor.Reflection.MethodSignature.Member"/>, type-restricted as <see cref="T:BagoumLib.Reflection.TypeMember.Method"/>.
+            </summary>
+        </member>
         <member name="P:Scriptor.Reflection.GenericMethodSignature.TypeParams">
             <summary>
             Number of generic parameters.
+            </summary>
+        </member>
+        <member name="F:Scriptor.Reflection.GenericMethodSignature.specializeCache">
+            <summary>
+            Mapping from generic method + concrete type map to specialized methods.
             </summary>
         </member>
         <member name="M:Scriptor.Reflection.GenericMethodSignature.Invoke(System.Object[])">
@@ -4195,9 +5624,9 @@
             some internal reflection functions are of type <see cref="T:Scriptor.Expressions.TExArgCtx"/>->TEx,
              but it is generally easier to write them as type TEx where possible.
             </summary>
-            <param name="Original">The source method, with the signature (A, B, C)->R.</param>
-            <param name="FuncedParams">The parameter list [T->A, T->B, T->C]. This is provided as <see cref="P:Scriptor.Reflection.MethodSignature.Params"/>.</param>
-            <param name="BaseParams">The parameter list [A, B, C].</param>
+            <param name="original">The source method, with the signature (A, B, C)->R.</param>
+            <param name="funcedParams"><see cref="P:Scriptor.Reflection.LiftedMethodSignature.FuncedParams"/></param>
+            <param name="baseParams"><see cref="P:Scriptor.Reflection.LiftedMethodSignature.BaseParams"/></param>
         </member>
         <member name="M:Scriptor.Reflection.LiftedMethodSignature.#ctor(Scriptor.Reflection.MethodSignature,BagoumLib.Reflection.NamedParam[],BagoumLib.Reflection.NamedParam[])">
             <summary>
@@ -4208,18 +5637,19 @@
             some internal reflection functions are of type <see cref="T:Scriptor.Expressions.TExArgCtx"/>->TEx,
              but it is generally easier to write them as type TEx where possible.
             </summary>
-            <param name="Original">The source method, with the signature (A, B, C)->R.</param>
-            <param name="FuncedParams">The parameter list [T->A, T->B, T->C]. This is provided as <see cref="P:Scriptor.Reflection.MethodSignature.Params"/>.</param>
-            <param name="BaseParams">The parameter list [A, B, C].</param>
-        </member>
-        <member name="P:Scriptor.Reflection.LiftedMethodSignature.Original">
-            <summary>The source method, with the signature (A, B, C)->R.</summary>
+            <param name="original">The source method, with the signature (A, B, C)->R.</param>
+            <param name="funcedParams"><see cref="P:Scriptor.Reflection.LiftedMethodSignature.FuncedParams"/></param>
+            <param name="baseParams"><see cref="P:Scriptor.Reflection.LiftedMethodSignature.BaseParams"/></param>
         </member>
         <member name="P:Scriptor.Reflection.LiftedMethodSignature.FuncedParams">
-            <summary>The parameter list [T->A, T->B, T->C]. This is provided as <see cref="P:Scriptor.Reflection.MethodSignature.Params"/>.</summary>
+            <summary>
+            The parameter list [T->A, T->B, T->C]. Same as <see cref="T:Scriptor.Reflection.MethodSignature"/>.<see cref="P:Scriptor.Reflection.MethodSignature.Params"/>.
+            </summary>
         </member>
         <member name="P:Scriptor.Reflection.LiftedMethodSignature.BaseParams">
-            <summary>The parameter list [A, B, C].</summary>
+            <summary>
+            The parameter list [A, B, C].
+            </summary>
         </member>
         <member name="M:Scriptor.Reflection.LiftedMethodSignature.Call(System.String)">
             <inheritdoc/>
@@ -4231,6 +5661,11 @@
             <inheritdoc/>
         </member>
         <member name="M:Scriptor.Reflection.LiftedMethodSignature.LiftParams``1(Scriptor.Reflection.MethodSignature)">
+            <summary>
+            Lift a set of parameters over the reader functor T->.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.LiftedMethodSignature.LiftParams(System.Type,Scriptor.Reflection.MethodSignature)">
             <summary>
             Lift a set of parameters over the reader functor T->.
             </summary>
@@ -4280,6 +5715,12 @@
         <member name="M:Scriptor.Reflection.LiftedMethodSignature`2.InvokeEx(System.Linq.Expressions.Expression[])">
             <inheritdoc/>
         </member>
+        <member name="M:Scriptor.Reflection.LiftedMethodSignature`2.InvokeMiFunced(System.Object[])">
+            <summary>
+            Provided arguments in the form [T->A1,T->A2,T->A3...],
+            invoke this function lifted over the reader functor T->.
+            </summary>
+        </member>
         <member name="M:Scriptor.Reflection.LiftedMethodSignature`2.Call(System.String)">
             <inheritdoc/>
         </member>
@@ -4289,9 +5730,52 @@
             <br/>If R is not known statically, use <see cref="T:Scriptor.Reflection.LiftedMethodSignature`1"/>'s Lift instead.
             </summary>
         </member>
+        <member name="T:Scriptor.Reflection.ReflectDiagnostic">
+            <summary>
+            A diagnostic message (possibly fatal) representing an issue or matter of note in script compilation.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.ReflectDiagnostic.#ctor(Mizuhashi.PositionRange,System.String,Scriptor.Reflection.ReflectDiagnostic)">
+            <summary>
+            A diagnostic message (possibly fatal) representing an issue or matter of note in script compilation.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.ReflectDiagnostic.Level">
+            <summary>
+            Message level.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.ReflectDiagnostic.Log">
+            <summary>
+            Log the message to <see cref="F:BagoumLib.Logging.Logs"/>.
+            </summary>
+        </member>
+        <member name="T:Scriptor.Reflection.ReflectDiagnostic.Warning">
+            <summary>
+            A warning message.
+            </summary>
+        </member>
+        <member name="M:Scriptor.Reflection.ReflectDiagnostic.Warning.#ctor(Mizuhashi.PositionRange,System.String,Scriptor.Reflection.ReflectDiagnostic)">
+            <summary>
+            A warning message.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.ReflectDiagnostic.Warning.Level">
+            <inheritdoc/>
+        </member>
         <member name="T:Scriptor.Reflection.TypeLifter">
             <summary>
             Helper methods for lifting types and creating func types.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.TypeLifter.FuncifiableReturnTypes">
+            <summary>
+            Types which can be lifted, eg. TEx{float}.
+            </summary>
+        </member>
+        <member name="P:Scriptor.Reflection.TypeLifter.FuncifiableReturnTypeGenerics">
+            <summary>
+            Generic types which can be lifted, eg. TEx{T}.
             </summary>
         </member>
         <member name="M:Scriptor.Reflection.TypeLifter.Func2Type(System.Type,System.Type)">
@@ -4324,6 +5808,11 @@
             <param name="funcType">Type of func.</param>
             <param name="arg">Argument with which to execute func.</param>
             <returns></returns>
+        </member>
+        <member name="M:Scriptor.Reflection.TypeLifter.TupleToArr2``2(System.ValueTuple{``0,``1})">
+            <summary>
+            Convert a tuple into an array.
+            </summary>
         </member>
     </members>
 </doc>

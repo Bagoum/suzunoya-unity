@@ -151,7 +151,10 @@
           "System.Reactive": "5.0.0"
         },
         "runtime": {
-          "BagoumLib.dll": {}
+          "BagoumLib.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "Mizuhashi/1.0.0": {
@@ -159,7 +162,10 @@
           "BagoumLib": "1.0.0"
         },
         "runtime": {
-          "Mizuhashi.dll": {}
+          "Mizuhashi.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "Scriptor/1.0.0": {
@@ -168,7 +174,18 @@
           "Mizuhashi": "1.0.0"
         },
         "runtime": {
-          "Scriptor.dll": {}
+          "Scriptor.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "LanguageServer.Contracts/1.0.0.0": {
+        "runtime": {
+          "LanguageServer.Contracts.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
@@ -296,6 +313,11 @@
     },
     "Scriptor/1.0.0": {
       "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "LanguageServer.Contracts/1.0.0.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     }
